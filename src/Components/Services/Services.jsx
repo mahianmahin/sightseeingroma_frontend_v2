@@ -9,10 +9,13 @@ const Services = () => {
     const tabs = [
         "Big Bus Packages",
         "Green Line Packages",
-        "Rome Tour Packages",
-        "Historical Packages",
-        "City Sightseeing",
+        "I Love Rome Packages",
+        "IO Bus Packages",
+        "CitySightseeing Packages",
     ];
+
+    // Filter data based on the active tab
+    const filteredData = busData.filter((bus) => bus.category === tabs[activeTab]);
 
     return (
         <div className="p-4 mt-10 md:mt-16">
@@ -30,14 +33,12 @@ const Services = () => {
                     <button
                         key={index}
                         onClick={() => setActiveTab(index)}
-                        className={`font-semibold pb-2 px-2 md:px-4 p-2 text-sm md:text-base  rounded-md md:rounded-none   transition-all duration-200 
+                        className={`font-semibold pb-2 px-2 md:px-4 p-2 text-sm md:text-base rounded-md md:rounded-none transition-all duration-200 
                             ${
                                 activeTab === index
-                                    ? "border-[#930B31] text-[#930B31] md:border-b-2  border-2 md:border-0"
+                                    ? "border-[#930B31] text-[#930B31] md:border-b-2 border-2 md:border-0"
                                     : "border-transparent text-gray-700 hover:border-[#930B31] hover:text-[#930B31]"
-                            }
-                            
-                            `}
+                            }`}
                     >
                         {tab}
                     </button>
@@ -46,17 +47,23 @@ const Services = () => {
             
             {/* Card Grid */}
             <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-1 md:gap-12">
-                {busData.map((bus, index) => (
-                    <Card
-                        key={index}
-                        title={bus.title}
-                        subtitle={bus.subtitle}
-                        image={bus.image}
-                        duration={bus.duration}
-                        ticketCount={bus.ticket_count}
-                        price={bus.price}
-                    />
-                ))}
+                {filteredData.length > 0 ? (
+                    filteredData.map((bus, index) => (
+                        <Card
+                            key={index}
+                            title={bus.title}
+                            subtitle={bus.subtitle}
+                            image={bus.image}
+                            duration={bus.duration}
+                            ticketCount={bus.ticket_count}
+                            price={bus.price}
+                        />
+                    ))
+                ) : (
+                    <p className="text-gray-500 col-span-full text-center">
+                        No buses available for this category.
+                    </p>
+                )}
             </div>
         </div>
     );
