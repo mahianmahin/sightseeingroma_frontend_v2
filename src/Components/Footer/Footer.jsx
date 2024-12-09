@@ -1,5 +1,6 @@
 
 import '@fortawesome/fontawesome-free/css/all.min.css';
+import { Link } from 'react-router-dom';
 
 const Footer = () => {
     return (
@@ -21,11 +22,13 @@ const Footer = () => {
                     <div className=" md:text-left">
                         <h3 className="font-semibold text-lg">Bus Services</h3>
                         <ul className="space-y-2 text-sm">
-                            <li>Big Bus</li>
-                            <li>Green Line</li>
-                            <li>I Love Rome</li>
-                            <li>ID Bus</li>
-                            <li>Sightseeing</li>
+                          <Link to={"/bigBus"}>  <li>Big Bus</li></Link>
+                          <Link to={"/greenLine"}>  <li>Green Line</li></Link>
+                          <Link to={"/loveRome"}>  <li>I Love Rome</li></Link>
+                          <Link to={"/iobus"}>  <li>IO Bus</li></Link>
+                          <Link to={"/city"}>  <li>Sightseeing</li></Link>
+                         
+                     
                         </ul>
                     </div>
 
