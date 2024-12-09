@@ -3,7 +3,7 @@
 const HeroBottom = () => {
     return (
     <div>
-            <div className="bg-[#FAD50266]  p-5 flex justify-between items-center mb-5 md:mb-10">
+            <div className="bg-[#FAD50266]  p-5 flex justify-between items-center">
             <img src="https://iili.io/2TycEQ9.png" className="w-10 sm:w-24 md:w-28 lg:w-auto" alt="" />
                 <img src="https://iili.io/2Tyloaj.png" className="w-10 sm:w-24 md:w-28 lg:w-auto" alt="" />
                 <img src="https://iili.io/2Tyl7MF.png" className="w-10 sm:w-24 md:w-28 lg:w-auto" alt="" />

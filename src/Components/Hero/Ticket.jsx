@@ -2,7 +2,7 @@ import { FaSearch } from "react-icons/fa";
 
 const Ticket = () => {
     return (
-        <div className="w-full px-4 lg:px-0 lg:w-2/3">
+        <div className="w-full px-4 lg:px-0 lg:w-2/3 my-5">
             <div className="flex flex-col lg:flex-row items-center justify-center p-6 bg-gray-200 text-black gap-6 lg:gap-10 rounded-lg shadow-md">
                 
                 {/* Select Bus Service */}

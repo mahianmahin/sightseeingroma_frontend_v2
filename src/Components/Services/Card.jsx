@@ -38,11 +38,11 @@ const Card = ({ title, subtitle, image, duration, ticketCount, price }) => {
                 
                 {/* Buttons */}
                 <div className="flex justify-between gap-2 mt-2 md:mt-4">
-                    <button className="h-8 sm:h-10 w-24 sm:w-28 bg-[#930B31] text-white py-1 rounded-lg text-xs sm:text-sm font-semibold hover:bg-red-700">
+                    <button className="h-8 sm:h-10 w-24 sm:w-28 bg-[#930B31] text-white py-1 rounded-3xl md:rounded-lg text-xs sm:text-sm font-semibold hover:bg-red-700">
                         Buy Now
                     </button>
-                    <button className="h-8 sm:h-10 w-24 sm:w-28 bg-gray-100 text-red-800 py-1 rounded-lg text-xs md:text-sm font-semibold hover:bg-gray-300">
-                        View Details
+                    <button className="h-8 sm:h-10 w-24 sm:w-28 bg-gray-100 text-red-800 py-1 rounded-3xl md:rounded-lg text-xs md:text-sm font-semibold hover:bg-gray-300">
+                        View More
                     </button>
                 </div>
             </div>
