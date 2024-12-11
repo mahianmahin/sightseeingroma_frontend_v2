@@ -36,7 +36,7 @@ const Footer = () => {
                     <div className=" md:text-left">
                         <h3 className="font-semibold text-lg">About</h3>
                         <ul className="space-y-2 text-sm">
-                            <li>About Us</li>
+                            <Link to={'/aboutus'}><li>About Us</li></Link>
                             <li>Terms & Conditions</li>
                             <li>Return Policy</li>
                             <li>Refund Policy</li>

@@ -6,6 +6,7 @@ import GreenLine from '../Page/GreenLine'
 import LoveRome from '../Page/LoveRome'
 import IOBus from '../Page/IOBus'
 import CitySh from '../Page/CitySh'
+import AboutUs from '../Page/AboutUs'
 
 
 
@@ -37,6 +38,10 @@ export const router = createBrowserRouter([
       {
         path: '/city',
         element: <CitySh></CitySh>
+      },
+      {
+        path: '/aboutus',
+        element: <AboutUs></AboutUs>
       }
       
     ],
