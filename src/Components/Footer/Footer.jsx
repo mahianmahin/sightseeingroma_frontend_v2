@@ -35,11 +35,13 @@ const Footer = () => {
                     {/* About */}
                     <div className=" md:text-left">
                         <h3 className="font-semibold text-lg">About</h3>
-                        <ul className="space-y-2 text-sm">
+                        <ul className="space-y-3 text-sm">
                             <Link to={'/aboutus'}><li>About Us</li></Link>
                             <Link to={'/terms'}><li>Terms & Conditions</li></Link>
+                            <Link to={'/returnPolicy'}><li>Return Policy</li></Link>
+                            <Link to={'/refund'}><li>Refund Policy</li></Link>
                             
-                            <li>Return Policy</li>
+                            
                             <li>Refund Policy</li>
                             <li>Privacy Policy</li>
                         </ul>

@@ -15,7 +15,7 @@ const TermsCondition = () => {
             <div className="px-6 py-12">
                 <h1 className="text-2xl font-bold mb-6">Welcome to SightSeeing Roma!</h1>
                 <p className="mb-8">
-                    By accessing our website and utilising our services, you agree to comply with and be bound by the following terms and conditions. 
+                    By accessing our website and utilising our services, you agree to comply with and be bound by the following terms and conditions.
                     Please read these terms carefully before accessing or using our website.
                 </p>
 
@@ -23,7 +23,7 @@ const TermsCondition = () => {
                 <div className="mb-6">
                     <h2 className="text-xl font-bold mb-4">1. Agreement to Terms</h2>
                     <p>
-                        By accessing or using our website, you agree to be bound by these Terms & Conditions and all applicable laws and regulations. 
+                        By accessing or using our website, you agree to be bound by these Terms & Conditions and all applicable laws and regulations.
                         If you disagree with any part of these terms, you may not access the website or use our services.
                     </p>
                 </div>
@@ -74,17 +74,17 @@ const TermsCondition = () => {
                 <div className="mb-6">
                     <h2 className="text-xl font-bold mb-4">6. Liability</h2>
                     <p>
-                    Join us at SightSeeing Roma and embark on an unforgettable journey through the heart of Rome. Let our comfortable buses, knowledgeable guides, and unparalleled service elevate your travel experience to new heights. Book your tickets today and get ready to create memories that will last a lifetime.
+                        Join us at SightSeeing Roma and embark on an unforgettable journey through the heart of Rome. Let our comfortable buses, knowledgeable guides, and unparalleled service elevate your travel experience to new heights. Book your tickets today and get ready to create memories that will last a lifetime.
                     </p>
                 </div>
                 <div className="mb-6">
                     <h2 className="text-xl font-bold mb-4">7. Contact Information</h2>
                     <p>
-                    <p className='mb-3'>For inquiries, assistance, or feedback regarding our services, please contact us at:</p>
- 
-Email: hello@sightseeingroma.com <br />
-Phone: +393286076514 <br />
-Address: Via Antonio Fogazzaro,5, cap-00137, Roma, Italy
+                        <p className='mb-3'>For inquiries, assistance, or feedback regarding our services, please contact us at:</p>
+
+                        Email: hello@sightseeingroma.com <br />
+                        Phone: +393286076514 <br />
+                        Address: Via Antonio Fogazzaro,5, cap-00137, Roma, Italy
                     </p>
                 </div>
 
@@ -92,9 +92,9 @@ Address: Via Antonio Fogazzaro,5, cap-00137, Roma, Italy
                 <div className="mb-6">
                     <h2 className="text-xl font-bold mb-4">8. Changes to Terms & Conditions</h2>
                     <p>
-                    <p className='mb-3'>SightSeeing Roma reserves the right to update or modify these Terms & Conditions at any time without prior notice. It is the responsibility of the customer to review these terms periodically for changes.</p> 
- 
-By continuing to access our website or utilise our services after any modifications to these terms, you agree to be bound by the revised terms. If you do not agree to the new terms, please refrain from using our website and services.
+                        <p className='mb-3'>SightSeeing Roma reserves the right to update or modify these Terms & Conditions at any time without prior notice. It is the responsibility of the customer to review these terms periodically for changes.</p>
+
+                        By continuing to access our website or utilise our services after any modifications to these terms, you agree to be bound by the revised terms. If you do not agree to the new terms, please refrain from using our website and services.
                     </p>
                 </div>
 

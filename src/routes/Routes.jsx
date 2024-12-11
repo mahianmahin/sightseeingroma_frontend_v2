@@ -8,6 +8,8 @@ import IOBus from '../Page/IOBus'
 import CitySh from '../Page/CitySh'
 import AboutUs from '../Page/AboutUs'
 import TermsCondition from '../Page/Terms&Condition'
+import ReturnPolicy from '../Page/ReturnPolicy'
+import Refund from '../Page/Refund'
 
 
 
@@ -47,6 +49,14 @@ export const router = createBrowserRouter([
       {
         path:'/terms',
         element: <TermsCondition></TermsCondition>
+      },
+      {
+        path: '/returnPolicy',
+        element : <ReturnPolicy></ReturnPolicy>
+      },
+      {
+        path: '/refund',
+        element: <Refund></Refund>
       }
       
     ],
