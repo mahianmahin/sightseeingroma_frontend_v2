@@ -5,9 +5,10 @@ const AboutUs = () => {
         <div className="container mx-auto">
             {/* Banner */}
             <Banner2
-                bannerImg={'/Banner/b1.png'}
+                bannerImgmd={'/Banner/b1.png'}
                 title={'About Us'}
                 description={'Travel Made Simple. Our Journey, Your Adventure'}
+                bannerImgsm={'/Banner/b2.png'}
             />
 
             {/* Content Section */}

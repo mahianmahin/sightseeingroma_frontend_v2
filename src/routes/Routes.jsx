@@ -7,6 +7,7 @@ import LoveRome from '../Page/LoveRome'
 import IOBus from '../Page/IOBus'
 import CitySh from '../Page/CitySh'
 import AboutUs from '../Page/AboutUs'
+import TermsCondition from '../Page/Terms&Condition'
 
 
 
@@ -42,6 +43,10 @@ export const router = createBrowserRouter([
       {
         path: '/aboutus',
         element: <AboutUs></AboutUs>
+      },
+      {
+        path:'/terms',
+        element: <TermsCondition></TermsCondition>
       }
       
     ],

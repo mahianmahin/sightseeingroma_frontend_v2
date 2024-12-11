@@ -5,8 +5,8 @@ import { Link } from "react-router-dom";
 
 const Navbar = () => {
     return (
-        <div>
-            <div className="navbar bg-[#FAD502E0]  absolute container mx-auto text-white z-50">
+        <div className=" ">
+            <div className="navbar bg-[#FAD502E0] absolute container mx-auto text-white z-50">
                 <div className="navbar-start lg:hidden">
                     <div className="dropdown">
                         <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">

@@ -51,7 +51,7 @@ const CitySh = () => {
 
                     <h1 className="text-3xl font-bold">CitySightseeeing Bus Service</h1>
                     <p className="text-gray-600">
-                    Comfort Meets Convenience: Green Line Bus Services
+                    Explore the city's top attractions with our comfortable and convenient sightseeing bus services
                     </p>
                 </div>
 
