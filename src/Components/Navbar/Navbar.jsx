@@ -41,7 +41,7 @@ const Navbar = () => {
                     <ul className="menu menu-horizontal px-1 font-medium text-lg text-black hidden lg:flex">
                        <Link to={"/loveRome"}> <li><a><LuHome /> Home</a></li></Link>
                         <li><a href=""><PiTicketBold /> Manage Bookings</a></li>
-                        <li><a><MdOutlineLocationOn /> Agent Point</a></li>
+                        <Link to={'/agentPoints'}><li><a><MdOutlineLocationOn /> Agent Point</a></li></Link>
                     </ul>
                     <button className="bg-[#930B31]   px-2 md:px-4 py-2 h-10 md:h-12 w-20 md:w-28 rounded-md text-white  text-lg font-medium">
                         Login

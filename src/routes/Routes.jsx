@@ -10,6 +10,7 @@ import AboutUs from '../Page/AboutUs'
 import TermsCondition from '../Page/Terms&Condition'
 import ReturnPolicy from '../Page/ReturnPolicy'
 import Refund from '../Page/Refund'
+import AgentPoint from '../Page/AgentPoint'
 
 
 
@@ -57,6 +58,10 @@ export const router = createBrowserRouter([
       {
         path: '/refund',
         element: <Refund></Refund>
+      },
+      {
+        path: '/agentpoints',
+        element: <AgentPoint></AgentPoint>
       }
       
     ],

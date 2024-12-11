@@ -40,9 +40,6 @@ const Footer = () => {
                             <Link to={'/terms'}><li>Terms & Conditions</li></Link>
                             <Link to={'/returnPolicy'}><li>Return Policy</li></Link>
                             <Link to={'/refund'}><li>Refund Policy</li></Link>
-                            
-                            
-                            <li>Refund Policy</li>
                             <li>Privacy Policy</li>
                         </ul>
                     </div>
