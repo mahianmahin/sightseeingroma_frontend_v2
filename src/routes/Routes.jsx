@@ -11,6 +11,8 @@ import TermsCondition from '../Page/Terms&Condition'
 import ReturnPolicy from '../Page/ReturnPolicy'
 import Refund from '../Page/Refund'
 import AgentPoint from '../Page/AgentPoint'
+import OfferPage from '../Page/OfferPage'
+import Your_Purchased_Tickets from '../Page/Your_Purchased_Tickets'
 
 
 
@@ -62,6 +64,14 @@ export const router = createBrowserRouter([
       {
         path: '/agentpoints',
         element: <AgentPoint></AgentPoint>
+      },
+      {
+        path: '/offer',
+        element: <OfferPage></OfferPage>
+      },
+      {
+        path: '/yourticket',
+        element: <Your_Purchased_Tickets></Your_Purchased_Tickets>
       }
       
     ],
