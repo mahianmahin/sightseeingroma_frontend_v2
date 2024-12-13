@@ -15,6 +15,11 @@ import OfferPage from '../Page/OfferPage'
 import Your_Purchased_Tickets from '../Page/Your_Purchased_Tickets'
 import Login from '../Components/LoginComponent/Login/Login'
 import Regi from '../Components/LoginComponent/Registation/Regi'
+import ForgotPass from '../Components/LoginComponent/ForgotPass/ForgotPass'
+import EmailSent from '../Components/LoginComponent/EmailSent/EmailSent'
+import NewPass from '../Components/LoginComponent/NewPass/NewPass'
+import Updated from '../Components/LoginComponent/Updated/Updated'
+import PaymentSuccess from '../Page/PaymentSuccess'
 
 
 
@@ -74,6 +79,10 @@ export const router = createBrowserRouter([
       {
         path: '/yourticket',
         element: <Your_Purchased_Tickets></Your_Purchased_Tickets>
+      },
+      {
+        path: '/paymentsuccess',
+        element: <PaymentSuccess></PaymentSuccess>
       }
       
     ],
@@ -87,6 +96,22 @@ export const router = createBrowserRouter([
   {
     path: '/registation',
     element: <Regi></Regi>
+  },
+  {
+    path: '/forgotpass',
+    element: <ForgotPass></ForgotPass>
+  },
+  {
+    path: '/emailsent',
+    element: <EmailSent></EmailSent>
+  },
+  {
+    path: '/newpass',
+    element: <NewPass></NewPass>
+  },
+  {
+    path: '/updated',
+    element: <Updated></Updated>
   }
  
 ])

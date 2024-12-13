@@ -1,7 +1,11 @@
 import { RxCross2 } from "react-icons/rx";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Login = () => {
+
+    const navigate = useNavigate();
+
+
     return (
         <div className="flex flex-col md:flex-row container h-screen md:h-full mx-auto relative bg-[url('/Login/logins.png')]   md:bg-[url('/Login/bgmd.png')] bg-cover bg-center">
             {/* Left Image Section */}
@@ -32,7 +36,7 @@ const Login = () => {
             <div className="w-full md:w-1/2  flex justify-center items-center px-5">
                 <div className="bg-white p-6 md:p-8 rounded-lg shadow-lg max-w-md w-full relative ">
                     {/* Close Button */}
-                    <button className="absolute top-2 right-4 text-gray-500 bg-[#F2F2F7] p-2 rounded-full">
+                    <button onClick={() => navigate('/')} className="absolute top-2 right-4 text-gray-500 bg-[#F2F2F7] p-2 rounded-full">
                         <RxCross2 size={20} />
                     </button>
 
