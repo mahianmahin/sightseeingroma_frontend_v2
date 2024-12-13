@@ -13,6 +13,8 @@ import Refund from '../Page/Refund'
 import AgentPoint from '../Page/AgentPoint'
 import OfferPage from '../Page/OfferPage'
 import Your_Purchased_Tickets from '../Page/Your_Purchased_Tickets'
+import Login from '../Components/LoginComponent/Login/Login'
+import Regi from '../Components/LoginComponent/Registation/Regi'
 
 
 
@@ -75,6 +77,16 @@ export const router = createBrowserRouter([
       }
       
     ],
+
+    
   },
+  {
+    path: '/login',
+    element: <Login></Login>
+  },
+  {
+    path: '/registation',
+    element: <Regi></Regi>
+  }
  
 ])
