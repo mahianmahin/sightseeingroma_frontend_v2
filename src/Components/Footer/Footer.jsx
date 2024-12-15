@@ -21,7 +21,7 @@ const Footer = () => {
                     {/* Bus Services */}
                     <div className=" md:text-left">
                         <h3 className="font-semibold text-lg">Bus Services</h3>
-                        <ul className="space-y-2 text-sm">
+                        <ul className="flex flex-col space-y-2 text-sm">
                           <Link to={"/bigBus"}>  <li>Big Bus</li></Link>
                           <Link to={"/greenLine"}>  <li>Green Line</li></Link>
                           <Link to={"/loveRome"}>  <li>I Love Rome</li></Link>
@@ -35,7 +35,7 @@ const Footer = () => {
                     {/* About */}
                     <div className=" md:text-left">
                         <h3 className="font-semibold text-lg">About</h3>
-                        <ul className="space-y-3 text-sm">
+                        <ul className="flex flex-col space-y-2 text-sm">
                             <Link to={'/aboutus'}><li>About Us</li></Link>
                             <Link to={'/terms'}><li>Terms & Conditions</li></Link>
                             <Link to={'/returnPolicy'}><li>Return Policy</li></Link>
@@ -51,7 +51,7 @@ const Footer = () => {
                     <p className="text-sm mb-4">Sign up to receive exclusive offers, travel tips, and the latest bus routes directly to your inbox.</p>
                     <div className="flex justify-center md:justify-start">
                         <input type="email" placeholder="Email address" className="w-full p-2 text-black rounded-l" />
-                        <button className="bg-yellow-500 text-black px-4 py-2 rounded-r">Buy Ticket</button>
+                        <button className="bg-yellow-500 text-black px-4 py-1 rounded-r">Buy Ticket</button>
                     </div>
                      {/* Payment Methods */}
                      <h1 className='font-bold mt-10 mb-5'>Payment Methods</h1>
