@@ -21,7 +21,7 @@ import NewPass from '../Components/LoginComponent/NewPass/NewPass'
 import Updated from '../Components/LoginComponent/Updated/Updated'
 import PaymentSuccess from '../Page/PaymentSuccess'
 import ManageBooking from '../Page/ManageBooking'
-import ManageBookingSm from '../Page/ManageBookingSm'
+
 
 
 
@@ -89,12 +89,9 @@ export const router = createBrowserRouter([
       {
         path: '/manageBookings',
         element: <ManageBooking></ManageBooking>
+       
       },
-      {
-        path: '/sm',
-        element: <ManageBookingSm></ManageBookingSm>
-      }
-      
+    
     ],
 
     
