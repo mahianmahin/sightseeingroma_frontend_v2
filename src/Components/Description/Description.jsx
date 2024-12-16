@@ -2,10 +2,10 @@ import { TiTick } from "react-icons/ti";
 import { RxCross2 } from "react-icons/rx";
 const Description = () => {
     return (
-        <div className="p-2 bg-3  flex flex-col lg:flex-row gap-8 pt-20">
+        <div className="p-2 bg-3  flex flex-col-reverse lg:flex-row gap-8 pt-5">
             {/* Description Section */}
             <div className="flex-1 p-6  ">
-                <h1 className="text-2xl font-bold mb-4">Description</h1>
+                <h1 className="text-xl md:text-2xl font-bold mb-4">Description</h1>
                 <p className="text-gray-700 mb-4 leading-relaxed">
                     Rome wasn't built in a day, but our Discover Ticket lets you enjoy the best of
                     the city in less than 24 hours. Hop on our day tour to discover iconic structures
@@ -22,7 +22,7 @@ const Description = () => {
 
             {/* What's Included Section */}
             <div className="flex-1 p-6 ">
-                <h2 className="text-2xl font-bold mb-4">What’s Included:</h2>
+                <h2 className="text-xl md:text-2xl font-bold mb-4">What’s Included:</h2>
                 <ul className="space-y-2">
                     <li className="flex items-center gap-2 text-gray-700">
                         <TiTick></TiTick> Full access to all bus routes

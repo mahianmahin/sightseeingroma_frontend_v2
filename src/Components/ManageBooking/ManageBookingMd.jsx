@@ -20,25 +20,18 @@ const ManageBookingMd = () => {
     const totalPrice = totalAdultPrice + totalYouthPrice;
 
     return (
-        <div className="container pt-36       mx-auto p-6">
-
-            <div className="py-16">
-                <div className="block md:hidden">
-                    <div className=" flex items-center  gap-5 ">
-                        <FaArrowLeftLong size={20}></FaArrowLeftLong>
-                        <p className="font-bold text-lg">Checkout</p>
-                    </div>
-                </div>
-                <div className="flex items-center gap-6 py-6">
+        <div className="container pt-60      mx-auto ">
+            <div className="flex flex-col space-y-4 pb-8 px-8">
+                <div className="flex items-center  gap-6 ">
 
                     <p>Hop-On Hop-Off Tour</p>
                     <div className="flex  items-center gap-2">
                         <FaRegClock></FaRegClock>
                         <p className="font-bold">    24 Hour</p>
                     </div>
-                </div>
-                <h2 className="text-xl md:text-3xl font-bold mb-2">Hop-On Hop-Off Panoramic Rome Bus Tour</h2>
 
+                </div>
+                <h2 className="text-xl md:text-3xl font-bold mb-2">Hop-On Hop-Off Panoramic Rome <br /> Bus Tour</h2>
                 <div className="flex  items-center gap-0 md:gap-3 color-1 font-semibold ">
                     <p>Select ticket</p>
                     <p><MdKeyboardArrowRight size={20}></MdKeyboardArrowRight></p>
@@ -49,7 +42,10 @@ const ManageBookingMd = () => {
             </div>
 
 
-            <div className="flex flex-col md:flex-row bg-[#F2F2F7]  gap-6 py-10  px-5 rounded-2xl">
+
+
+
+            <div className="flex flex-col md:flex-row bg-[#F2F2F7]  gap-6 py-10 px-8">
                 {/* Ticket Booking Section */}
                 <div className="flex-1 bg-white p-6 border rounded-lg">
                     <h3 className="text-xl font-semibold mb-4">Book Your Tickets</h3>
@@ -126,29 +122,30 @@ const ManageBookingMd = () => {
                 </div>
 
                 {/* Summary Section */}
-                <div className="w-full  md:w-1/3">
-                    <div className=" bg-gray-50  border-2 border-gray-200  p-6 rounded-lg shadow">
-                        <h3 className="text-xl font-semibold mb-4">Summary</h3>
-                        <div className="mb-2">
-                            <p className="flex justify-between items-center space-y-3">
-                                <span>Total ticket price (adult):</span>
-                                <span className="font-bold">€ {totalAdultPrice}</span>
-                            </p>
-                            <p className="flex justify-between items-center space-y-3">
-                                <span>Total ticket price (youth):</span>
-                                <span className="font-bold">€ {totalYouthPrice}</span>
-                            </p>
-                        </div>
-                        <hr className="" />
-                        <div className="flex justify-between space-y-3 font-bold  my-4">
-                            <span>Total price:</span>
-                            <span>€ {totalPrice}</span>
-                        </div>
-                        <button className="w-full bg-2 text-white py-2 rounded hover:bg-red-800">
-                            Buy Tickets
-                        </button>
-                    </div>
-                </div>
+                <div className="w-full md:w-1/3">
+    <div className="bg-gray-50 border-4 border-gray-300 p-6 rounded-lg shadow"> {/* Updated border width to 4 */}
+        <h3 className="text-xl font-semibold mb-4">Summary</h3>
+        <div className="mb-2">
+            <p className="flex justify-between items-center space-y-3">
+                <span>Total ticket price (adult):</span>
+                <span className="font-bold">€ {totalAdultPrice}</span>
+            </p>
+            <p className="flex justify-between items-center space-y-3">
+                <span>Total ticket price (youth):</span>
+                <span className="font-bold">€ {totalYouthPrice}</span>
+            </p>
+        </div>
+        <hr className="" />
+        <div className="flex justify-between space-y-3 font-bold my-4">
+            <span>Total price:</span>
+            <span>€ {totalPrice}</span>
+        </div>
+        <button className="w-full bg-2 text-white py-2 rounded hover:bg-red-800">
+            Buy Tickets
+        </button>
+    </div>
+</div>
+
             </div>
 
             {/* Policies */}

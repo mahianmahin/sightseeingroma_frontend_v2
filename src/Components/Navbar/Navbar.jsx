@@ -64,17 +64,17 @@ const Navbar = () => {
                                         </a>
                                     </li>
                                 </Link>
-                                <Link to={"/"}>
+                                <Link to={"/yourticket"}>
                                     <li>
                                         <a className="text-base font-semibold">
                                             <RiMoneyEuroCircleLine /> Payments
                                         </a>
                                     </li>
                                 </Link>
-                                <Link to={"/manageBookings"}>
+                                <Link to={"/paymentsuccess"}>
                                     <li>
                                         <a className="text-base font-semibold">
-                                            <BsInfoCircle /> Settings
+                                            <BsInfoCircle /> Payment Success 
                                         </a>
                                     </li>
                                 </Link>

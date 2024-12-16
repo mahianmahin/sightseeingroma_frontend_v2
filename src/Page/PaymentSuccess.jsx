@@ -14,7 +14,7 @@ const PaymentSuccess = () => {
         <div className="container mx-auto">
             
             <div className="flex flex-col items-center justify-center py-24 md:py-40 bg-white px-3 md:bg-gray-50">
-                <div className="flex flex-col items-center p-6 py-8 bg-white rounded-lg shadow-md w-full md:w-2/3 px-8">
+                <div className="flex flex-col items-center p-6 py-8 bg-white rounded-lg  w-full md:w-2/3 px-8">
                     {/* Success Icon */}
                     <div className="text-green-500 text-5xl mb-4">
                         <img src="./Login/sent.png" alt="Payment Sent Icon" />
