@@ -57,10 +57,10 @@ const Navbar = () => {
                                     </li>
                                 </Link>
                                 <hr />
-                                <Link to={"/"}>
+                                <Link to={"/offer"}>
                                     <li>
                                         <a className="text-base font-semibold">
-                                            <IoDocumentTextOutline /> Documents
+                                            <IoDocumentTextOutline /> Offer
                                         </a>
                                     </li>
                                 </Link>

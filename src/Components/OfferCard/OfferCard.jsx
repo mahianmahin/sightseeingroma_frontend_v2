@@ -3,16 +3,16 @@ import { HiOutlineTicket } from "react-icons/hi";
 
 const OfferCard = ({ title, subtitle, image, duration, ticketCount, price }) => {
     return (
-        <div className="w-full bg-white shadow-lg rounded-lg overflow-hidden mx-auto sm:w-11/12 md:w-full mb-2 md:mb-7">
+        <div className="w-full bg-3  rounded-lg overflow-hidden mx-auto sm:w-11/12 md:w-full mb-5 md:mb-8">
             <div className="relative">
                 <img
                     src={image}
                     alt="Rome Bus Tour"
-                    className="w-full rounded-lg h-28 md:h-44 object-cover"
+                    className="w-full   h-28 md:h-44 object-cover"
                 />
                 <img
                     src="./Offer/ooo.png"
-                    className="absolute top-0 left-0 rounded-t-xl w-10 md:w-14"
+                    className="absolute top-0 left-0 h-14 md:h-auto rounded-l-lg w-10 md:w-14"
                     alt=""
                 />
                 <span
