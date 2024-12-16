@@ -15,7 +15,7 @@ const AboutUs = () => {
             <div className="my-14 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center  md:pl-14  px-5">
                 {/* Text Content */}
                 <div>
-                    <h1 className="font-bold text-2xl md:text-3xl leading-snug">
+                    <h1 className="font-bold text-2xl md:text-2xl leading-snug">
                         Welcome to SightSeeing Roma!
                     </h1>
                     <p className="text-gray-700 mt-4 text-base md:text-lg leading-relaxed mb-8">

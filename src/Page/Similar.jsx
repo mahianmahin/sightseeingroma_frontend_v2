@@ -23,7 +23,7 @@ const Similar = () => {
     };
 
     return (
-        <section className="py-6 px-2 md:px-8 bg-gray-200 container mx-auto">
+        <section className="py-8 px-4 md:px-8 bg-gray-200 container mx-auto">
             <h1 className="text-2xl font-bold mb-4 py-4">
                 Explore Similar Packages
             </h1>

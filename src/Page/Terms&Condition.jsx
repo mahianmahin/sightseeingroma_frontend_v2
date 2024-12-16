@@ -12,7 +12,7 @@ const TermsCondition = () => {
             />
 
             {/* Terms & Conditions Content */}
-            <div className="px-6 py-12">
+            <div className="px-5 md:px-8 md:pr-48 py-12">
                 <h1 className="text-2xl font-bold mb-6">Welcome to SightSeeing Roma!</h1>
                 <p className="mb-8">
                     By accessing our website and utilising our services, you agree to comply with and be bound by the following terms and conditions.

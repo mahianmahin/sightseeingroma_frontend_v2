@@ -47,7 +47,7 @@ const TicketCard = ({ title, subtitle, image, duration, ticketCount, price, onCl
 
                 {/* Button */}
                 <button
-                    className="w-full py-2 px-5 mt-3 text-white bg-2 md:rounded-lg rounded-3xl font-medium"
+                    className="w-full py-2 px-5 mt-3 text-white bg-2 md:rounded-lg rounded-3xl font-normal md:font-medium"
                     onClick={onClick} // Call the passed onClick handler
                 >
                     Buy Tickets

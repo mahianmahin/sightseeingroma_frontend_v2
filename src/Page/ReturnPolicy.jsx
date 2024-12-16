@@ -12,7 +12,7 @@ const ReturnPolicy = () => {
             />
             
             {/* Content Section */}
-            <div className="my-8 space-y-6 px-4">
+            <div className="my-8 space-y-6 py-3 md:py-5 px-5 md:px-8 md:pr-40">
                 <div>
                     <h1 className="text-2xl font-bold">Welcome to SightSeeing Roma!</h1>
                     <p className="mt-4 ">

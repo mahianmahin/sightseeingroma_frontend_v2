@@ -44,7 +44,7 @@ const GreenLine = () => {
            
             <div className="px-4 md:px-8">
            
-                <div className="py-10 md:py-14">
+            <div className="py-7 md:py-10 ">
                <div className="block md:hidden mb-3 ">
                 <FaArrowLeftLong size={20}></FaArrowLeftLong>
                </div>
@@ -72,7 +72,9 @@ const GreenLine = () => {
                 </div>
             </div>
 
-            <Similar />
+            <div className="mb-12 md:mb-0">
+         <Similar />
+         </div>
         </div>
     );
 };
