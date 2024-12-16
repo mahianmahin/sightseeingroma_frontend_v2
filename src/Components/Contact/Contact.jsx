@@ -6,7 +6,7 @@ const Contact = () => {
     return (
         <div className="flex flex-col md:flex-row md:justify-between md:items-center p-6 md:p-12 ">
             {/* Images for Small Devices */}
-            <div className="flex flex-col justify-center gap-4 mb-6 block md:hidden">
+            <div className="flex flex-col justify-center gap-1 mb-6 block md:hidden">
                 <img src="https://iili.io/2uHPAx4.png" alt="Tour Image 1" className="w-full rounded-lg" />
                 <img src="https://iili.io/2uHPk5g.png" alt="Tour Image 2" className="w-full rounded-lg" />
                 <img src="https://iili.io/2uHiBhx.png" alt="Tour Image 3" className="w-full rounded-lg" />
@@ -14,7 +14,7 @@ const Contact = () => {
 
             {/* Contact Info */}
             <div className="text-left md:w-1/2 mb-6 md:mb-0">
-                <p>Get In Touch</p>
+                <p className="py-2 md:py-4">Get In Touch</p>
                 <h2 className="text-2xl font-bold mb-2">From Comfort to Budget, Explore Ticket Options for Every Traveler</h2>
                 <p className="text-gray-600 mb-4">Seamless booking, diverse routes, and flexible schedules at your fingertips</p>
                 <ul className="space-y-2 font-bold">
