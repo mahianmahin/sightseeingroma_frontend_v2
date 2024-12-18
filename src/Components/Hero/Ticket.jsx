@@ -4,8 +4,8 @@ import { RiArrowUpSLine, RiArrowDownSLine } from "react-icons/ri";
 
 const Ticket = () => {
     const [isBusServiceOpen, setIsBusServiceOpen] = useState(false);
-    const [isMinPriceOpen, setIsMinPriceOpen] = useState(false);
-    const [isMaxPriceOpen, setIsMaxPriceOpen] = useState(false);
+    const [isMinPriceFocused, setIsMinPriceFocused] = useState(false);
+    const [isMaxPriceFocused, setIsMaxPriceFocused] = useState(false);
 
     const [busService, setBusService] = useState("");
     const [minPrice, setMinPrice] = useState("");
@@ -57,26 +57,23 @@ const Ticket = () => {
                         {/* Min Price */}
                         <div className="relative flex items-center space-x-1">
                             <span className="pr-1">Min</span>
-                            <select
-                                className="w-full md:w-36 px-7 md:px-5 py-2 font-semibold border border-gray-300 rounded-md appearance-none focus:outline-none focus:ring-2 focus:ring-red-600"
-                                onFocus={() => setIsMinPriceOpen(true)}
-                                onBlur={() => setIsMinPriceOpen(false)}
-                                onChange={(e) => setMinPrice(e.target.value)}
-                            >
-                                <option disabled selected>€50</option>
-                                <option>€50</option>
-                                <option>€100</option>
-                                <option>€150</option>
-                                <option>€200</option>
-                            </select>
-
-                            {/* Custom Arrow */}
-                            <div className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
-                                {isMinPriceOpen ? (
-                                    <RiArrowUpSLine size={20} color="#000000" />
-                                ) : (
-                                    <RiArrowDownSLine size={20} color="#000000" />
-                                )}
+                            <div className="relative">
+                                <input
+                                    type="number"
+                                    className="w-full md:w-36 px-7 md:px-5 py-2 font-semibold border border-gray-300 rounded-md appearance-none focus:outline-none focus:ring-2 focus:ring-red-600"
+                                    value={minPrice}
+                                    onFocus={() => setIsMinPriceFocused(true)}
+                                    onBlur={() => setIsMinPriceFocused(false)}
+                                    onChange={(e) => setMinPrice(e.target.value)}
+                                    placeholder="50"
+                                />
+                                <div className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
+                                    {isMinPriceFocused ? (
+                                        <RiArrowUpSLine size={20} color="#000000" />
+                                    ) : (
+                                        <RiArrowDownSLine size={20} color="#000000" />
+                                    )}
+                                </div>
                             </div>
                         </div>
 
@@ -85,25 +82,23 @@ const Ticket = () => {
                         {/* Max Price */}
                         <div className="relative flex items-center space-x-1">
                             <span>Max</span>
-                            <select
-                                className="w-full md:w-36 px-7 md:px-5  py-2 font-semibold border border-gray-300 rounded-md appearance-none focus:outline-none focus:ring-2 focus:ring-red-600"
-                                onFocus={() => setIsMaxPriceOpen(true)}
-                                onBlur={() => setIsMaxPriceOpen(false)}
-                                onChange={(e) => setMaxPrice(e.target.value)}
-                            >
-                                <option disabled selected>€250</option>
-                                <option>€250</option>
-                                <option>€300</option>
-                                <option>€350</option>
-                                <option>€400</option>
-                            </select>
-                            {/* Custom Arrow */}
-                            <div className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
-                                {isMaxPriceOpen ? (
-                                    <RiArrowUpSLine size={20} color="#000000" />
-                                ) : (
-                                    <RiArrowDownSLine size={20} color="#000000" />
-                                )}
+                            <div className="relative">
+                                <input
+                                    type="number"
+                                    className="w-full md:w-36 px-7 md:px-5 py-2 font-semibold border border-gray-300 rounded-md appearance-none focus:outline-none focus:ring-2 focus:ring-red-600"
+                                    value={maxPrice}
+                                    onFocus={() => setIsMaxPriceFocused(true)}
+                                    onBlur={() => setIsMaxPriceFocused(false)}
+                                    onChange={(e) => setMaxPrice(e.target.value)}
+                                    placeholder="250"
+                                />
+                                <div className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
+                                    {isMaxPriceFocused ? (
+                                        <RiArrowUpSLine size={20} color="#000000" />
+                                    ) : (
+                                        <RiArrowDownSLine size={20} color="#000000" />
+                                    )}
+                                </div>
                             </div>
                         </div>
                     </div>

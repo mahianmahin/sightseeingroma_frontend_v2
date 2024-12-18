@@ -51,7 +51,7 @@ const Footer = () => {
                     <p className="text-sm mb-4">Sign up to receive exclusive offers, travel tips, and the latest bus routes directly to your inbox.</p>
                     <div className="flex justify-start">
                         <input type="email" placeholder="Email address" className=" p-2 text-black rounded-l" />
-                        <button className="bg-yellow-500 text-black px-1 font-semibold  rounded-r">Buy Ticket</button>
+                        <button className="bg-yellow-500 text-black w-40 font-semibold  rounded-r">Buy Ticket</button>
                     </div>
                      {/* Payment Methods */}
                      <h1 className='font-bold mt-10 mb-5'>Payment Methods</h1>
