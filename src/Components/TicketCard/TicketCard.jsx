@@ -1,19 +1,26 @@
 import { FaRegClock } from "react-icons/fa6";
 import { LuTicket } from "react-icons/lu";
 import PropTypes from "prop-types";
+import { baseUrl } from "../../utilities/Utilities";
+import { useNavigate } from "react-router-dom";
 
-const TicketCard = ({ title, subtitle, image, duration, ticketCount, price, onClick }) => {
+const TicketCard = ({ title, subtitle, image, duration, ticketCount, price, id , price2}) => {
+    const navigate = useNavigate();
+
+    const handleBuyNow = () => {
+        navigate('/manageBookings', { state: { id  , title , subtitle , duration , price , price2 ,ticketCount} });
+    };
     return (
-        <div className="w-full mb-2 md:mb-14 mx-auto bg-3 rounded-xl shadow-md overflow-hidden border">
+        <div className="w-full mb-2 md:mb-14 mx-auto bg-3 rounded-xl shadow-md overflow-hidden border flex flex-col">
             {/* Image Section */}
             <img
-                src={image}
+                src={`${baseUrl}${image}`}
                 alt={title}
                 className="w-full h-[120px] md:h-[168px] object-cover"
             />
 
             {/* Card Content */}
-            <div className="p-4">
+            <div className="p-4 flex flex-col flex-grow">
                 {/* Tour Type and Duration */}
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center text-xs md:text-sm mb-2 whitespace-nowrap">
                     <span className="flex items-center gap-1">
@@ -44,15 +51,17 @@ const TicketCard = ({ title, subtitle, image, duration, ticketCount, price, onCl
                     <span className="text-lg font-bold text-gray-800">€ {price}</span>
                     <span className="text-xs md:text-sm text-gray-500">(Per person)</span>
                 </div>
-
-                {/* Button */}
-                <button
-                    className="w-full py-2 px-5 mt-3 text-white bg-2 md:rounded-lg rounded-3xl font-normal md:font-medium"
-                    onClick={onClick} // Call the passed onClick handler
-                >
-                    Buy Tickets
-                </button>
             </div>
+
+            {/* Button */}
+           <div className="mb-4 mx-2">
+           <button
+                className="w-full py-2 px-5 mt-3 text-white bg-2 md:rounded-lg rounded-3xl font-normal md:font-medium"
+                onClick={handleBuyNow} // Call the passed onClick handler
+            >
+                Buy Tickets
+            </button>
+           </div>
         </div>
     );
 };

@@ -3,25 +3,26 @@ import axios from "axios";
 import TicketCard from "../Components/TicketCard/TicketCard";
 import Similar from "./Similar";
 import { FaArrowLeftLong } from "react-icons/fa6";
+import { baseUrl } from '../utilities/Utilities';
 const GreenLine = () => {
-    const [tickets, setTickets] = useState([]);
+    const [greenLinePackages, setgreenLinePackages] = useState([]);
 
-    // Fetch data using Axios
+    // Fetch data using Axios and filter for "big bus" company
     useEffect(() => {
         axios
-            .get("/greenline.json")
+            .get(`${baseUrl}packages/`)
             .then((response) => {
-                setTickets(response.data);
+                const filteredPackages = response.data.bus_data.filter(
+                    (item) => item.company.toLowerCase() === "green line"
+                );
+                setgreenLinePackages(filteredPackages);
             })
             .catch((error) => {
                 console.error("Error fetching bigBus data:", error);
             });
     }, []);
 
-    // Function to handle ticket button click
-    const handleTicketClick = (index) => {
-        console.log("Ticket clicked at index:", index);
-    };
+  
 
     return (
         <div className="container mx-auto">
@@ -57,16 +58,16 @@ const GreenLine = () => {
 
                 {/* Render tickets dynamically */}
                 <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-2 md:gap-x-10">
-                    {tickets.map((ticket, index) => (
+                    {greenLinePackages.map((ticket, index) => (
                         <TicketCard
-                            key={index}
-                            title={ticket.title}
-                            subtitle={ticket.subtitle}
-                            image={ticket.image}
-                            duration={ticket.duration}
-                            ticketCount={ticket.ticket_count}
-                            price={ticket.price}
-                            onClick={() => handleTicketClick(index)} // Pass the click handler
+                        key={ticket.id}
+                        title={ticket.title}
+                        subtitle={ticket.type}
+                        image={ticket.image_big}
+                        duration={ticket.duration}
+                        ticketCount={ticket.package_tag}
+                        price={ticket.adult_price}
+                        price2={ticket.youth_price}
                         />
                     ))}
                 </div>

@@ -6,11 +6,11 @@ import { Link } from "react-router-dom";
 import Description from "../Description/Description";
 import Similar from "../../Page/Similar";
 
-const ManageBookingSm = () => {
-    const [adultCount, setAdultCount] = useState(3);
-    const [youthCount, setYouthCount] = useState(3);
-    const pricePerTicket = 28;
-    const youthTickets = 24;
+const ManageBookingSm = ({title , subtitle ,duration ,adult_price , youth_price ,ticket_serial}) => {
+    const [adultCount, setAdultCount] = useState(1);
+    const [youthCount, setYouthCount] = useState(1);
+    const pricePerTicket = adult_price;
+    const youthTickets = youth_price;
 
     const totalAdultPrice = (adultCount * pricePerTicket).toFixed(2);
     const totalYouthPrice = (youthCount * youthTickets).toFixed(2);
@@ -28,13 +28,13 @@ const ManageBookingSm = () => {
                 </div>
                 <div className="flex items-center gap-6 py-6">
 
-                    <p>Hop-On Hop-Off Tour</p>
+                    <p>{subtitle}</p>
                     <div className="flex  items-center gap-2">
                         <FaRegClock></FaRegClock>
-                        <p className="font-bold">    24 Hour</p>
+                        <p className="font-bold">    {duration}</p>
                     </div>
                 </div>
-                <h2 className="text-xl md:text-3xl font-bold mb-2">Hop-On Hop-Off Panoramic Rome Bus Tour</h2>
+                <h2 className="text-xl md:text-3xl font-bold mb-2">{title}</h2>
 
                 <div className="flex  items-center gap-0 md:gap-3 color-1 font-semibold ">
                     <p>Select ticket</p>

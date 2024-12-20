@@ -1,11 +1,20 @@
 import { FaRegClock } from "react-icons/fa";
 import { HiOutlineTicket } from "react-icons/hi";
+import { baseUrl } from "../../utilities/Utilities";
+import { useNavigate } from "react-router-dom";
 
-const Card = ({ title, subtitle, image, duration, ticketCount, price }) => {
+
+const Card = ({ title, subtitle, image, duration, ticketCount, price , price2 , id}) => {
+
+      const navigate = useNavigate();
+    
+        const handleBuyNow = () => {
+            navigate('/manageBookings', { state: { id  , title , subtitle , duration , price , price2 ,ticketCount} });
+        };
     return (
         <div className="w-full bg-white shadow-lg rounded-lg overflow-hidden mx-auto sm:w-11/12 md:w-full">
             <img 
-                src={image} 
+                src={`${baseUrl}${image}`}
                 alt="Rome Bus Tour" 
                 className="w-full h-28 md:h-44 object-cover"
             />
@@ -38,7 +47,7 @@ const Card = ({ title, subtitle, image, duration, ticketCount, price }) => {
                 
                 {/* Buttons */}
                 <div className="flex justify-between gap-2 mt-2 md:mt-4">
-                    <button className="h-8 sm:h-10 w-24 sm:w-28 bg-[#930B31] text-white py-1 rounded-3xl md:rounded-lg text-xs sm:text-sm font-semibold hover:bg-red-700">
+                    <button onClick={handleBuyNow} className="h-8 sm:h-10 w-24 sm:w-28 bg-[#930B31] text-white py-1 rounded-3xl md:rounded-lg text-xs sm:text-sm font-semibold hover:bg-red-700">
                         Buy Now
                     </button>
                     <button className="h-8 sm:h-10 w-24 sm:w-28 bg-gray-100 text-red-800 py-1 rounded-3xl md:rounded-lg text-xs md:text-sm font-semibold hover:bg-gray-300">
