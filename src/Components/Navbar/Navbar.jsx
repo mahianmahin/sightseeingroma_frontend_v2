@@ -19,7 +19,7 @@ const Navbar = () => {
 
     return (
         <div>
-            <div className="navbar bg-[#FAD502E0] absolute container mx-auto text-white z-50">
+            <div className="navbar bg-2 absolute container mx-auto text-white z-50">
                 <div className="navbar-start lg:hidden">
                     <div className="dropdown">
                         <div
@@ -99,7 +99,7 @@ const Navbar = () => {
                 </div>
 
                 <div className="navbar-end flex items-center space-x-4 lg:flex md:w-full">
-                    <ul className="menu menu-horizontal px-1 font-medium text-lg text-black hidden lg:flex">
+                    <ul className="menu menu-horizontal px-1 font-medium text-lg text-white hidden lg:flex">
                         <Link to={"/"}>
                             <li>
                                 <a>
@@ -122,7 +122,7 @@ const Navbar = () => {
                             </li>
                         </Link>
                     </ul>
-                    <button className="bg-[#930B31] px-2 md:px-4 py-2 h-10 md:h-12 w-20 md:w-28 rounded-md text-white text-lg font-medium">
+                    <button className="bg-1 px-2 md:px-4 py-2 h-10 md:h-12 w-20 md:w-28 rounded-md color-1 text-lg font-medium">
                         <Link to={"/login"}>Login</Link>
                     </button>
                 </div>
