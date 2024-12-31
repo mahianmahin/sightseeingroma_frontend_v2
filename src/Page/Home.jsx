@@ -10,6 +10,7 @@ import Hero from '../Components/Hero/Hero';
 import HeroBottom from '../Components/Hero/HeroBottom';
 import TicketSm from '../Components/Hero/TicketSm';
 
+
 const Home = () => {
     return (
         <div>

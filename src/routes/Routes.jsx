@@ -21,6 +21,7 @@ import NewPass from '../Components/LoginComponent/NewPass/NewPass'
 import Updated from '../Components/LoginComponent/Updated/Updated'
 import PaymentSuccess from '../Page/PaymentSuccess'
 import ManageBooking from '../Page/ManageBooking'
+import SearchPage from '../Page/SearchPage'
 
 
 
@@ -90,7 +91,10 @@ export const router = createBrowserRouter([
         path: '/manageBookings',
         element: <ManageBooking></ManageBooking>
        
-      },
+      },{
+        path: '/search',
+        element: <SearchPage></SearchPage>
+      }
     
     ],
 

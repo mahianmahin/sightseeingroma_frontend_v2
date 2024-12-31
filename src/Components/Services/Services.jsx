@@ -65,7 +65,7 @@ const Services = () => {
             onClick={() => setActiveTab(index)}
             className={`font-semibold pb-2 px-2 md:px-4 p-2 text-sm md:text-base rounded-md md:rounded-none transition-all duration-200 ${
               activeTab === index
-                ? "border-[#930B31] text-[#930B31] md:border-b-2 border-2 md:border-0"
+                ? "bg-[#930B31] text-white md:border-b-2 border-2 md:border-0"
                 : "border-transparent text-gray-700 hover:border-[#930B31] hover:text-[#930B31]"
             }`}
           >

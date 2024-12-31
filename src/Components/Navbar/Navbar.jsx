@@ -6,16 +6,22 @@ import { IoDocumentTextOutline } from "react-icons/io5";
 import { RiMoneyEuroCircleLine } from "react-icons/ri";
 import { BsInfoCircle } from "react-icons/bs";
 import { TbLogout2 } from "react-icons/tb";
+import { FiSearch } from "react-icons/fi"; // Import Search Icon
 import { useEffect, useState } from "react";
+import TicketSm from "../Hero/TicketSm";
 
 const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
     const location = useLocation();
 
-    // Dropdown close when location changes
     useEffect(() => {
         setIsOpen(false);
     }, [location]);
+
+    const handleClick = () => {
+        setIsOpen((prev) => !prev);
+        console.log("Dropdown state:", !isOpen); // Debug log
+    }
 
     return (
         <div>
@@ -122,9 +128,23 @@ const Navbar = () => {
                             </li>
                         </Link>
                     </ul>
-                    <button className="bg-1 px-2 md:px-4 py-2 h-10 md:h-12 w-20 md:w-28 rounded-md color-1 text-lg font-medium">
-                        <Link to={"/login"}>Login</Link>
-                    </button>
+                    <div className="flex items-center space-x-2">
+                        {/* Search Icon Button */}
+                       
+                          <div className="block md:hidden">
+                          <button className="  p-2 h-10 w-10 rounded-md flex items-center justify-center"
+                                  onClick={handleClick} >
+                                <FiSearch size={20} className="text-white " />
+                            </button>
+                          </div>
+                            <div className="hidden">
+                                <TicketSm isOpennnn={isOpen}></TicketSm>
+                            </div>
+                        
+                        <button className="bg-1 px-2 md:px-4 py-2 h-10 md:h-12 w-20 md:w-28 rounded-md color-1 text-lg font-medium">
+                            <Link to={"/login"}>Login</Link>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
