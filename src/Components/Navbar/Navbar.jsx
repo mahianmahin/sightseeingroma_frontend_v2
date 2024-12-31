@@ -80,7 +80,7 @@ const Navbar = () => {
                                 <Link to={"/paymentsuccess"}>
                                     <li>
                                         <a className="text-base font-semibold">
-                                            <BsInfoCircle /> Payment Success 
+                                            <BsInfoCircle /> Payment Success
                                         </a>
                                     </li>
                                 </Link>
@@ -130,17 +130,18 @@ const Navbar = () => {
                     </ul>
                     <div className="flex items-center space-x-2">
                         {/* Search Icon Button */}
-                       
-                          <div className="block md:hidden">
-                          <button className="  p-2 h-10 w-10 rounded-md flex items-center justify-center"
-                                  onClick={handleClick} >
+
+                        <div className="block md:hidden">
+                            <button className="  p-2 h-10 w-10 rounded-md flex items-center justify-center"
+                                onClick={handleClick} >
                                 <FiSearch size={20} className="text-white " />
                             </button>
-                          </div>
-                            <div className="hidden">
-                                <TicketSm isOpennnn={isOpen}></TicketSm>
-                            </div>
-                        
+                        </div>
+                        <div className="absolute w-full top-64 right-0 z-50 block md:hidden">
+                            <TicketSm isOpennnn={isOpen}></TicketSm>
+                        </div>
+
+
                         <button className="bg-1 px-2 md:px-4 py-2 h-10 md:h-12 w-20 md:w-28 rounded-md color-1 text-lg font-medium">
                             <Link to={"/login"}>Login</Link>
                         </button>

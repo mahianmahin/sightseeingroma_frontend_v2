@@ -18,7 +18,8 @@ const Home = () => {
           
          <Hero></Hero>
            <div className="block md:hidden">
-             <TicketSm></TicketSm>
+            
+             {/* <TicketSm></TicketSm> */}
              <HeroBottom></HeroBottom>
            </div>
      
