@@ -40,7 +40,7 @@ const Your_Purchased_Tickets = () => {
 
     return (
         <div className='container mx-auto'>
-              <Banner2
+            <Banner2
                 bannerImgmd={'/Banner/b5.png'}
                 bannerImgsm={'/Banner/tikit.png'}
                 title={'Your Purchased Tickets'}
@@ -52,7 +52,7 @@ const Your_Purchased_Tickets = () => {
 
 
 
-<div className="hidden md:block overflow-x-auto mx-10 mb-28">
+            <div className="hidden md:block overflow-x-auto mx-10 mb-28 mt-10">
                 <table className="min-w-full border-collapse">
                     <thead className="bg-[#F2F2F7] border-b-4 border-[#930B31] py-10">
                         <tr className=''>
@@ -77,7 +77,7 @@ const Your_Purchased_Tickets = () => {
                         {data.map((ticket, index) => (
                             <tr
                                 key={index}
-                               className='bg-3 border-b-2'
+                                className='bg-3 border-b-2'
                             >
                                 <td className="px-4 py-4 text-sm ">
                                     {ticket.selected_date === '' ? "N/A" : ticket.selected_date}
@@ -92,7 +92,7 @@ const Your_Purchased_Tickets = () => {
                                     {ticket.qr_code_scanned ? "Yes" : "No"}
                                 </td>
                                 <td className="px-4 py-2 text-sm text-red-800">
-                                <a href={`${baseUrlHashless}${ticket.qr_code}`} download>Save</a>
+                                    <a href={`${baseUrlHashless}${ticket.qr_code}`} download>Save</a>
                                 </td>
                             </tr>
                         ))}
@@ -113,9 +113,9 @@ const Your_Purchased_Tickets = () => {
 
 
 
-       
-          
-    
+
+
+
 
             {/* Tickets List */}
             <div className=" block md:hidden   my-10 px-3 ">
@@ -127,22 +127,22 @@ const Your_Purchased_Tickets = () => {
                     >
                         <div className='flex flex-col space-y-3'>
                             <div className='flex justify-between items-center'>
-                            <p><strong>Ticket selected:</strong>{ticket.selected_date === '' ? "N/A" : ticket.selected_date}</p>
-                            <p><strong>Total price:</strong>  {ticket.total_price}</p>
+                                <p><strong>Ticket selected:</strong>{ticket.selected_date === '' ? "N/A" : ticket.selected_date}</p>
+                                <p><strong>Total price:</strong>  {ticket.total_price}</p>
                             </div>
                             <p><strong>Package:</strong>        {ticket.package}</p>
-                            
-                           <div className='flex justify-between items-center'>
-                           <p><strong>Ticket claimed:</strong> {ticket.qr_code_scanned ? "Yes" : "No"}</p>
-                           <p><strong>QR Code:</strong> <button className='text-red-500'><a href={`${baseUrlHashless}${ticket.qr_code}`} download>Save</a></button></p>
-                           </div>
+
+                            <div className='flex justify-between items-center'>
+                                <p><strong>Ticket claimed:</strong> {ticket.qr_code_scanned ? "Yes" : "No"}</p>
+                                <p><strong>QR Code:</strong> <button className='text-red-500'><a href={`${baseUrlHashless}${ticket.qr_code}`} download>Save</a></button></p>
+                            </div>
                         </div>
-                       
+
                     </div>
                 ))}
             </div>
-       
-   
+
+
 
 
         </div>

@@ -8,6 +8,7 @@ import { BsInfoCircle } from "react-icons/bs";
 import { TbLogout2 } from "react-icons/tb";
 import { HiOutlineLogout } from "react-icons/hi";
 import { FaUser } from "react-icons/fa";
+import { FiMenu } from "react-icons/fi";
 
 import { useState } from "react";
 import useAuthenticate from "../../hooks/seAuthenticate";
@@ -31,16 +32,28 @@ const Navbar = () => {
         <div>
             <div className="navbar bg-2 absolute container mx-auto text-white z-50">
                 {/* Navbar for small screens */}
-                <div className="navbar-start lg:hidden">
-                    <div className="dropdown">
-                        <div
+                <div className="navbar-start lg:hidden ">
+                    <div className="dropdown ">
+                      <div className="flex items-center justify-between">
+                      <div
                             tabIndex={0}
                             role="button"
                             onClick={() => setIsOpen(!isOpen)} // Toggle Dropdown
                             className="btn btn-ghost lg:hidden"
                         >
-                            <img src="./Vector.png" alt="" />
+                           <FiMenu  size={20} />
                         </div>
+                        <div className="">
+                      </div>
+                    <Link to={"/"}>
+                        <img
+                            src="https://iili.io/2TmGVUb.png"
+                            alt="Logo"
+                            className="w-16 md:w-28 pl-0 md:pl-5"
+                        />
+                    </Link>
+                </div>
+
                         {isOpen && (
                             <ul
                                 tabIndex={0}
@@ -99,7 +112,7 @@ const Navbar = () => {
                                     <Link to={"/login"}>
                                         <li>
                                             <a className="text-base font-semibold">
-                                                <TbLogout2 /> Log In
+                                                <TbLogout2  /> Log In
                                             </a>
                                         </li>
                                     </Link>
@@ -110,7 +123,7 @@ const Navbar = () => {
                 </div>
 
                 {/* Navbar center */}
-                <div className="navbar-center">
+                <div className=" md:hidden hidden lg:block">
                     <Link to={"/"}>
                         <img
                             src="https://iili.io/2TmGVUb.png"
@@ -121,7 +134,7 @@ const Navbar = () => {
                 </div>
 
                 {/* Navbar for large screens */}
-                <div className="navbar-end flex items-center  lg:flex md:w-full">
+                <div className="navbar-end flex items-center  lg:flex lg:w-full ">
                     <ul className="menu menu-horizontal px-1 font-medium text-lg text-white hidden lg:flex">
                         <Link to={"/"}>
                             <li>
@@ -161,7 +174,7 @@ const Navbar = () => {
                     <div className="flex items-center space-x-1">
                         {
                             isLoggedIn && (
-                                <div className="block md:hidden">
+                                <div className="block md:block lg:hidden">
                                      <Link to={"/yourticket"}> <FaUser /></Link>
                                 </div>
                             )
@@ -176,7 +189,7 @@ const Navbar = () => {
 
                                 >
 
-                                    <HiOutlineLogout />
+                                    <HiOutlineLogout size={20} />
                                 </button>
                             </div>
                         ) : (
