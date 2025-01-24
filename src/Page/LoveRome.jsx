@@ -69,6 +69,8 @@ const LoveRome = () => {
                         ticketCount={ticket.package_tag}
                         price={ticket.adult_price}
                         price2={ticket.youth_price}
+                        id={ticket.package_tag}
+                            status={ticket.status}
                         />
                     ))}
                 </div>

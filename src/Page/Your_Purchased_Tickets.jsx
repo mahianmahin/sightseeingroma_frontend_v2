@@ -1,5 +1,9 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Banner2 from '../Components/Banner2/Banner2';
+import { useNavigate } from 'react-router-dom';
+import { baseMediaUrl, baseUrl, baseUrlHashless } from '../utilities/Utilities';
+
+
 
 const Your_Purchased_Tickets = () => {
 
@@ -10,6 +14,24 @@ const Your_Purchased_Tickets = () => {
         price: '€28',
         claimed: 'No',
     }));
+
+    const navigate = useNavigate();
+    const [data, setData] = useState([]);
+
+    useEffect(() => {
+        fetch(`${baseUrl}dashboard/`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${window.localStorage['access']}`,
+            },
+        }).then(response => {
+            if (response.status === 401) {
+                navigate('/login/')
+            } else {
+                return response.json()
+            }
+        }).then(data => setData(data.data))
+    }, [])
 
 
 
@@ -52,25 +74,25 @@ const Your_Purchased_Tickets = () => {
                         </tr>
                     </thead>
                     <tbody className='border border-gray-300'>
-                        {tickets.map((ticket, index) => (
+                        {data.map((ticket, index) => (
                             <tr
                                 key={index}
                                className='bg-3 border-b-2'
                             >
                                 <td className="px-4 py-4 text-sm ">
-                                    {ticket.date}
+                                    {ticket.selected_date === '' ? "N/A" : ticket.selected_date}
                                 </td>
                                 <td className="px-4 py-2 text-sm ">
                                     {ticket.package}
                                 </td>
                                 <td className="px-4 py-2 text-sm font-bold ">
-                                    {ticket.price}
+                                    {ticket.total_price}
                                 </td>
                                 <td className="px-4 py-2 text-sm font-semibold ">
-                                    {ticket.claimed}
+                                    {ticket.qr_code_scanned ? "Yes" : "No"}
                                 </td>
                                 <td className="px-4 py-2 text-sm text-red-800">
-                                    <button className="cursor-pointer font-semibold">Save</button>
+                                <a href={`${baseUrlHashless}${ticket.qr_code}`} download>Save</a>
                                 </td>
                             </tr>
                         ))}
@@ -98,21 +120,21 @@ const Your_Purchased_Tickets = () => {
             {/* Tickets List */}
             <div className=" block md:hidden   my-10 px-3 ">
                 {/* Example Ticket */}
-                {Array.from({ length: 8 }).map((_, index) => (
+                {data.map((ticket, index) => (
                     <div
                         key={index}
                         className="border rounded-lg my-7 p-4 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between bg-3"
                     >
                         <div className='flex flex-col space-y-3'>
                             <div className='flex justify-between items-center'>
-                            <p><strong>Ticket selected:</strong> N/A</p>
-                            <p><strong>Total price:</strong> €28</p>
+                            <p><strong>Ticket selected:</strong>{ticket.selected_date === '' ? "N/A" : ticket.selected_date}</p>
+                            <p><strong>Total price:</strong>  {ticket.total_price}</p>
                             </div>
-                            <p><strong>Package:</strong> Hop-On Hop-Off Panoramic Rome Bus</p>
+                            <p><strong>Package:</strong>        {ticket.package}</p>
                             
                            <div className='flex justify-between items-center'>
-                           <p><strong>Ticket claimed:</strong> No</p>
-                           <p><strong>QR Code:</strong> <button className='text-red-500'>Save</button></p>
+                           <p><strong>Ticket claimed:</strong> {ticket.qr_code_scanned ? "Yes" : "No"}</p>
+                           <p><strong>QR Code:</strong> <button className='text-red-500'><a href={`${baseUrlHashless}${ticket.qr_code}`} download>Save</a></button></p>
                            </div>
                         </div>
                        

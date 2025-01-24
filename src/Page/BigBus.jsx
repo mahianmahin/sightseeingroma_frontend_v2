@@ -62,7 +62,8 @@ const BigBus = () => {
                     {busPackages.map((ticket, index) => (
                         <TicketCard
                             key={ticket}
-                            id={ticket.id}
+                            id={ticket.package_tag}
+                            status={ticket.status}
                             title={ticket.title}
                             subtitle={ticket.type}
                             image={ticket.image_big}

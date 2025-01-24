@@ -63,11 +63,10 @@ const Services = () => {
           <button
             key={index}
             onClick={() => setActiveTab(index)}
-            className={`font-semibold pb-2 px-2 md:px-4 p-2 text-sm md:text-base rounded-md md:rounded-none transition-all duration-200 ${
-              activeTab === index
+            className={`font-semibold pb-2 px-2 md:px-4 p-2 text-sm md:text-base rounded-md md:rounded-none transition-all duration-200 ${activeTab === index
                 ? "bg-[#930B31] text-white md:border-b-2 border-2 md:border-0"
                 : "border-transparent text-gray-700 hover:border-[#930B31] hover:text-[#930B31]"
-            }`}
+              }`}
           >
             {tab.label}
           </button>
@@ -79,16 +78,18 @@ const Services = () => {
         {filteredData.length > 0 ? (
           filteredData.map((ticket) => (
             <Card
-            key={ticket}
-            id={ticket.id}
-            title={ticket.title}
-            subtitle={ticket.type}
-            image={ticket.image_big}
-            duration={ticket.duration}
-            ticketCount={ticket.package_tag}
-            price={ticket.adult_price}
-            price2={ticket.youth_price}
-            
+              key={ticket}
+              id={ticket.package_tag}
+              status={ticket.status}
+              title={ticket.title}
+              subtitle={ticket.type}
+              image={ticket.image_big}
+              duration={ticket.duration}
+              ticketCount={ticket.package_tag}
+              price={ticket.adult_price}
+              price2={ticket.youth_price}
+              company={ticket.company}
+
             />
           ))
         ) : (

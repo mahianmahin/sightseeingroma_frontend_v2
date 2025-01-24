@@ -4,11 +4,20 @@ import PropTypes from "prop-types";
 import { baseUrl } from "../../utilities/Utilities";
 import { useNavigate } from "react-router-dom";
 
-const TicketCard = ({ title, subtitle, image, duration, ticketCount, price, id , price2}) => {
+const TicketCard = ({ title, subtitle, image, duration, ticketCount, price, id , status, price2}) => {
     const navigate = useNavigate();
+    
+    
+
+    let calculatedStatus = null;
+    if (duration) {
+        calculatedStatus = "E9";
+    } else {
+        calculatedStatus = "E8";
+    }
 
     const handleBuyNow = () => {
-        navigate('/manageBookings', { state: { id  , title , subtitle , duration , price , price2 ,ticketCount} });
+        navigate(`/manageBookings/${calculatedStatus}/${id}`); // Navigate to ManageBooking with the status and id as parameters
     };
     return (
         <div className="w-full mb-2 md:mb-14 mx-auto bg-3 rounded-xl shadow-md overflow-hidden border flex flex-col">
@@ -47,10 +56,12 @@ const TicketCard = ({ title, subtitle, image, duration, ticketCount, price, id ,
 
                 {/* Pricing */}
                 <div className="flex items-center mt-2 gap-1 whitespace-nowrap">
-                    <h3 className="font-normal text-sm md:text-md">Start From</h3>
-                    <span className="text-lg font-bold text-gray-800">€ {price}</span>
-                    <span className="text-xs md:text-sm text-gray-500">(Per person)</span>
-                </div>
+    <h3 className="font-normal text-sm md:text-md">Start From</h3>
+    <span className="text-lg font-bold text-gray-800">€ {price}</span>
+    <span className="hidden text-xs text-gray-500 sm:inline md:text-sm">(Per person)</span>
+</div>
+<div className="block sm:hidden text-xs text-gray-500 mt-1">(Per person)</div>
+
             </div>
 
             {/* Button */}
@@ -72,8 +83,8 @@ TicketCard.propTypes = {
     image: PropTypes.string.isRequired,
     duration: PropTypes.string.isRequired,
     ticketCount: PropTypes.number.isRequired,
-    price: PropTypes.string.isRequired,
-    onClick: PropTypes.func.isRequired, // Add onClick as a required prop
+    price: PropTypes.number.isRequired, // Change from string to number
+    onClick: PropTypes.func.isRequired,
 };
 
 export default TicketCard;

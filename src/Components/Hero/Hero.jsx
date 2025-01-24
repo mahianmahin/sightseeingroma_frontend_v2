@@ -6,7 +6,7 @@ const Hero = () => {
     <div>
       <div
         className="w-full h-[70vh] lg:h-[80vh] bg-no-repeat bg-cover bg-center py-8"
-        style={{ backgroundImage: "url('https://iili.io/2Tpagvp.md.png') ", height: "100%" }}
+        style={{ backgroundImage: "url('https://sightseeingroma.pythonanywhere.com/media/hero_images/hero_2-min.jpg') ", height: "100%" }}
       >
         <div className="text-white  px-6 sm:px-5 md:px-16 h-full flex  flex-col justify-center text-center md:text-start">
           <div className="mt-20 md:mt-40 mb-6"> <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-semibold mb-3 md:mb-4 leading-tight ">

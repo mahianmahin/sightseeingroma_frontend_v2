@@ -1,31 +1,36 @@
 import { LuHome } from "react-icons/lu";
 import { PiTicketBold } from "react-icons/pi";
 import { MdOutlineLocationOn } from "react-icons/md";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { IoDocumentTextOutline } from "react-icons/io5";
 import { RiMoneyEuroCircleLine } from "react-icons/ri";
 import { BsInfoCircle } from "react-icons/bs";
 import { TbLogout2 } from "react-icons/tb";
-import { FiSearch } from "react-icons/fi"; // Import Search Icon
-import { useEffect, useState } from "react";
-import TicketSm from "../Hero/TicketSm";
+import { HiOutlineLogout } from "react-icons/hi";
+import { FaUser } from "react-icons/fa";
+
+import { useState } from "react";
+import useAuthenticate from "../../hooks/seAuthenticate";
 
 const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
-    const location = useLocation();
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const navigate = useNavigate();
 
-    useEffect(() => {
-        setIsOpen(false);
-    }, [location]);
+    // Hook to check if user is authenticated
+    useAuthenticate(setIsLoggedIn);
 
-    const handleClick = () => {
-        setIsOpen((prev) => !prev);
-        console.log("Dropdown state:", !isOpen); // Debug log
+    // Logout function
+    function logout() {
+        window.localStorage.clear();
+        window.location.reload();
+        navigate('/'); // Redirect to home after logout
     }
 
     return (
         <div>
             <div className="navbar bg-2 absolute container mx-auto text-white z-50">
+                {/* Navbar for small screens */}
                 <div className="navbar-start lg:hidden">
                     <div className="dropdown">
                         <div
@@ -84,27 +89,39 @@ const Navbar = () => {
                                         </a>
                                     </li>
                                 </Link>
-                                <Link to={"/login"}>
-                                    <li>
+                                {isLoggedIn ? (
+                                    <li onClick={logout}>
                                         <a className="text-base font-semibold">
                                             <TbLogout2 /> Log Out
                                         </a>
                                     </li>
-                                </Link>
+                                ) : (
+                                    <Link to={"/login"}>
+                                        <li>
+                                            <a className="text-base font-semibold">
+                                                <TbLogout2 /> Log In
+                                            </a>
+                                        </li>
+                                    </Link>
+                                )}
                             </ul>
                         )}
                     </div>
                 </div>
 
+                {/* Navbar center */}
                 <div className="navbar-center">
-                    <img
-                        src="https://iili.io/2TmGVUb.png"
-                        alt="Logo"
-                        className="w-16 md:w-28 pl-0 md:pl-5"
-                    />
+                    <Link to={"/"}>
+                        <img
+                            src="https://iili.io/2TmGVUb.png"
+                            alt="Logo"
+                            className="w-16 md:w-28 pl-0 md:pl-5"
+                        />
+                    </Link>
                 </div>
 
-                <div className="navbar-end flex items-center space-x-4 lg:flex md:w-full">
+                {/* Navbar for large screens */}
+                <div className="navbar-end flex items-center  lg:flex md:w-full">
                     <ul className="menu menu-horizontal px-1 font-medium text-lg text-white hidden lg:flex">
                         <Link to={"/"}>
                             <li>
@@ -113,7 +130,7 @@ const Navbar = () => {
                                 </a>
                             </li>
                         </Link>
-                        <Link to={"/manageBookings"}>
+                        <Link to={"/yourticket"}>
                             <li>
                                 <a>
                                     <PiTicketBold /> Manage Bookings
@@ -127,24 +144,46 @@ const Navbar = () => {
                                 </a>
                             </li>
                         </Link>
+                        {
+                            isLoggedIn && (
+                                <Link to={"/yourticket"}>
+                                    <li>
+                                        <a>
+                                            <FaUser /> Profile
+                                        </a>
+                                    </li>
+                                </Link>
+                            )
+                        }
                     </ul>
-                    <div className="flex items-center space-x-2">
-                        {/* Search Icon Button */}
 
-                        <div className="block md:hidden">
-                            <button className="  p-2 h-10 w-10 rounded-md flex items-center justify-center"
-                                onClick={handleClick} >
-                                <FiSearch size={20} className="text-white " />
+
+                    <div className="flex items-center space-x-1">
+                        {
+                            isLoggedIn && (
+                                <div className="block md:hidden">
+                                     <Link to={"/yourticket"}> <FaUser /></Link>
+                                </div>
+                            )
+                        }
+                        {/* Conditional rendering for Login/Logout button */}
+                        {isLoggedIn ? (
+
+                            <div className="">
+                                <button
+                                    onClick={logout}
+                                    className="btn btn-ghost text-2xl font-medium "
+
+                                >
+
+                                    <HiOutlineLogout />
+                                </button>
+                            </div>
+                        ) : (
+                            <button className="bg-1 px-2 md:px-4 py-2 h-10 md:h-12 w-20 md:w-28 rounded-md color-1 text-lg font-medium">
+                                <Link to={"/login"}>Login</Link>
                             </button>
-                        </div>
-                        <div className="absolute w-full top-64 right-0 z-50 block md:hidden">
-                            <TicketSm isOpennnn={isOpen}></TicketSm>
-                        </div>
-
-
-                        <button className="bg-1 px-2 md:px-4 py-2 h-10 md:h-12 w-20 md:w-28 rounded-md color-1 text-lg font-medium">
-                            <Link to={"/login"}>Login</Link>
-                        </button>
+                        )}
                     </div>
                 </div>
             </div>

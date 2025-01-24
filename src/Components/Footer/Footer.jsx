@@ -10,7 +10,7 @@ const Footer = () => {
                 {/* Logo and Description */}
                 <div className="space-y-4  md:text-left">
                   
-                    <img src="https://iili.io/2uJqnr7.png" className="  mx-auto md:mx-0" alt="Sightseeing Roma Logo" />
+                    <Link to={'/'}><img src="https://iili.io/2uJqnr7.png" className="  mx-auto md:mx-0" alt="Sightseeing Roma Logo" /></Link>
                     <p className="text-sm">
                         At Sightseeing Roma, we believe that every traveler deserves to explore the majestic beauty and rich history of Rome with ease and comfort. Established with a passion for delivering unforgettable experiences, we are your gateway to the heart of this ancient city.
                     </p>

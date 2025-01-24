@@ -1,124 +1,116 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FaRegClock } from "react-icons/fa";
 import { MdKeyboardArrowRight } from "react-icons/md";
-import { Link } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import Description from "../Description/Description";
 import Similar from "../../Page/Similar";
-import { loadStripe } from "@stripe/stripe-js";
-import { baseUrl } from "../../utilities/Utilities";
+import handleStripeCheckout from "../../utilities/stripeCheckout";
+import { baseUrl, baseUrlHashless } from "../../utilities/Utilities";
+import Details_image from "../Details_Image/Details_image";
 
-const ManageBookingMd = ({
-  title = "Hop-on Hop-off tour", // Default title
-  subtitle = "Hop-on Hop-off tour", // Default subtitle
-  duration = "24 hours", //
-  adult_price = 0, // Default price
-  youth_price = 0, // Default price
-  ticket_serial,
-  eventDate,
-}) => {
-  const [adultCount, setAdultCount] = useState(0); // Default count
-  const [youthCount, setYouthCount] = useState(0); // Default count
+const ManageBookingMd = () => {
+  const { id, status } = useParams();
+  const navigate = useNavigate();
+  const [data, setData] = useState(null);
+  const [adultCount, setAdultCount] = useState(0);
+  const [youthCount, setYouthCount] = useState(0);
+  const [selectedDate, setSelectedDate] = useState('');
+  const [message, setMessage] = useState('');
+  const [showMessage, setShowMessage] = useState(false);
+  const [bigLoader, setBigLoader] = useState(false);
 
-  const adultPrice = adult_price;
-  const youthPrice = youth_price;
-
+  const adultPrice = data?.adult_price || 0;
+  const youthPrice = data?.youth_price || 0;
   const totalAdultPrice = adultCount * adultPrice;
   const totalYouthPrice = youthCount * youthPrice;
   const totalPrice = totalAdultPrice + totalYouthPrice;
 
-  const handleStripeCheckout = () => {
-    if (totalPrice === 0) return; // Prevent checkout if total price is 0
 
-    loadStripe("pk_test_51JLudiCHMxzhWuhuCnD0c4BqfYSiCaTz5pmcpaNwgGeTNRMhhMxbw0WVfU96CGVyhZt4gYLbZSkuMPj8wjo1pZOn00n6ZlM5xG")
-      .then((stripe) => {
-        const formData = new FormData();
-        formData.append("title", title);
-        formData.append("description", subtitle);
-        formData.append("image", "/path/to/image");
-        formData.append("date", eventDate || "2024-12-20");
-        formData.append("adult_count", adultCount);
-        formData.append("youth_count", youthCount);
-        formData.append("package_id", ticket_serial);
-        formData.append("package_identifier", "status");
+  const imgbig = baseUrlHashless + data?.image_big;
+  const img2 = baseUrlHashless + data?.second_image;
+  const img3 = baseUrlHashless + data?.third_image;
+  const img4 = baseUrlHashless + data?.fourth_image;
 
-        fetch(`${baseUrl}create_checkout_session/`, {
-          method: "POST",
-          body: formData,
-          headers: {
-            Authorization: `Bearer ${window.localStorage["access"]}`,
-            "X-CSRFToken": window.localStorage["csrf_token"],
-          },
-        })
-          .then((response) => {
-            if (!response.ok) {
-              if (response.status === 401) {
-                window.location.href = "/login";
-              } else {
-                return Promise.reject("Failed to create checkout session");
-              }
-            }
-            return response.json();
-          })
-          .then((session) => {
-            if (session.id) {
-              stripe.redirectToCheckout({ sessionId: session.id }).then((result) => {
-                if (result.error) {
-                  console.error(result.error.message);
-                }
-              });
-            } else {
-              console.error("Session ID not found in response");
-            }
-          })
-          .catch((error) => {
-            console.error("Error during checkout process:", error);
-          });
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    fetch(`${baseUrl}package/${status}/${id}/`)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const contentType = response.headers.get('content-type');
+        if (contentType && contentType.includes('application/json')) {
+          return response.json();
+        } else {
+          throw new Error('Received content is not JSON');
+        }
       })
-      .catch((error) => {
-        console.error("Stripe.js error:", error);
+      .then(result => setData(result.data))
+      .catch(error => {
+        console.error('Error fetching data:', error);
+        setMessage('Failed to load data. Please try again later.');
+        setShowMessage(true);
       });
-  };
+  }, [id, status]);
+
+  // const tempElement = document.createElement('div');
+  // tempElement.innerHTML = data.description;
+
+  // const cleanText = tempElement.textContent || tempElement.innerText;
+
+
+  function handleStripeCheckoutFunction(adultCount, youthCount, infantCount) {
+    if (data.dates && selectedDate === '') {
+      setMessage("Please select a date first");
+      setShowMessage(true);
+    } else {
+      setMessage('');
+      setShowMessage(false);
+      setBigLoader(true);
+      handleStripeCheckout(
+        data.title,
+        cleanText || '',
+        data.image_big,
+        selectedDate,
+        adultCount,
+        youthCount,
+        infantCount,
+        navigate,
+        id,
+        status,
+        setBigLoader
+      );
+    }
+  }
 
   return (
-    <div className="container  mx-auto">
+    <div className="container mx-auto">
+      <div>
+        <div className="">
+         
+          <div>
+            <Details_image img1={imgbig} img2={img2} img3={img3} img4={img4}></Details_image>
 
+          </div>
 
-        <div>
-        <div className="hidden md:block">
-                <img
-                    src="./Banner/mb.jpg"
-                    alt="Big Bus Rome"
-                    className="w-full object-contain"
-                />
-            </div>
         </div>
-
-
-
-
-
-
-
-
+      </div>
 
       <div className="flex flex-col mt-16 space-y-4 pb-8 px-8">
         <div className="flex items-center gap-6">
-          <p>{subtitle}</p>
+          <p>{data?.type}</p>
           <div className="flex items-center gap-2">
             <FaRegClock />
-            <p className="font-bold">{duration}</p>
+            <p className="font-bold">{data?.duration}</p>
           </div>
         </div>
-        <h2 className="text-xl md:text-3xl font-bold mb-2">{title}</h2>
+        <h2 className="text-xl md:text-3xl font-bold mb-2">{data?.title}</h2>
         <div className="flex items-center gap-0 md:gap-3 color-1 font-semibold">
           <p>Select ticket</p>
-          <p>
-            <MdKeyboardArrowRight size={20} />
-          </p>
+          <MdKeyboardArrowRight size={20} />
           <p>Payment</p>
-          <p>
-            <MdKeyboardArrowRight size={20} />
-          </p>
+          <MdKeyboardArrowRight size={20} />
           <p>Confirm ticket</p>
         </div>
       </div>
@@ -150,6 +142,7 @@ const ManageBookingMd = ({
               </div>
             </div>
           </div>
+
           <div className="flex justify-between items-center mb-6 border py-5 px-4 rounded-lg">
             <div>
               <h4 className="text-lg font-bold">Youth - € {youthPrice}</h4>
@@ -208,11 +201,10 @@ const ManageBookingMd = ({
               <span>€ {totalPrice}</span>
             </div>
             <button
-              className="w-full bg-2 text-white py-2 rounded hover:bg-red-800"
-              onClick={handleStripeCheckout}
-              disabled={totalPrice === 0} // Disable button if total price is 0
+              className="w-full bg-red-800 text-white py-2 rounded-lg"
+              onClick={() => handleStripeCheckoutFunction(adultCount, youthCount, 0)} // Assuming infant count is 0 for now
             >
-              Buy Tickets
+              Checkout
             </button>
           </div>
         </div>

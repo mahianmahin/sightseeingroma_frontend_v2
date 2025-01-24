@@ -22,6 +22,7 @@ import Updated from '../Components/LoginComponent/Updated/Updated'
 import PaymentSuccess from '../Page/PaymentSuccess'
 import ManageBooking from '../Page/ManageBooking'
 import SearchPage from '../Page/SearchPage'
+import ViewMore from '../Components/ViewMore/ViewMore'
 
 
 
@@ -88,12 +89,16 @@ export const router = createBrowserRouter([
         element: <PaymentSuccess></PaymentSuccess>
       },
       {
-        path: '/manageBookings',
+        path: '/manageBookings/:status/:id',
         element: <ManageBooking></ManageBooking>
        
       },{
         path: '/search',
         element: <SearchPage></SearchPage>
+      },
+      {
+        path: '/viewsimilar/:hours/:company',
+        element: <ViewMore></ViewMore>
       }
     
     ],

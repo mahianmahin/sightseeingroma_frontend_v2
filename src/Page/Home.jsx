@@ -17,9 +17,11 @@ const Home = () => {
           <div className="container mx-auto">
           
          <Hero></Hero>
+
+
            <div className="block md:hidden">
             
-             {/* <TicketSm></TicketSm> */}
+             <TicketSm></TicketSm>
              <HeroBottom></HeroBottom>
            </div>
      
