@@ -1,12 +1,12 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { FaRegClock } from "react-icons/fa";
 import { FaArrowLeftLong } from "react-icons/fa6";
 import { MdKeyboardArrowRight } from "react-icons/md";
-import { Link, useParams, useNavigate } from "react-router-dom";
-import Description from "../Description/Description";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import Similar from "../../Page/Similar";
 import handleStripeCheckout from "../../utilities/stripeCheckout";
 import { baseUrl, baseUrlHashless } from "../../utilities/Utilities";
+import Description from "../Description/Description";
 import DetailsImage from './../Details_Image/Details_image';
 
 
@@ -56,17 +56,22 @@ const ManageBookingSm = () => {
   }, [id, status]);
 
   function handleStripeCheckoutFunction(adultCount, youthCount) {
-    if (data.dates && selectedDate === '') {
+    if (data?.dates && selectedDate === '') {
       setMessage("Please select a date first");
       setShowMessage(true);
     } else {
       setMessage('');
       setShowMessage(false);
       setBigLoader(true);
+
+      const tempElement = document.createElement('div');
+      tempElement.innerHTML = data?.description || '';
+      const cleanText = tempElement.textContent || tempElement.innerText;
+
       handleStripeCheckout(
-        data.title,
-        data.description || '',
-        data.image_big,
+        data?.title || '',
+        cleanText,
+        baseUrlHashless + data?.image_big,
         selectedDate,
         adultCount,
         youthCount,

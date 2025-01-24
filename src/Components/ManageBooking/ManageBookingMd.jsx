@@ -1,12 +1,13 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { FaRegClock } from "react-icons/fa";
 import { MdKeyboardArrowRight } from "react-icons/md";
-import { Link, useParams, useNavigate } from "react-router-dom";
-import Description from "../Description/Description";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import Similar from "../../Page/Similar";
 import handleStripeCheckout from "../../utilities/stripeCheckout";
 import { baseUrl, baseUrlHashless } from "../../utilities/Utilities";
+import Description from "../Description/Description";
 import Details_image from "../Details_Image/Details_image";
+import Loader from "../Loader/Loader";
 
 const ManageBookingMd = () => {
   const { id, status } = useParams();
@@ -25,12 +26,10 @@ const ManageBookingMd = () => {
   const totalYouthPrice = youthCount * youthPrice;
   const totalPrice = totalAdultPrice + totalYouthPrice;
 
-
   const imgbig = baseUrlHashless + data?.image_big;
   const img2 = baseUrlHashless + data?.second_image;
   const img3 = baseUrlHashless + data?.third_image;
   const img4 = baseUrlHashless + data?.fourth_image;
-
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -54,24 +53,29 @@ const ManageBookingMd = () => {
       });
   }, [id, status]);
 
-  // const tempElement = document.createElement('div');
-  // tempElement.innerHTML = data.description;
-
-  // const cleanText = tempElement.textContent || tempElement.innerText;
-
+  const getCleanText = (htmlText) => {
+    const tempElement = document.createElement('div');
+    tempElement.innerHTML = htmlText || '';
+    return tempElement.textContent || tempElement.innerText || '';
+  };
 
   function handleStripeCheckoutFunction(adultCount, youthCount, infantCount) {
-    if (data.dates && selectedDate === '') {
+    if (data?.dates && selectedDate === '') {
       setMessage("Please select a date first");
       setShowMessage(true);
     } else {
       setMessage('');
       setShowMessage(false);
       setBigLoader(true);
+
+      const tempElement = document.createElement('div');
+      tempElement.innerHTML = data?.description || '';
+      const cleanText = tempElement.textContent || tempElement.innerText;
+
       handleStripeCheckout(
-        data.title,
-        cleanText || '',
-        data.image_big,
+        data?.title || '',
+        cleanText,
+        baseUrlHashless + data?.image_big,
         selectedDate,
         adultCount,
         youthCount,
@@ -86,6 +90,7 @@ const ManageBookingMd = () => {
 
   return (
     <div className="container mx-auto">
+      {bigLoader && <Loader />}
       <div>
         <div className="">
          

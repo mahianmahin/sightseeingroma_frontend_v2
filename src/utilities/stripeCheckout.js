@@ -4,9 +4,13 @@ import { baseUrl } from './Utilities';
 
 // Function to initiate Stripe Checkout and redirect the user
 const handleStripeCheckout = (title, description, image, date, adult_count, youth_count, infant_count, navigate, packageId, status, loaderTrigger) => {
+  // Show loader if provided
+  if (loaderTrigger) {
+    loaderTrigger(true);
+  }
 
-  // Replace 'your-publishable-key' with your actual Stripe publishable key
-  loadStripe('pk_test_51JLudiCHMxzhWuhuCnD0c4BqfYSiCaTz5pmcpaNwgGeTNRMhhMxbw0WVfU96CGVyhZt4gYLbZSkuMPj8wjo1pZOn00n6ZlM5xG')
+  // Replace with your actual Stripe publishable key
+  loadStripe('pk_live_51Q1UzzB3ufkKO0saWP9iXcMVAGxS6IAC73absbNhduMfAwbZmyWkFWgHLLIWspg5nckegmOAoCzLrnZcqnzP2IY700fAxBnAaP')
     .then(stripe => {
       // Create a new FormData object and append the form data
       const formData = new FormData();
@@ -30,32 +34,36 @@ const handleStripeCheckout = (title, description, image, date, adult_count, yout
       })
       .then(response => {
         if (response.status === 401) {
-            navigate('/login/')
+          navigate('/login/');
         } else {
-            return response.json()
+          return response.json();
         }
-    })
+      })
       .then(session => {
-        loaderTrigger(false);
-        // Redirect the user to the Stripe Checkout page
-        stripe.redirectToCheckout({
-          sessionId: session.id,
-        })
-        .then(result => {
-          if (result.error) {
+        if (session) {
+          loaderTrigger(false);
+          // Redirect the user to the Stripe Checkout page
+          stripe.redirectToCheckout({
+            sessionId: session.id,
+          })
+          .then(result => {
             // Handle errors that occurred during the redirect to Stripe Checkout
-            console.error(result.error.message);
-          }
-        });
+            if (result.error) {
+              console.error(result.error.message);
+            }
+          });
+        }
       })
       .catch(error => {
         // Handle any other errors that occurred during the process
         console.error(error);
+        loaderTrigger(false);
       });
     })
     .catch(error => {
       // Handle Stripe.js initialization error
       console.error(error);
+      loaderTrigger(false);
     });
 };
 

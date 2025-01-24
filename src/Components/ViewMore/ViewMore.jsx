@@ -1,10 +1,10 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import { FaArrowLeftLong } from "react-icons/fa6";
 import { useParams } from "react-router-dom";
 import { baseUrl } from "../../utilities/Utilities";
-import { FaArrowLeftLong } from "react-icons/fa6";
-import TicketCard from "../TicketCard/TicketCard";
 import Banner2 from "../Banner2/Banner2";
+import TicketCard from "../TicketCard/TicketCard";
 
 const ViewMore = () => {
     const [busPackages, setBusPackages] = useState([]); // For bus packages of the selected company
@@ -62,7 +62,7 @@ const ViewMore = () => {
                     <div className="block md:hidden mb-3">
                         <FaArrowLeftLong size={20}></FaArrowLeftLong>
                     </div>
-                    <h1 className="text-3xl font-bold">Same Categories</h1>
+                    <h1 className="text-2xl font-bold uppercase">Same Categories</h1>
                    
                 </div>
 
@@ -88,7 +88,7 @@ const ViewMore = () => {
             <div className="px-4 md:px-8">
                 <div className="py-7 md:py-10">
                     
-                    <h1 className="text-3xl font-bold">Similar Categories</h1>
+                    <h1 className="text-2xl font-bold uppercase">Similar Options</h1>
                   
                 </div>
 

@@ -1,55 +1,46 @@
-
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const PaymentSuccess = () => {
-    // Function to handle QR code download
-    const downloadQRCode = () => {
-        const qrImage = document.getElementById("qrCode");
-        const link = document.createElement("a");
-        link.href = qrImage.src; // Use the image source
-        link.download = "QRCode.png"; // Set the filename
-        link.click(); // Trigger the download
-    };
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        // Redirect to tickets page after 3 seconds
+        const timer = setTimeout(() => {
+            navigate('/yourticket');
+        }, 3000);
+
+        return () => clearTimeout(timer);
+    }, [navigate]);
 
     return (
-        <div className="container mx-auto">
-            
-            <div className="flex flex-col items-center justify-center py-24 md:py-40 bg-white px-3 md:bg-gray-50">
-                <div className="flex flex-col items-center p-6 py-8 bg-white rounded-lg  w-full md:w-2/3 px-8">
-                    {/* Success Icon */}
-                    <div className="text-green-500 text-5xl mb-4">
-                        <img src="./Login/sent.png" alt="Payment Sent Icon" />
-                    </div>
-
-                    {/* Message */}
-                    <h1 className="text-3xl font-bold text-gray-800 mb-2">
-                        Payment Successful!
-                    </h1>
-
-                    {/* QR Code */}
-                    <img
-                        id="qrCode"
-                        src="./QR/qr.png"
-                        alt="QR Code"
-                        className="mb-4 mt-10"
-                    />
-
-                    {/* Download QR Button */}
-                    <button
-                        type="button"
-                        onClick={downloadQRCode}
-                        className="px-4 bg-2 mt-3 mb-5 md:mb-7 text-white py-2 rounded-full md:rounded-lg hover:bg-red-800 transition"
+        <div className="min-h-screen flex items-center justify-center bg-gray-100">
+            <div className="bg-white p-8 rounded-lg shadow-lg text-center">
+                <div className="mb-4">
+                    <svg
+                        className="mx-auto h-16 w-16 text-green-500"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg"
                     >
-                        Download QR Code
-                    </button>
-
-                    {/* Location Information */}
-                    <p className="mt-4 text-center font-bold text-gray-700">
-                        Show the QR code at the meeting point below:
-                    </p>
-                    <p className="text-center text-blue-400 underline font-bold">
-                        Piazza d'Aracoeli, 8, 00186 Roma RM
-                    </p>
+                        <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M5 13l4 4L19 7"
+                        />
+                    </svg>
                 </div>
+                <h2 className="text-2xl font-bold text-gray-800 mb-4">
+                    Payment Successful!
+                </h2>
+                <p className="text-gray-600 mb-8">
+                    Thank you for your purchase. Your transaction has been completed successfully.
+                </p>
+                <p className="text-sm text-gray-500">
+                    Redirecting to your tickets page...
+                </p>
             </div>
         </div>
     );
