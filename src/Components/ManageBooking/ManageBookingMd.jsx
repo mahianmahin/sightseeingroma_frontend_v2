@@ -207,6 +207,7 @@ const ManageBookingMd = () => {
             </div>
             <button
               className="w-full bg-red-800 text-white py-2 rounded-lg"
+              disabled={totalPrice === 0}
               onClick={() => handleStripeCheckoutFunction(adultCount, youthCount, 0)} // Assuming infant count is 0 for now
             >
               Checkout

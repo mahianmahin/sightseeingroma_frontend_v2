@@ -99,20 +99,20 @@ const ManageBookingSm = () => {
       <div className="pt-10 pb-6 px-4">
         <div className="block md:hidden">
           <div className="flex items-center gap-5">
-            <FaArrowLeftLong size={20}></FaArrowLeftLong>
-            <p className="font-bold text-lg">Checkout</p>
+            <FaArrowLeftLong size={15}></FaArrowLeftLong>
+            <p className="font-bold text-md">Checkout</p>
           </div>
         </div>
-        <div className="flex items-center gap-6 py-6">
+        <div className="flex text-sm items-center gap-6 py-3">
           <p>{data?.type}</p>
           <div className="flex items-center gap-2">
             <FaRegClock />
             <p className="font-bold">{data?.duration}</p>
           </div>
         </div>
-        <h2 className="text-xl md:text-3xl font-bold mb-2">{data?.title}</h2>
+        <h2 className="text-sm  font-semibold mb-2">{data?.title}</h2>
 
-        <div className="flex items-center gap-0 md:gap-3 color-1 font-semibold">
+        <div className="flex text-sm items-center gap-0  color-1 font-semibold">
           <p>Select ticket</p>
           <p>
             <MdKeyboardArrowRight size={20} />
@@ -128,23 +128,23 @@ const ManageBookingSm = () => {
       <div className="bg-[#F2F2F7] pb-8">
         <div className="p-4 rounded-lg">
           <div className="border-2 p-3 rounded-lg bg-white">
-            <h1 className="text-xl font-bold py-4">Book Your Tickets</h1>
+            <h1 className="text-base font-bold py-4">Book Your Tickets</h1>
 
             {/* Adult Section */}
             <div className="mb-6 border rounded-lg p-4 bg-white shadow">
-              <h2 className="text-md font-bold">Adult - € {adultPrice}</h2>
+              <h2 className="text-sm font-bold">Adult - € {adultPrice}</h2>
               <p className="text-gray-500 text-sm mb-4">
                 Adult: between 19 to 99 years old
               </p>
               <div>
-                <div className="flex items-center justify-between">
+                <div className="flex text-sm items-center justify-between">
                   <h3 className="color-1 font-bold mb-2">Total price</h3>
                   <h3 className="color-1 font-bold mb-2 text-right">
                     Ticket count
                   </h3>
                 </div>
                 <div className="flex items-center justify-between border gap-3 p-2 rounded-lg">
-                  <p className="text-xl font-bold color-1 py-4">
+                  <p className="text-base font-bold color-1 py-4">
                     € {totalAdultPrice}
                   </p>
                   <div className="flex items-center gap-3 p-2 rounded-lg bg-[#F2F2F7]">
@@ -156,7 +156,7 @@ const ManageBookingSm = () => {
                     >
                       −
                     </button>
-                    <span className="text-lg bg-white px-4 rounded-md">
+                    <span className="text-sm bg-white px-4 rounded-md">
                       {adultCount}
                     </span>
                     <button
@@ -172,19 +172,19 @@ const ManageBookingSm = () => {
 
             {/* Youth Section */}
             <div className="mb-6 border rounded-lg p-4 bg-white shadow">
-              <h2 className="text-md font-bold">Youth - € {youthPrice}</h2>
+              <h2 className="text-sm font-bold">Youth - € {youthPrice}</h2>
               <p className="text-gray-500 text-sm mb-4">
                 Youth: between 6 to 18 years old
               </p>
               <div>
-                <div className="flex items-center justify-between">
+                <div className="flex items-center text-sm justify-between">
                   <h3 className="color-1 font-bold mb-2">Total price</h3>
                   <h3 className="color-1 font-bold mb-2 text-right">
                     Ticket count
                   </h3>
                 </div>
                 <div className="flex items-center justify-between border gap-3 p-2 rounded-lg">
-                  <p className="text-xl font-bold color-1 py-4">
+                  <p className="text-base font-bold color-1 py-4">
                     € {totalYouthPrice}
                   </p>
                   <div className="flex items-center gap-3 p-2 rounded-lg bg-[#F2F2F7]">

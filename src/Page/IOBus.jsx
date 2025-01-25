@@ -70,6 +70,7 @@ const IOBus = () => {
                         price2={ticket.youth_price}
                         id={ticket.package_tag}
                             status={ticket.status}
+                            id1={ticket.id}
                         />
                     ))}
                 </div>

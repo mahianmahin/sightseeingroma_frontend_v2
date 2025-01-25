@@ -2,10 +2,9 @@ import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { baseUrl } from '../utilities/Utilities';
-import { FaArrowLeftLong } from 'react-icons/fa6';
-import TicketCard from '../Components/TicketCard/TicketCard';
-import Similar from './Similar';
+
 import Banner2 from '../Components/Banner2/Banner2';
+import Card from '../Components/Services/Card';
 
 const SearchPage = () => {
     const [ticketData, setTicketData] = useState([]);
@@ -13,8 +12,10 @@ const SearchPage = () => {
     const [error, setError] = useState(null);
     const { search } = useLocation();
 
+    // Get query parameters
     const queryParams = new URLSearchParams(search);
     const busService = queryParams.get('bus');
+    const ticketType = queryParams.get('ticketType');
 
     useEffect(() => {
         const fetchData = async () => {
@@ -23,9 +24,20 @@ const SearchPage = () => {
 
             try {
                 const response = await axios.get(`${baseUrl}packages/`);
-                const filteredPackages = response.data.bus_data.filter(
-                    (item) => item.company.toLowerCase() === busService.toLowerCase()
-                );
+                let filteredPackages = response.data.bus_data || [];
+
+                // Apply filtering if query params exist
+                if (busService) {
+                    filteredPackages = filteredPackages.filter(
+                        (item) => item.company.toLowerCase() === busService.toLowerCase()
+                    );
+                }
+                if (ticketType) {
+                    filteredPackages = filteredPackages.filter(
+                        (item) => item.duration.toLowerCase() === ticketType.toLowerCase()
+                    );
+                }
+
                 setTicketData(filteredPackages);
             } catch (err) {
                 setError('Failed to fetch data. Please try again later.');
@@ -35,17 +47,16 @@ const SearchPage = () => {
             }
         };
 
-        if (busService) {
+        if (busService || ticketType) {
             fetchData();
         } else {
             setLoading(false);
             setTicketData([]);
         }
-    }, [busService]);
+    }, [busService, ticketType]);
 
     return (
         <div className="container mx-auto">
-            {/* Full-width responsive image */}
             <Banner2
                 bannerImgmd={'/Banner/b8.png'}
                 bannerImgsm={'/Banner/b7.png'}
@@ -54,30 +65,18 @@ const SearchPage = () => {
             />
 
             <div className="px-4 md:px-8">
-                <div className="py-7 md:py-10">
-                    <div className="block md:hidden mb-3">
-                        <FaArrowLeftLong size={20} />
-                    </div>
-
-                    <h1 className="text-3xl font-bold">{busService}</h1>
-                    <p className="text-gray-600">
-                        Travel in style with our big bus services
-                    </p>
-                </div>
-
-                {/* Handle loading, error, and data states */}
+                {/* Loading, Error, or Data Display */}
                 {loading ? (
-                    <div className="text-center text-lg font-semibold">
-                        Loading tickets...
-                    </div>
+                    <div className="text-center text-lg font-semibold">Loading tickets...</div>
                 ) : error ? (
                     <div className="text-center text-red-500 text-lg">{error}</div>
                 ) : ticketData.length > 0 ? (
-                    <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-2 md:gap-x-10">
+                    <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 my-10 md:my-24 gap-x-2 md:gap-x-10">
                         {ticketData.map((ticket) => (
-                            <TicketCard
-                                key={ticket.id}
-                                id={ticket.id}
+                            <Card
+                                key={ticket.package_tag} // Ensure unique key
+                                id={ticket.package_tag}
+                                status={ticket.status}
                                 title={ticket.title}
                                 subtitle={ticket.type}
                                 image={ticket.image_big}
@@ -85,6 +84,8 @@ const SearchPage = () => {
                                 ticketCount={ticket.package_tag}
                                 price={ticket.adult_price}
                                 price2={ticket.youth_price}
+                                company={ticket.company}
+                                id1={ticket.id}
                             />
                         ))}
                     </div>
@@ -94,8 +95,6 @@ const SearchPage = () => {
                     </div>
                 )}
             </div>
-
-         
         </div>
     );
 };

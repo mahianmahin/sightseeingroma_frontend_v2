@@ -31,7 +31,7 @@ const Success = () => {
                 <div className="flex flex-col items-center p-6 py-8 bg-white rounded-lg shadow-md w-full md:w-2/3 px-8">
                     {/* Success Icon */}
                     <div className="text-green-500 text-5xl mb-4">
-                        <img src="./Login/sent.png" alt="Payment Sent Icon" />
+                       
                     </div>
                     {/* Message */}
                     <h1 className="text-3xl font-bold text-gray-800 mb-2">

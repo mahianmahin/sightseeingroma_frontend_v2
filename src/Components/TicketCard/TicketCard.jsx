@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import { baseUrl } from "../../utilities/Utilities";
 import { useNavigate } from "react-router-dom";
 
-const TicketCard = ({ title, subtitle, image, duration, ticketCount, price, id , status, price2}) => {
+const TicketCard = ({ title, subtitle, image, duration, ticketCount, price, id , status, price2 , id1}) => {
     const navigate = useNavigate();
     
     
@@ -42,22 +42,22 @@ const TicketCard = ({ title, subtitle, image, duration, ticketCount, price, id ,
                 </div>
 
                 {/* Title */}
-                <h2 className="md:text-md font-bold text-gray-800">
+                <h2 className=" text-sm md:text-lg font-semibold  text-gray-800">
                     {title}
                 </h2>
 
                 {/* Tickets and Price */}
-                <div className="flex items-center justify-between mt-2">
+                <div className="flex items-center justify-between mt-0 md:mt-2">
                     <div className="flex items-center text-xs md:text-sm text-gray-500">
                         <LuTicket className="mr-1" />
-                        <span># {ticketCount}</span>
+                        <span># {id1}</span>
                     </div>
                 </div>
 
                 {/* Pricing */}
-                <div className="flex items-center mt-2 gap-1 whitespace-nowrap">
+                <div className="flex items-center mt-1 md:mt-2 gap-1 whitespace-nowrap">
     <h3 className="font-normal text-sm md:text-md">Start From</h3>
-    <span className="text-lg font-bold text-gray-800">€ {price}</span>
+    <span className="text-xs md:text-lg font-bold text-gray-800">€ {price}</span>
     <span className="hidden text-xs text-gray-500 sm:inline md:text-sm">(Per person)</span>
 </div>
 <div className="block sm:hidden text-xs text-gray-500 mt-1">(Per person)</div>
@@ -67,7 +67,7 @@ const TicketCard = ({ title, subtitle, image, duration, ticketCount, price, id ,
             {/* Button */}
            <div className="mb-4 mx-2">
            <button
-                className="w-full py-2 px-5 mt-3 text-white bg-2 md:rounded-lg rounded-3xl font-normal md:font-medium"
+                className="w-full py-2 px-5 mt-0 md:mt-3 text-white bg-2 md:rounded-lg rounded-3xl text-xs md:text-lg md:font-medium"
                 onClick={handleBuyNow} // Call the passed onClick handler
             >
                 Buy Tickets
