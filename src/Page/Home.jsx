@@ -14,7 +14,7 @@ import TicketSm from '../Components/Hero/TicketSm';
 const Home = () => {
     return (
         <div>
-          <div className="container mx-auto">
+          <div className="">
           
          <Hero></Hero>
 

@@ -7,8 +7,10 @@ import Navbar from "../Components/Navbar/Navbar";
 const Main = () => {
     return (
         <div>
-            <div className="container mx-auto">
+            <div>
+           
                 <Navbar></Navbar>
+           
             </div>
             <div>
                 <Outlet></Outlet>

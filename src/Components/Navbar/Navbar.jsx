@@ -29,30 +29,30 @@ const Navbar = () => {
     }
 
     return (
-        <div>
-            <div className="navbar bg-2 absolute container mx-auto text-white z-50">
+        <div className="">
+            <div className="navbar bg-2 absolute   text-white z-50">
                 {/* Navbar for small screens */}
                 <div className="navbar-start lg:hidden ">
                     <div className="dropdown ">
-                      <div className="flex items-center justify-between">
-                      <div
-                            tabIndex={0}
-                            role="button"
-                            onClick={() => setIsOpen(!isOpen)} // Toggle Dropdown
-                            className="btn btn-ghost lg:hidden"
-                        >
-                           <FiMenu  size={20} />
+                        <div className="flex items-center justify-between">
+                            <div
+                                tabIndex={0}
+                                role="button"
+                                onClick={() => setIsOpen(!isOpen)} // Toggle Dropdown
+                                className="btn btn-ghost lg:hidden"
+                            >
+                                <FiMenu size={20} />
+                            </div>
+                            <div className="">
+                            </div>
+                            <Link to={"/"}>
+                                <img
+                                    src="https://iili.io/2TmGVUb.png"
+                                    alt="Logo"
+                                    className="w-16 md:w-28 pl-0 md:pl-5"
+                                />
+                            </Link>
                         </div>
-                        <div className="">
-                      </div>
-                    <Link to={"/"}>
-                        <img
-                            src="https://iili.io/2TmGVUb.png"
-                            alt="Logo"
-                            className="w-16 md:w-28 pl-0 md:pl-5"
-                        />
-                    </Link>
-                </div>
 
                         {isOpen && (
                             <ul
@@ -112,7 +112,7 @@ const Navbar = () => {
                                     <Link to={"/login"}>
                                         <li>
                                             <a className="text-base font-semibold">
-                                                <TbLogout2  /> Log In
+                                                <TbLogout2 /> Log In
                                             </a>
                                         </li>
                                     </Link>
@@ -122,82 +122,105 @@ const Navbar = () => {
                     </div>
                 </div>
 
-                {/* Navbar center */}
-                <div className=" md:hidden hidden lg:block">
-                    <Link to={"/"}>
-                        <img
-                            src="https://iili.io/2TmGVUb.png"
-                            alt="Logo"
-                            className="w-16 md:w-28 pl-0 md:pl-5"
-                        />
-                    </Link>
+
+                <div className="  container mx-auto w-full">
+                    <div className=" md:hidden hidden lg:block">
+                        <Link to={"/"}>
+                            <img
+                                src="https://iili.io/2TmGVUb.png"
+                                alt="Logo"
+                                className="w-16 md:w-28 pl-0 md:pl-5"
+                            />
+                        </Link>
+                    </div>
+
+                    {/* Navbar for large screens */}
+                    <div className="navbar-end flex items-center  lg:flex lg:w-full ">
+                        <ul className="menu menu-horizontal px-1 font-medium text-lg text-white hidden lg:flex">
+                            <Link to={"/"}>
+                                <li>
+                                    <a>
+                                        <LuHome /> Home
+                                    </a>
+                                </li>
+                            </Link>
+                            <Link to={"/yourticket"}>
+                                <li>
+                                    <a>
+                                        <PiTicketBold /> Manage Bookings
+                                    </a>
+                                </li>
+                            </Link>
+                            <Link to={"/agentPoints"}>
+                                <li>
+                                    <a>
+                                        <MdOutlineLocationOn /> Agent Point
+                                    </a>
+                                </li>
+                            </Link>
+                            {
+                                isLoggedIn && (
+                                    <Link to={"/yourticket"}>
+                                        <li>
+                                            <a>
+                                                <FaUser /> Profile
+                                            </a>
+                                        </li>
+                                    </Link>
+                                )
+                            }
+
+                            {isLoggedIn ? (
+
+                                <div className="">
+                                    <button
+                                        onClick={logout}
+                                        className="btn btn-ghost text-2xl font-medium "
+
+                                    >
+
+                                        <HiOutlineLogout size={20} />
+                                    </button>
+                                </div>
+                            ) : (
+                                <button className="bg-1 px-2 md:px-4 py-2 h-10 md:h-12 w-20 md:w-28 rounded-md color-1 text-lg font-medium">
+                                    <Link to={"/login"}>Login</Link>
+                                </button>
+                            )}
+                        </ul>
+
+
+
+                    </div>
+
                 </div>
 
-                {/* Navbar for large screens */}
-                <div className="navbar-end flex items-center  lg:flex lg:w-full ">
-                    <ul className="menu menu-horizontal px-1 font-medium text-lg text-white hidden lg:flex">
-                        <Link to={"/"}>
-                            <li>
-                                <a>
-                                    <LuHome /> Home
-                                </a>
-                            </li>
-                        </Link>
-                        <Link to={"/yourticket"}>
-                            <li>
-                                <a>
-                                    <PiTicketBold /> Manage Bookings
-                                </a>
-                            </li>
-                        </Link>
-                        <Link to={"/agentPoints"}>
-                            <li>
-                                <a>
-                                    <MdOutlineLocationOn /> Agent Point
-                                </a>
-                            </li>
-                        </Link>
-                        {
-                            isLoggedIn && (
-                                <Link to={"/yourticket"}>
-                                    <li>
-                                        <a>
-                                            <FaUser /> Profile
-                                        </a>
-                                    </li>
-                                </Link>
-                            )
-                        }
-                    </ul>
-
-
-                    <div className="flex items-center space-x-1">
-                        {
-                            isLoggedIn && (
-                                <div className="block md:block lg:hidden">
-                                     <Link to={"/yourticket"}> <FaUser /></Link>
-                                </div>
-                            )
-                        }
-                        {/* Conditional rendering for Login/Logout button */}
-                        {isLoggedIn ? (
-
-                            <div className="">
-                                <button
-                                    onClick={logout}
-                                    className="btn btn-ghost text-2xl font-medium "
-
-                                >
-
-                                    <HiOutlineLogout size={20} />
-                                </button>
+                <div className="flex items-center  space-x-1">
+                    {
+                        isLoggedIn && (
+                            <div className="block md:block lg:hidden">
+                                <Link to={"/yourticket"}> <FaUser /></Link>
                             </div>
-                        ) : (
-                            <button className="bg-1 px-2 md:px-4 py-2 h-10 md:h-12 w-20 md:w-28 rounded-md color-1 text-lg font-medium">
-                                <Link to={"/login"}>Login</Link>
+                        )
+                    }
+                    {/* Conditional rendering for Login/Logout button */}
+                    {isLoggedIn ? (
+
+                        <div className=" block md:block lg:hidden">
+                            <button
+                                onClick={logout}
+                                className="btn btn-ghost text-2xl font-medium "
+
+                            >
+
+                                <HiOutlineLogout size={20} />
                             </button>
-                        )}
-                    </div>
+                        </div>
+                    ) : (
+                        <button className="bg-1 block md:block lg:hidden px-2 md:px-4 py-2 h-10 md:h-12 w-20 md:w-28 rounded-md color-1 text-lg font-medium">
+                            <Link to={"/login"}>Login</Link>
+                        </button>
+                    )}
                 </div>
             </div>
         </div>

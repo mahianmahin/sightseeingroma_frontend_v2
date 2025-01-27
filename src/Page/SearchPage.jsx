@@ -90,7 +90,7 @@ const SearchPage = () => {
                         ))}
                     </div>
                 ) : (
-                    <div className="text-center text-gray-600 text-lg">
+                    <div className="text-center my-28 text-gray-600 text-lg">
                         No tickets found. Please refine your search.
                     </div>
                 )}

@@ -58,7 +58,7 @@ const Ticket = () => {
     };
 
     return (
-        <div className="w-full md:w-auto px-4 lg:px-0 my-5">
+        <div className="w-full md:w-auto px-4 lg:px-0 my-5 z-30">
             <div className="flex flex-col lg:flex-row items-center justify-center p-6 bg-gray-200 text-black gap-6 lg:gap-10 rounded-lg shadow-md">
                 
                 {/* Select Bus Service */}

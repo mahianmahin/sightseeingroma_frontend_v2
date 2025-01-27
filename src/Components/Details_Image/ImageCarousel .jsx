@@ -14,7 +14,7 @@ const ImageCarousel = ({ images }) => {
   };
 
   return (
-    <div className="relative w-full">
+    <div className="relative w-full ">
       {/* Carousel Wrapper */}
       <div className="relative h-[400px] md:h-[500px] overflow-hidden rounded-lg">
         <img
