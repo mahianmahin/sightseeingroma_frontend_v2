@@ -15,9 +15,9 @@ const Contact = () => {
             {/* Contact Info */}
             <div className="text-left md:w-1/2 mb-6 md:mb-0">
                 <p className="py-2 md:py-4">Get In Touch</p>
-                <h2 className="text-2xl font-bold mb-2">From Comfort to Budget, Explore Ticket Options for Every Traveler</h2>
+                <h2 className=" text-lg md:text-3xl font-bold mb-2">From Comfort to Budget, Explore Ticket Options for Every Traveler</h2>
                 <p className="text-gray-600 mb-4">Seamless booking, diverse routes, and flexible schedules at your fingertips</p>
-                <ul className="space-y-2 font-bold">
+                <ul className="space-y-2 text-sm md:text-base font-bold">
                     <li className="flex items-center gap-2"><FaPhoneAlt /> 00393228076514</li>
                     <li className="flex items-center gap-2"><IoIosMailUnread /> hello@sightseeingroma.com</li>
                     <li className="flex items-center gap-2"><FaLocationDot /> Piazza d'Aracoeli, 8, 00186 Roma RM, Italy</li>

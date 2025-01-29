@@ -38,7 +38,7 @@ const Card = ({ title, subtitle, image, duration, ticketCount, price, id, compan
             <div className="p-2 md:p-4 flex flex-col flex-grow">
                 <div className="flex-grow">
                     {/* Subtitle & Duration */}
-                    <div className="flex justify-between items-center mb-2">
+                    <div className="flex justify-between items-start md:items-center flex-col md:flex-row mb-2">
                         <p className="text-xs sm:text-sm text-gray-500">{subtitle}</p>
                         <span className="flex items-center text-gray-500">
                             <FaRegClock className="w-3 h-3 sm:w-4 sm:h-4" />
