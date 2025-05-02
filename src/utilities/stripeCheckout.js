@@ -28,9 +28,13 @@ const handleStripeCheckout = (title, description, image, date, adult_count, yout
       fetch(`${baseUrl}create_checkout_session/`, {
         method: 'POST',
         body: formData,
-        headers: {
-          'Authorization': `Bearer ${window.localStorage['access']}`,
-        },
+        // headers: {
+        //   'Accept': '*/*',
+        //   'Content-Type': 'multipart/form-data; boundary=----WebKitFormBoundaryrEA5qjBhkEFlmZt5',
+        // },
+        // headers: {
+        //   'Authorization': `Bearer ${window.localStorage['access']}`,
+        // },
       })
       .then(response => {
         if (response.status === 401) {
