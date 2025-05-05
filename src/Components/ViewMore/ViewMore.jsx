@@ -7,25 +7,22 @@ import Banner2 from "../Banner2/Banner2";
 import TicketCard from "../TicketCard/TicketCard";
 
 const ViewMore = () => {
-    const [busPackages, setBusPackages] = useState([]); // For bus packages of the selected company
-    const [similar, setSimilar] = useState([]); // For similar bus packages
-    const { hours, company } = useParams(); // Get parameters from the route
-    const navigate = useNavigate(); // For navigation
-
-    console.log("Route Params:", { hours, company }); // Debugging log
+    const [busPackages, setBusPackages] = useState([]);
+    const [similar, setSimilar] = useState([]);
+    const { hours, company } = useParams();
+    const navigate = useNavigate();
 
     useEffect(() => {
-        axios.get(`${baseUrl}packages/`)
+        axios
+            .get(`${baseUrl}packages/`)
             .then((response) => {
                 const allPackages = response.data.bus_data || [];
 
-                // Filter by company
                 const companyPackages = allPackages.filter(
                     (item) => item.company.toLowerCase() === company?.toLowerCase()
                 );
                 setBusPackages(companyPackages);
 
-                // Filter by hours
                 const similarPackages = allPackages.filter(
                     (item) => item.duration === hours
                 );
@@ -36,24 +33,30 @@ const ViewMore = () => {
             });
     }, [hours, company]);
 
+    // Simplified Back Button
+    const handleBackClick = () => {
+        navigate(-1); // Always try to go back one step
+    };
+
     return (
         <div className="container mx-auto">
-            {/* Header Image */}
+            {/* Banner */}
             <Banner2
-                bannerImgmd={'/Banner/b8.png'}
-                bannerImgsm={'/Banner/b7.png'}
-                title={'Explore more with us'}
-                description={'Discover the best of Rome with our exclusive bus packages'}
+                bannerImgmd={"/Banner/b8.png"}
+                bannerImgsm={"/Banner/b7.png"}
+                title={"Explore more with us"}
+                description={"Discover the best of Rome with our exclusive bus packages"}
             />
 
             {/* Same Categories Section */}
             <div className="px-4 md:px-8">
                 <div className="py-7 md:py-10">
-                    <div className="block md:hidden mb-3">
-                        <button onClick={() => navigate(-1)}>
+                    {/* Mobile Back Button */}
+                    {/* <div className="block md:hidden mb-3">
+                        <button onClick={handleBackClick}> 
                             <FaArrowLeftLong size={20} />
                         </button>
-                    </div>
+                    </div> */}
                     <h1 className="text-2xl font-bold uppercase">Same Categories</h1>
                 </div>
 
@@ -76,7 +79,9 @@ const ViewMore = () => {
                         ))}
                     </div>
                 ) : (
-                    <p className="text-center text-gray-500">No packages available for this category.</p>
+                    <p className="text-center text-gray-500">
+                        No packages available for this category.
+                    </p>
                 )}
             </div>
 
@@ -105,7 +110,9 @@ const ViewMore = () => {
                         ))}
                     </div>
                 ) : (
-                    <p className="text-center text-gray-500">No similar options available.</p>
+                    <p className="text-center text-gray-500">
+                        No similar options available.
+                    </p>
                 )}
             </div>
         </div>

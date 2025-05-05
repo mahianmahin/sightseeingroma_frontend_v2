@@ -33,7 +33,6 @@ const Ticket = () => {
         };
         fetchData();
     }, []);
-
     
     const capitalizeWords = (str) =>
         str.replace(/\b\w/g, (char) => char.toUpperCase());
@@ -59,10 +58,10 @@ const Ticket = () => {
 
     return (
         <div className="w-full md:w-auto px-4 lg:px-0 my-5 z-30">
-            <div className="flex flex-col lg:flex-row items-center justify-center p-6 bg-gray-200 text-black gap-6 lg:gap-10 rounded-lg shadow-md">
+            <div className="flex flex-row items-center justify-center p-6 bg-gray-200 text-black gap-6 lg:gap-10 rounded-lg shadow-md">
                 
                 {/* Select Bus Service */}
-                <div className="flex flex-col w-full lg:w-auto">
+                <div className="flex flex-col w-full lg:w-auto max-w-xs sm:max-w-md">
                     <label className="text-base md:text-lg font-semibold mb-2">
                         Select Bus Service
                     </label>
@@ -92,7 +91,7 @@ const Ticket = () => {
                 </div>
 
                 {/* Select Ticket Type */}
-                <div className="flex flex-col w-full lg:w-auto">
+                <div className="flex flex-col w-full lg:w-auto max-w-xs sm:max-w-md">
                     <label className="text-base md:text-lg font-semibold mb-2">
                         Select Ticket Type
                     </label>

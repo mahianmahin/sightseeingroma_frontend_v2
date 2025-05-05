@@ -53,7 +53,7 @@ const Login = () => {
     };
 
     return (
-        <div className="flex flex-col md:flex-row container h-screen md:h-full mx-auto relative bg-[url('/Login/logins.png')] md:bg-[url('/Login/bgmd.png')] bg-cover bg-center">
+        <div className="flex flex-col md:flex-row h-screen mx-auto relative bg-[url('/Login/logins.png')] md:bg-[url('/Login/bgmd.png')] bg-cover bg-center">
             {/* Left Image Section */}
             <div className="md:w-1/2 w-full relative hidden md:block">
                 <img
@@ -72,7 +72,7 @@ const Login = () => {
 
             {/* Mobile Logo */}
             <div className="block md:hidden">
-                <div className="text-center flex justify-center py-10 mb-14">
+                <div className="text-center flex justify-center py-10 mb-5">
                     <img
                         src="./Login/Logo.png"
                         alt="Logo"

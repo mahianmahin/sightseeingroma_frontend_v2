@@ -206,7 +206,11 @@ const ManageBookingMd = () => {
               <span>€ {totalPrice}</span>
             </div>
             <button
-              className="w-full bg-red-800 text-white py-2 rounded-lg"
+              className={`w-full py-2 rounded ${
+                totalPrice === 0
+                  ? "bg-gray-300 cursor-not-allowed"
+                  : "bg-2 text-white hover:bg-red-800"
+              }`}
               disabled={totalPrice === 0}
               onClick={() => handleStripeCheckoutFunction(adultCount, youthCount, 0)} // Assuming infant count is 0 for now
             >

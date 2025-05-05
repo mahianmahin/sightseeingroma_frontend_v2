@@ -25,6 +25,7 @@ import SearchPage from '../Page/SearchPage'
 import ViewMore from '../Components/ViewMore/ViewMore'
 import Success from '../Page/Success'
 import ProcessTicketsV2 from './../Page/ProcessTicketsV2';
+import PaymentCancel from '../Page/PaymentCancel'
 
 
 
@@ -110,9 +111,14 @@ export const router = createBrowserRouter([
 
       },
       {
+        path: '/cancel/',
+        element: <PaymentCancel></PaymentCancel>
+      },
+      {
         path: '/:code/',
         element: <ProcessTicketsV2></ProcessTicketsV2>
-      }
+      },
+     
     
     ],
 

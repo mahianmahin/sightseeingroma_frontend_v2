@@ -4,10 +4,11 @@ import OfferCard from "../Components/OfferCard/OfferCard";
 import OfferBanner from './../Components/OfferBanner/OfferBanner';
 import { FaArrowLeftLong } from "react-icons/fa6";
 import OfferBannerMd from "../Components/OfferBanner/OfferBannerMd";
-
+import { useNavigate } from "react-router-dom";  // Import useNavigate
 
 const OfferPage = () => {
     const [tickets, setTickets] = useState([]);
+    const navigate = useNavigate();  // Create navigate function
 
     // Fetch data using Axios
     useEffect(() => {
@@ -25,22 +26,27 @@ const OfferPage = () => {
         console.log("Ticket clicked at index:", index);
     };
 
-
+    // Handle the back button click
+    const handleBackClick = () => {
+        navigate(-1);  // Navigate to the previous page
+    };
 
     return (
         <div className="container mx-auto">
-           <div className="block md:hidden">
-           <OfferBanner></OfferBanner>
-           </div>
+            <div className="block md:hidden">
+                <OfferBanner />
+            </div>
 
-           <div className="hidden md:block">
-            <OfferBannerMd></OfferBannerMd>
-           </div>
-            <div className="px-4 md:px-10 ">
-                <div className="block md:hidden mb-3 pt-7 ">
-                    <FaArrowLeftLong size={20}></FaArrowLeftLong>
+            <div className="hidden md:block">
+                <OfferBannerMd />
+            </div>
+            <div className="px-4 md:px-10">
+                <div className="block md:hidden mb-3 pt-7">
+                    <button onClick={handleBackClick}>  {/* Add the click handler */}
+                        <FaArrowLeftLong size={20} />
+                    </button>
                 </div>
-                <div className="py-4 md:py-14 ">
+                <div className="py-4 md:py-14">
                     <h1 className="text-2xl md:text-3xl font-bold">Exciting Deals Just for You!</h1>
                     <p className="text-gray-600">
                         Save big on your next trip with our exclusive promotions

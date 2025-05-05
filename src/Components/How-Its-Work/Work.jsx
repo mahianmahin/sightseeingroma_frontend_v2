@@ -38,8 +38,8 @@ const Work = () => {
                         </div>
                     </div>
 
-                    {/* Step 3 */}
-                    <div className="flex items-start space-x-4 relative">
+                   
+                    {/* <div className="flex items-start space-x-4 relative">
                         <div className="bg-white rounded-full p-2 z-10">
                             <FaQrcode className="text-[#7F001D]" size={24} />
                         </div>
@@ -50,8 +50,7 @@ const Work = () => {
                         </div>
                     </div>
 
-                    {/* Step 4 */}
-                    <div className="flex items-start space-x-4 relative">
+                   <div className="flex items-start space-x-4 relative">
                         <div className="bg-white rounded-full p-2 z-10">
                             <FaMapMarkerAlt className="text-[#7F001D]" size={24} />
                         </div>
@@ -60,7 +59,7 @@ const Work = () => {
                             <h3 className="text-lg font-semibold">Show QR Code at Agent Point</h3>
                             <p className="text-sm">Get a QR code from our website after successful payment process completion.</p>
                         </div>
-                    </div>
+                    </div>  */}
 
                     {/* Step 5 */}
                     <div className="flex items-start space-x-4 relative">
@@ -68,7 +67,7 @@ const Work = () => {
                             <FaCheckCircle className="text-[#7F001D]" size={24} />
                         </div>
                         <div>
-                            <div className="text-sm font-bold text-yellow-500">05</div>
+                            <div className="text-sm font-bold text-yellow-500">03</div>
                             <h3 className="text-lg font-semibold">You are Good to Go</h3>
                             <p className="text-sm">Collect your ticket from our agent point and find your ideal ride here</p>
                         </div>

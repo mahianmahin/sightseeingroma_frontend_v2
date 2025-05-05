@@ -84,18 +84,18 @@ const Regi = () => {
   };
 
   return (
-    <div className="flex flex-col md:flex-row container h-screen md:h-full mx-auto relative bg-[url('/Login/logins.png')] md:bg-[url('/Login/bgmd.png')] bg-cover bg-center">
+    <div className="flex flex-col  md:flex-row h-screen md:h-auto relative bg-[url('/Login/logins.png')] md:bg-[url('/Login/bgmd.png')] bg-cover bg-center">
       <div className="md:w-1/2 w-full relative hidden md:block">
         <img
           src="./Login/regi.png"
           alt="Bus View"
-          className="w-full h-screen object-cover"
+          className="w-full   object-cover"
         />
         <div className="absolute top-4 left-4">
           <img src="./Login/Logo.png" alt="Logo" className="h-16" />
         </div>
       </div>
-      <div className="block md:hidden text-center flex justify-center py-10 mb-14">
+      <div className="text-center block md:hidden flex justify-center py-10 mb-5">
         <img src="./Login/Logo.png" alt="Logo" />
       </div>
       <div className="w-full md:w-1/2 flex justify-center items-center px-5">
