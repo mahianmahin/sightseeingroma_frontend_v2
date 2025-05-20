@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from "react";
 import axios from "axios";
-import TicketCard from "../Components/TicketCard/TicketCard";
-import Similar from "./Similar";
+import React, { useEffect, useState } from "react";
 import { FaArrowLeftLong } from "react-icons/fa6";
+import MetaTags from "../Components/MetaTags/MetaTags";
+import TicketCard from "../Components/TicketCard/TicketCard";
 import { baseUrl } from '../utilities/Utilities';
+import Similar from "./Similar";
+
 const BigBus = () => {
     const [busPackages, setBusPackages] = useState([]);
 
@@ -26,61 +28,67 @@ const BigBus = () => {
  
 
     return (
-        <div className="container mx-auto">
-            {/* Full-width responsive image */}
-            <div className="hidden md:block">
-                <img
-                    src="./Bigbus/bigbus.png"
-                    alt="Big Bus Rome"
-                    className="w-full object-contain"
-                />
-            </div>
-
-            <div className="block md:hidden">
-                <img
-                    src="./Bigbus/bigbus1.png"
-                    alt="Big Bus Rome"
-                    className="w-full object-contain"
-                />
-            </div>
-           
-            <div className="px-4 md:px-8">
-           
-                <div className="py-7 md:py-10 ">
-               <div className="block md:hidden mb-3 ">
-                <FaArrowLeftLong size={20}></FaArrowLeftLong>
-               </div>
-
-                    <h1 className="text-3xl font-bold">Big Bus Service</h1>
-                    <p className="text-gray-600">
-                        Travel in style with our big bus services
-                    </p>
+        <>
+            <MetaTags 
+                title="Big Bus Rome Hop-On Hop-Off Tours | Sightseeing Roma"
+                description="Experience Rome's top attractions with Big Bus hop-on hop-off tours. Enjoy panoramic views, multilingual commentary, and flexible sightseeing options in the Eternal City."
+            />
+            <div className="container mx-auto">
+                {/* Full-width responsive image */}
+                <div className="hidden md:block">
+                    <img
+                        src="./Bigbus/bigbus.png"
+                        alt="Big Bus Rome"
+                        className="w-full object-contain"
+                    />
                 </div>
 
-                {/* Render tickets dynamically */}
-                <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-2 md:gap-x-10">
-                    {busPackages.map((ticket, index) => (
-                        <TicketCard
-                            key={ticket}
-                            id={ticket.package_tag}
-                            status={ticket.status}
-                            title={ticket.title}
-                            subtitle={ticket.type}
-                            image={ticket.image_big}
-                            duration={ticket.duration}
-                            ticketCount={ticket.package_tag}
-                            price={ticket.adult_price}
-                            price2={ticket.youth_price}
-                            id1={ticket.id}
-                        />
-                    ))}
+                <div className="block md:hidden">
+                    <img
+                        src="./Bigbus/bigbus1.png"
+                        alt="Big Bus Rome"
+                        className="w-full object-contain"
+                    />
                 </div>
-            </div>
+               
+                <div className="px-4 md:px-8">
+               
+                    <div className="py-7 md:py-10 ">
+                   <div className="block md:hidden mb-3 ">
+                    <FaArrowLeftLong size={20}></FaArrowLeftLong>
+                   </div>
 
-         <div className="mb-12 md:mb-0">
-         <Similar />
-         </div>
-        </div>
+                        <h1 className="text-3xl font-bold">Big Bus Service</h1>
+                        <p className="text-gray-600">
+                            Travel in style with our big bus services
+                        </p>
+                    </div>
+
+                    {/* Render tickets dynamically */}
+                    <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-2 md:gap-x-10">
+                        {busPackages.map((ticket, index) => (
+                            <TicketCard
+                                key={ticket}
+                                id={ticket.package_tag}
+                                status={ticket.status}
+                                title={ticket.title}
+                                subtitle={ticket.type}
+                                image={ticket.image_big}
+                                duration={ticket.duration}
+                                ticketCount={ticket.package_tag}
+                                price={ticket.adult_price}
+                                price2={ticket.youth_price}
+                                id1={ticket.id}
+                            />
+                        ))}
+                    </div>
+                </div>
+
+             <div className="mb-12 md:mb-0">
+             <Similar />
+             </div>
+            </div>
+        </>
     );
 };
 
