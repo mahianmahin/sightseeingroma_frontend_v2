@@ -1,7 +1,9 @@
+import HelmetWrapper from '../utilities/HelmetWrapper';
 import Banner2 from './../Components/Banner2/Banner2';
 
 const AgentPoint = () => {
-    return (
+    return ( <>
+        <HelmetWrapper title="Agent Point—Book Tickets & Get Travel Advice | Sightseeing Roma" description="Visit our Agent Points in Rome to easily book bus tour tickets, receive local travel advice, and access exclusive deals with Sightseeing Roma." />
         <div className="container mx-auto ">
             {/* Banner Section */}
             <Banner2
@@ -53,7 +55,7 @@ const AgentPoint = () => {
                     </div>
                 </div>
         </div>
-    );
+        </>);
 };
 
 export default AgentPoint;

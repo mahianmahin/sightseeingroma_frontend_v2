@@ -1,8 +1,8 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { Helmet } from "react-helmet-async";
 import { FaArrowLeftLong } from "react-icons/fa6";
 import TicketCard from "../Components/TicketCard/TicketCard";
+import HelmetWrapper from "../utilities/HelmetWrapper";
 import { baseUrl } from '../utilities/Utilities';
 import Similar from "./Similar";
 
@@ -29,10 +29,7 @@ const BigBus = () => {
 
     return (
         <>
-            <Helmet>
-                <title>Big Bus Rome Hop-On Hop-Off Tours | Sightseeing Roma</title>
-                <meta name="description" content="Experience Rome's top attractions with Big Bus hop-on hop-off tours. Enjoy panoramic views, multilingual commentary, and flexible sightseeing options in the Eternal City." />
-            </Helmet>
+            <HelmetWrapper title="Explore Rome with Big Bus | Book Tickets at Sightseeing Roma" description="Explore Rome with Big Bus hop-on hop-off tours. Choose from 24h, 48h, or 72h tickets, Travel in style, enjoy panoramic views, and discover top landmarks." />
             <div className="container mx-auto">
                 {/* Full-width responsive image */}
                 <div className="hidden md:block">

@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
 import axios from "axios";
-import TicketCard from "../Components/TicketCard/TicketCard";
-import Similar from "./Similar";
+import React, { useEffect, useState } from "react";
 import { FaArrowLeftLong } from "react-icons/fa6";
+import TicketCard from "../Components/TicketCard/TicketCard";
+import HelmetWrapper from "../utilities/HelmetWrapper";
 import { baseUrl } from '../utilities/Utilities';
+import Similar from "./Similar";
 const GreenLine = () => {
     const [greenLinePackages, setgreenLinePackages] = useState([]);
 
@@ -24,7 +25,8 @@ const GreenLine = () => {
 
   
 
-    return (
+    return (<>
+        <HelmetWrapper title="Discover Rome via Green Line Bus | Get Tickets at Sightseeing Roma" description="Book Green Line hop-on-hop-off Rome tours. Choose from 24, 48, 72-hour,  daily tickets or 3 passes and explore top sights with comfort and convenience." />
         <div className="container mx-auto">
             {/* Full-width responsive image */}
             <div className="hidden md:block">
@@ -80,7 +82,7 @@ const GreenLine = () => {
          <Similar />
          </div>
         </div>
-    );
+        </>);
 };
 
 export default GreenLine;
