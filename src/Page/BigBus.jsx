@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import { Helmet } from "react-helmet-async";
 import { FaArrowLeftLong } from "react-icons/fa6";
-import MetaTags from "../Components/MetaTags/MetaTags";
 import TicketCard from "../Components/TicketCard/TicketCard";
 import { baseUrl } from '../utilities/Utilities';
 import Similar from "./Similar";
@@ -29,10 +29,10 @@ const BigBus = () => {
 
     return (
         <>
-            <MetaTags 
-                title="Big Bus Rome Hop-On Hop-Off Tours | Sightseeing Roma"
-                description="Experience Rome's top attractions with Big Bus hop-on hop-off tours. Enjoy panoramic views, multilingual commentary, and flexible sightseeing options in the Eternal City."
-            />
+            <Helmet>
+                <title>Big Bus Rome Hop-On Hop-Off Tours | Sightseeing Roma</title>
+                <meta name="description" content="Experience Rome's top attractions with Big Bus hop-on hop-off tours. Enjoy panoramic views, multilingual commentary, and flexible sightseeing options in the Eternal City." />
+            </Helmet>
             <div className="container mx-auto">
                 {/* Full-width responsive image */}
                 <div className="hidden md:block">

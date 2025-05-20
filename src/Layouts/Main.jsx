@@ -1,15 +1,15 @@
+import { Helmet } from "react-helmet-async";
 import { Outlet } from "react-router-dom";
 import Footer from "../Components/Footer/Footer";
-import MetaTags from "../Components/MetaTags/MetaTags";
 import Navbar from "../Components/Navbar/Navbar";
 
 const Main = () => {
     return (
         <div>
-            <MetaTags 
-                title="Sightseeing Roma"
-                description="Discover Rome with Sightseeing Roma - Your trusted partner for Rome tours and tickets"
-            />
+            <Helmet>
+                <title>Sightseeing Roma</title>
+                <meta name="description" content="Discover Rome with Sightseeing Roma - Your trusted partner for Rome tours and tickets" />
+            </Helmet>
             <div>
                 <Navbar></Navbar>
             </div>
