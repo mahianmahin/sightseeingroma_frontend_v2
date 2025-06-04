@@ -9,8 +9,8 @@ const handleStripeCheckout = (title, description, image, date, adult_count, yout
     loaderTrigger(true);
   }
 
-  // Replace with your actual Stripe publishable key
-  loadStripe('pk_live_51Q1UzzB3ufkKO0saWP9iXcMVAGxS6IAC73absbNhduMfAwbZmyWkFWgHLLIWspg5nckegmOAoCzLrnZcqnzP2IY700fAxBnAaP')
+  // new publishable key from the new stripe account - 04/06/2025
+  loadStripe('pk_live_51RUF9vDVqSXnpb2PoAQmiqLb01JmshH8xVAaa73g5eeBxa8wduq5pfIt0sHWWLw5MkpyfQEv78asGbqOlOmiFAXY00MH7pQVHr')
     .then(stripe => {
       // Create a new FormData object and append the form data
       const formData = new FormData();

@@ -1,31 +1,32 @@
 import { createBrowserRouter } from 'react-router-dom'
-import Main from '../Layouts/Main'
-import Home from '../Page/Home'
-import BigBus from '../Page/BigBus'
-import GreenLine from '../Page/GreenLine'
-import LoveRome from '../Page/LoveRome'
-import IOBus from '../Page/IOBus'
-import CitySh from '../Page/CitySh'
-import AboutUs from '../Page/AboutUs'
-import TermsCondition from '../Page/Terms&Condition'
-import ReturnPolicy from '../Page/ReturnPolicy'
-import Refund from '../Page/Refund'
-import AgentPoint from '../Page/AgentPoint'
-import OfferPage from '../Page/OfferPage'
-import Your_Purchased_Tickets from '../Page/Your_Purchased_Tickets'
-import Login from '../Components/LoginComponent/Login/Login'
-import Regi from '../Components/LoginComponent/Registation/Regi'
-import ForgotPass from '../Components/LoginComponent/ForgotPass/ForgotPass'
 import EmailSent from '../Components/LoginComponent/EmailSent/EmailSent'
+import ForgotPass from '../Components/LoginComponent/ForgotPass/ForgotPass'
+import Login from '../Components/LoginComponent/Login/Login'
 import NewPass from '../Components/LoginComponent/NewPass/NewPass'
+import Regi from '../Components/LoginComponent/Registation/Regi'
 import Updated from '../Components/LoginComponent/Updated/Updated'
-import PaymentSuccess from '../Page/PaymentSuccess'
-import ManageBooking from '../Page/ManageBooking'
-import SearchPage from '../Page/SearchPage'
 import ViewMore from '../Components/ViewMore/ViewMore'
-import Success from '../Page/Success'
-import ProcessTicketsV2 from './../Page/ProcessTicketsV2';
+import Main from '../Layouts/Main'
+import AboutUs from '../Page/AboutUs'
+import AgentPoint from '../Page/AgentPoint'
+import BigBus from '../Page/BigBus'
+import CitySh from '../Page/CitySh'
+import GreenLine from '../Page/GreenLine'
+import Home from '../Page/Home'
+import IOBus from '../Page/IOBus'
+import LoveRome from '../Page/LoveRome'
+import ManageBooking from '../Page/ManageBooking'
+import NotFound from '../Page/NotFound'
+import OfferPage from '../Page/OfferPage'
 import PaymentCancel from '../Page/PaymentCancel'
+import PaymentSuccess from '../Page/PaymentSuccess'
+import Refund from '../Page/Refund'
+import ReturnPolicy from '../Page/ReturnPolicy'
+import SearchPage from '../Page/SearchPage'
+import Success from '../Page/Success'
+import TermsCondition from '../Page/Terms&Condition'
+import Your_Purchased_Tickets from '../Page/Your_Purchased_Tickets'
+import ProcessTicketsV2 from './../Page/ProcessTicketsV2'
 
 
 
@@ -96,8 +97,8 @@ export const router = createBrowserRouter([
       {
         path: '/manageBookings/:status/:id',
         element: <ManageBooking></ManageBooking>
-       
-      },{
+      },
+      {
         path: '/search',
         element: <SearchPage></SearchPage>
       },
@@ -108,21 +109,20 @@ export const router = createBrowserRouter([
       {
         path:'/success/:unique_id/',
         element: <Success></Success>
-
       },
       {
         path: '/cancel/',
         element: <PaymentCancel></PaymentCancel>
       },
       {
-        path: '/:code/',
+        path: '/verify/:code/',
         element: <ProcessTicketsV2></ProcessTicketsV2>
       },
-     
-    
+      {
+        path: '*',
+        element: <NotFound />
+      }
     ],
-
-    
   },
   {
     path: '/login',
@@ -148,5 +148,4 @@ export const router = createBrowserRouter([
     path: '/updated',
     element: <Updated></Updated>
   }
- 
 ])
