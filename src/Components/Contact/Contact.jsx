@@ -1,6 +1,6 @@
 import { FaPhoneAlt } from "react-icons/fa";
-import { IoIosMailUnread } from "react-icons/io";
 import { FaLocationDot } from "react-icons/fa6";
+import { IoIosMailUnread } from "react-icons/io";
 
 const Contact = () => {
     return (
@@ -18,7 +18,7 @@ const Contact = () => {
                 <h2 className=" text-lg md:text-3xl font-bold mb-2">From Comfort to Budget, Explore Ticket Options for Every Traveler</h2>
                 <p className="text-gray-600 mb-4">Seamless booking, diverse routes, and flexible schedules at your fingertips</p>
                 <ul className="space-y-2 text-sm md:text-base font-bold">
-                    <li className="flex items-center gap-2"><FaPhoneAlt /> 00393228076514</li>
+                    <li className="flex items-center gap-2"><FaPhoneAlt /> +393286076514</li>
                     <li className="flex items-center gap-2"><IoIosMailUnread /> hello@sightseeingroma.com</li>
                     <li className="flex items-center gap-2"><FaLocationDot /> Piazza d'Aracoeli, 8, 00186 Roma RM, Italy</li>
                 </ul>

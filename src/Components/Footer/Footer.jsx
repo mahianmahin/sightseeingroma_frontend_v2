@@ -1,8 +1,50 @@
-
 import '@fortawesome/fontawesome-free/css/all.min.css';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 const Footer = () => {
+    const [folders, setFolders] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        const fetchFolders = async () => {
+            try {
+                const response = await fetch("https://sightseeingroma.pythonanywhere.com/packages/");
+                if (!response.ok) {
+                    throw new Error("Failed to fetch data");
+                }
+                const data = await response.json();
+                // Filter only active folders
+                const activeFolders = data.folders.filter(folder => folder.active);
+                setFolders(activeFolders);
+            } catch (error) {
+                console.error("Error fetching folders:", error);
+                setError("Failed to load bus services. Please try again later.");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchFolders();
+    }, []);
+
+    // Function to generate route path from folder name
+    const getRoutePath = (folderName) => {
+        // Map folder names to their corresponding routes
+        const routeMap = {
+            'big bus': '/bigbus',
+            'green line': '/greenline',
+            'io_bus': '/iobus',
+            'city sightseeing': '/city',
+            'i love rome': '/loverome'
+        };
+        
+        // Convert to lowercase for case-insensitive matching
+        const normalizedName = folderName.toLowerCase();
+        return routeMap[normalizedName] || `/${normalizedName.replace(/\s+/g, '')}`;
+    };
+
     return (
         <div className="bg-black font-color-1 py-10 px-2 md:px-4">
             <div className="container mx-auto px-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -21,14 +63,19 @@ const Footer = () => {
                     {/* Bus Services */}
                     <div className=" md:text-left">
                         <h3 className="font-semibold pb-4 text-lg">Bus Services</h3>
+                        
                         <ul className="flex flex-col space-y-2 text-sm">
-                            <Link to={"/bigBus"}>  <li>Big Bus</li></Link>
-                            <Link to={"/greenLine"}>  <li>Green Line</li></Link>
-                            <Link to={"/loveRome"}>  <li>I Love Rome</li></Link>
-                            <Link to={"/iobus"}>  <li>IO Bus</li></Link>
-                            <Link to={"/city"}>  <li>CitySightseeing</li></Link>
-
-
+                            {loading ? (
+                                <li>Loading services...</li>
+                            ) : error ? (
+                                <li className="text-red-500">{error}</li>
+                            ) : (
+                                folders.map((folder) => (
+                                    <Link key={folder.id} to={getRoutePath(folder.name)}>
+                                        <li>{folder.name}</li>
+                                    </Link>
+                                ))
+                            )}
                         </ul>
                     </div>
 
@@ -40,12 +87,12 @@ const Footer = () => {
                             <Link to={'/terms'}><li>Terms & Conditions</li></Link>
                             <Link to={'/returnPolicy'}><li>Return Policy</li></Link>
                             <Link to={'/refund'}><li>Refund Policy</li></Link>
-                            <li>Privacy Policy</li>
+                            {/* <li>Privacy Policy</li> */}
                         </ul>
                     </div>
                 </div>
 
-                {/* Stay Updated */}
+                {/* Newsletter */}
                 <div className=" md:text-left">
                     <h3 className="font-semibold pb-4 text-lg">Stay Updated</h3>
                     <p className="text-sm mb-4">Sign up to receive exclusive offers, travel tips, and the latest bus routes directly to your inbox.</p>
@@ -58,7 +105,7 @@ const Footer = () => {
                         <button
                             className="bg-yellow-500 text-black font-semibold px-2 sm:px-2 py-2 text-sm sm:text-base w-auto sm:w-36 md:w-40 rounded-r whitespace-nowrap"
                         >
-                            Buy Ticket
+                            HOP IN!
                         </button>
                     </div>
 
@@ -71,7 +118,7 @@ const Footer = () => {
                 </div>
             </div>
 
-            {/* Bottom Section */}
+            {/* Credits section */}
             <div className="container mx-auto px-4 mt-8 border-t border-gray-700 pt-4 flex flex-col-reverse md:flex-row items-start md:items-center justify-between text-sm space-y-4 md:space-y-0">
                 <p>© All Rights Reserved to Sightseeing Roma</p>
 
@@ -79,11 +126,16 @@ const Footer = () => {
 
                 {/* Social Media Icons */}
                 <div className="flex space-x-4 text-lg pb-3 md:pb-0">
-                    <a href="#" className="hover:text-gray-400"><i className="fab fa-facebook-f"></i></a>
-                    <a href="#" className="hover:text-gray-400"><i className="fab fa-youtube"></i></a>
-                    <a href="#" className="hover:text-gray-400"><i className="fab fa-instagram"></i></a>
+                    <a href="https://www.facebook.com/sightseeingroma" className="hover:text-gray-400"><i className="fab fa-facebook-f"></i></a>
+                    {/* <a href="#" className="hover:text-gray-400"><i className="fab fa-youtube"></i></a> */}
+                    <a href="https://www.instagram.com/sightseeingroma" className="hover:text-gray-400"><i className="fab fa-instagram"></i></a>
                 </div>
             </div>
+            
+            <div className="container mx-auto px-4 border-gray-700 flex flex-col-reverse md:flex-row items-start md:items-center justify-between text-sm space-y-4 md:space-y-0">
+                <p>Designed & Developed by <a href="https://wa.me/8801762142364" target="_blank" rel="noopener noreferrer" className="text-yellow-500">Mahian Mahin</a>.</p>
+            </div>
+
         </div>
     );
 };
