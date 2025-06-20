@@ -10,7 +10,7 @@ const handleStripeCheckout = (title, description, image, date, adult_count, yout
   }
 
   let key = ''
-  let mode = "test"
+  let mode = "live"
 
   if (mode === "live") {
     key = 'pk_live_51RUF9vDVqSXnpb2PoAQmiqLb01JmshH8xVAaa73g5eeBxa8wduq5pfIt0sHWWLw5MkpyfQEv78asGbqOlOmiFAXY00MH7pQVHr'
