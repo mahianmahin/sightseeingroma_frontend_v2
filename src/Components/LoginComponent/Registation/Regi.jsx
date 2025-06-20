@@ -109,35 +109,22 @@ const Regi = () => {
           </button>
           <h2 className="text-4xl font-bold mb-4 md:text-start">Registration</h2>
           <p className="text-gray-500 mb-4 md:text-start">
-            Create an account to book tickets easily
+            Create an account to book tickets easily.
           </p>
+
+          {/* registration form */}
           <form onSubmit={handleSubmit}>
+
             <div className="mb-4">
-              <label htmlFor="username" className="block font-bold mb-1">
-                User name
-              </label>
-              <input
-                type="text"
-                id="username"
-                className="w-full px-4 py-2 border rounded-lg bg-[#F2F2F7] focus:outline-none focus:ring-2 focus:ring-red-900"
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
-                required
-              />
+              <label htmlFor="username" className="block font-bold mb-1">User name</label>
+              <input type="text" id="username" className="w-full px-4 py-2 border rounded-lg bg-[#F2F2F7] focus:outline-none focus:ring-2 focus:ring-red-900" value={fullName} onChange={(e) => setFullName(e.target.value)} required/>
             </div>
+
             <div className="mb-4">
-              <label htmlFor="email" className="block font-bold mb-1">
-                Email address
-              </label>
-              <input
-                type="email"
-                id="email"
-                className="w-full px-4 py-2 border rounded-lg bg-[#F2F2F7] focus:outline-none focus:ring-2 focus:ring-red-900"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
+              <label htmlFor="email" className="block font-bold mb-1">Email address</label>
+              <input type="email" id="email" className="w-full px-4 py-2 border rounded-lg bg-[#F2F2F7] focus:outline-none focus:ring-2 focus:ring-red-900" value={email} onChange={(e) => setEmail(e.target.value)} required/>
             </div>
+
             <div className="mb-4">
               <label htmlFor="phone-number" className="block font-bold mb-1">
                 Phone number

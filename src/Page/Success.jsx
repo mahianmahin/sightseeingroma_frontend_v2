@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { baseUrl, baseUrlHashless } from "../utilities/Utilities";
+import qr_loader from "../assets/qr_loader.webp";
+// import qr_loader from "../assets/qr.png";
 
 
 const Success = () => {
@@ -11,9 +13,6 @@ const Success = () => {
    useEffect(() => {
         fetch(`${baseUrl}success/${unique_id}/`, {
             method: 'GET',
-            headers: {
-            'Authorization': `Bearer ${window.localStorage['access']}`,
-            }
         })
         .then(response => {
             if (response.status === 401) {
@@ -33,19 +32,39 @@ const Success = () => {
                     <div className="text-green-500 text-5xl mb-4">
                        
                     </div>
+                    
                     {/* Message */}
-                    <h1 className="text-3xl font-bold text-gray-800 mb-2">
+                    <h1 className="text-3xl text-center font-bold text-gray-800 mb-2 d-flex justify-center align-items-center">
                         Payment Successful!
                     </h1>
+                    
                     {/* QR Code */}
-                 <img src={`${baseUrlHashless}${url}`} alt="qr_code" />
+                    {url ? <img src={`${baseUrlHashless}${url}`} alt="qr_code" className="w-64 h-64" /> : <img src={qr_loader} alt="qr_loader" className="w-45 h-40" />}
+                    
                     {/* Download QR Button */}
                     <button
                         type="button"
-                        className="px-4 bg-2 mt-3 mb-5 md:mb-7 text-white py-2 rounded-full md:rounded-lg hover:bg-red-800 transition"
+                        className="w-1/2 font-bold px-4 bg-2 mt-3 mb-5 md:mb-7 text-white py-2 rounded md:rounded-lg hover:bg-red-800 transition"
+                        onClick={async () => {
+                            if (!url) return;
+                            try {
+                                const response = await fetch(`${baseUrlHashless}${url}`);
+                                const blob = await response.blob();
+                                const link = document.createElement('a');
+                                link.href = window.URL.createObjectURL(blob);
+                                link.download = 'ticket_qr_code.png';
+                                document.body.appendChild(link);
+                                link.click();
+                                document.body.removeChild(link);
+                                window.URL.revokeObjectURL(link.href);
+                            } catch (e) {
+                                alert('Failed to download QR code.');
+                            }
+                        }}
                     >
-                      <a href={`${baseUrlHashless}${url}`}  download>save</a>
+                        Download QR Code
                     </button>
+                    
                     {/* Location Information */}
                     <p className="mt-4 text-center font-bold text-gray-700">
                         Show the QR code at the meeting point below:
