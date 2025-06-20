@@ -9,6 +9,7 @@ import { TbLogin2, TbLogout2 } from "react-icons/tb";
 import { HiOutlineLogout } from "react-icons/hi";
 import { FaUser } from "react-icons/fa";
 import { FiMenu } from "react-icons/fi";
+import logo from "../../assets/Logo.png";
 
 import { useState, useEffect, useRef } from "react";
 import useAuthenticate from "../../hooks/seAuthenticate";
@@ -67,13 +68,12 @@ const Navbar = () => {
                             </div>
 
                             <Link to={"/"}>
+                                
                                 <div className="w-full flex justify-center items-center">
-                                    <img
-                                        src="https://iili.io/2TmGVUb.png"
-                                        alt="Logo"
-                                        className="min-w-20"
-                                    />
+                                    <img src={logo} alt="Logo" className="w-24 h-auto sm:w-28 md:w-32 lg:w-36 xl:w-40 min-w-16 max-w-xs"/>
                                 </div>
+
+                                
                             </Link>
                         </div>
 
