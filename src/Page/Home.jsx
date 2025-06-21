@@ -2,7 +2,7 @@ import Banner from '../Components/Banner/Banner';
 import Contact from '../Components/Contact/Contact';
 import Hero from '../Components/Hero/Hero';
 import HeroBottom from '../Components/Hero/HeroBottom';
-import TicketSm from '../Components/Hero/TicketSm';
+import TicketTypeSearch from '../Components/Hero/TicketTypeSearch';
 import Work from '../Components/How-Its-Work/Work';
 import Services from '../Components/Services/Services';
 import HelmetWrapper from "../utilities/HelmetWrapper";
@@ -15,7 +15,7 @@ const Home = () => {
                 <div className="">
                     <Hero></Hero>
                     <div className="block md:hidden">
-                        <TicketSm></TicketSm>
+                        <TicketTypeSearch />
                         <HeroBottom></HeroBottom>
                     </div>
                     <Work></Work>

@@ -14,10 +14,10 @@ const SearchPage = () => {
 
     // Get query parameters
     const queryParams = new URLSearchParams(search);
-    const busService = queryParams.get('bus');
     const ticketType = queryParams.get('ticketType');
 
     useEffect(() => {
+        window.scrollTo(0, 0);
         const fetchData = async () => {
             setLoading(true);
             setError(null);
@@ -26,12 +26,7 @@ const SearchPage = () => {
                 const response = await axios.get(`${baseUrl}packages/`);
                 let filteredPackages = response.data.bus_data || [];
 
-                // Apply filtering if query params exist
-                if (busService) {
-                    filteredPackages = filteredPackages.filter(
-                        (item) => item.company.toLowerCase() === busService.toLowerCase()
-                    );
-                }
+                // Apply filtering if ticket type exists
                 if (ticketType) {
                     filteredPackages = filteredPackages.filter(
                         (item) => item.duration.toLowerCase() === ticketType.toLowerCase()
@@ -47,34 +42,45 @@ const SearchPage = () => {
             }
         };
 
-        if (busService || ticketType) {
+        if (ticketType) {
             fetchData();
         } else {
             setLoading(false);
             setTicketData([]);
         }
-    }, [busService, ticketType]);
+    }, [ticketType]);
 
     return (
         <div className="container mx-auto">
             <Banner2
                 bannerImgmd={'/Banner/b8.png'}
                 bannerImgsm={'/Banner/b7.png'}
-                title={'Search Results'}
-                description={'Find the best bus service for your journey'}
+                title={'Available Tickets'}
+                description={ticketType ? `Showing all ${ticketType} tickets` : 'Find your perfect ticket'}
             />
 
             <div className="px-4 md:px-8">
                 {/* Loading, Error, or Data Display */}
                 {loading ? (
-                    <div className="text-center text-lg font-semibold">Loading tickets...</div>
+                    <div className="text-center py-20">
+                        <div className="inline-block animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-[#930B31]"></div>
+                        <p className="mt-2 text-lg font-semibold text-gray-600">Loading tickets...</p>
+                    </div>
                 ) : error ? (
-                    <div className="text-center text-red-500 text-lg">{error}</div>
+                    <div className="text-center py-20">
+                        <p className="text-red-500 text-lg">{error}</p>
+                        <button 
+                            onClick={() => window.location.reload()} 
+                            className="mt-4 px-6 py-2 bg-[#930B31] text-white rounded-md hover:bg-red-800"
+                        >
+                            Try Again
+                        </button>
+                    </div>
                 ) : ticketData.length > 0 ? (
-                    <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 my-10 md:my-24 gap-x-2 md:gap-x-10">
+                    <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 my-10 md:my-24 gap-x-2 md:gap-x-10 gap-y-8">
                         {ticketData.map((ticket) => (
                             <Card
-                                key={ticket.package_tag} // Ensure unique key
+                                key={ticket.id}
                                 id={ticket.package_tag}
                                 status={ticket.status}
                                 title={ticket.title}
@@ -90,8 +96,9 @@ const SearchPage = () => {
                         ))}
                     </div>
                 ) : (
-                    <div className="text-center my-28 text-gray-600 text-lg">
-                        No tickets found. Please refine your search.
+                    <div className="text-center py-20">
+                        <p className="text-gray-600 text-lg">No tickets found for the selected type.</p>
+                        <p className="text-gray-500 mt-2">Please try a different ticket type.</p>
                     </div>
                 )}
             </div>

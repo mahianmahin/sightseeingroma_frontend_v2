@@ -27,6 +27,7 @@ import Success from '../Page/Success'
 import TermsCondition from '../Page/Terms&Condition'
 import Your_Purchased_Tickets from '../Page/Your_Purchased_Tickets'
 import ProcessTicketsV2 from './../Page/ProcessTicketsV2'
+import TicketTypeSearch from '../Components/Hero/TicketTypeSearch'
 
 
 
@@ -131,6 +132,10 @@ export const router = createBrowserRouter([
   {
     path: '/registation',
     element: <Regi></Regi>
+  },
+  {
+    path: '/test',
+    element: <TicketTypeSearch></TicketTypeSearch>
   },
   {
     path: '/forgotpass',
