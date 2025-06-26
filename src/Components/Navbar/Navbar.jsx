@@ -95,9 +95,9 @@ const Navbar = () => {
                                         </a>
                                     </li>
                                 </Link>
-                                <li onClick={() => handleMenuClick("/agentPoints")}>
+                                <li onClick={() => {isLoggedIn ? handleMenuClick("/agentPoints") : handleMenuClick("/login")}}> 
                                     <a className="text-base font-semibold">
-                                        <MdOutlineLocationOn /> Agent Point
+                                        <MdOutlineLocationOn /> Agent Points
                                     </a>
                                 </li>
                                 <hr />
@@ -134,7 +134,7 @@ const Navbar = () => {
                     <div className="md:hidden hidden lg:block">
                         <Link to={"/"}>
                             <img
-                                src="https://iili.io/2TmGVUb.png"
+                                src={logo}
                                 alt="Logo"
                                 className="w-16 md:w-36 pl-0 md:pl-5"
                             />
@@ -149,14 +149,14 @@ const Navbar = () => {
                                     <LuHome /> Home
                                 </a>
                             </li>
-                            <li onClick={() => handleMenuClick("/yourticket")}>
+                            <li onClick={() => {isLoggedIn ? handleMenuClick("/yourticket") : handleMenuClick("/login")}}>
                                 <a>
                                     <PiTicketBold /> Manage Bookings
                                 </a>
                             </li>
                             <li onClick={() => handleMenuClick("/agentPoints")}>
                                 <a>
-                                    <MdOutlineLocationOn /> Agent Point
+                                    <MdOutlineLocationOn /> Agent Points
                                 </a>
                             </li>
                             {isLoggedIn && (
@@ -193,6 +193,7 @@ const Navbar = () => {
                             </Link>
                         </div>
                     )}
+
                     {/* Conditional rendering for Login/Logout button */}
                     {isLoggedIn ? (
                         <div className="block md:block lg:hidden">

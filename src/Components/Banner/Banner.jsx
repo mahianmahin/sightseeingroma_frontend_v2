@@ -1,6 +1,8 @@
+import bannerImage from "../../assets/banner_image.png";
+
 const Banner = () => {
     return (
-        <div className="relative h-[220px] md:h-[320px]  bg-cover bg-center" style={{ backgroundImage: `url('https://iili.io/2uHlacu.md.png')` }}>
+        <div className="relative h-[220px] md:h-[320px]  bg-cover bg-center" style={{ backgroundImage: `url(${bannerImage})` }}>
             {/* Overlay for Text Centering */}
             <div className="absolute inset-0  0flex flex-col items-center justify-center  flex text-center p-4">
                 <h1 className="text-white text-base  lg:text-4xl font-bold mb-2">

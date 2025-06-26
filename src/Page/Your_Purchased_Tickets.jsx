@@ -26,7 +26,7 @@ const Your_Purchased_Tickets = () => {
             },
         }).then(response => {
             if (response.status === 401) {
-                navigate('/login/')
+                navigate('/login')
             } else {
                 return response.json()
             }

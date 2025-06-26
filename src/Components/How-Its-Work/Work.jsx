@@ -1,11 +1,12 @@
 import { FaCreditCard, FaQrcode, FaMapMarkerAlt, FaCheckCircle } from "react-icons/fa";
 import { TiTickOutline } from "react-icons/ti";
+import processImage from "../../assets/process_image.png";
 
 const Work = () => {
     return (
         <div
             className="bg-cover bg-center text-white py-10 lg:py-20"
-            style={{ backgroundImage: "url('https://iili.io/2Ty8yKJ.md.png')" }}
+            style={{ backgroundImage: `url(${processImage})` }}
         >
             {/* Container */}
             <div className="flex flex-col lg:flex-row h-full items-center lg:items-start justify-center lg:justify-end px-6 lg:px-20">

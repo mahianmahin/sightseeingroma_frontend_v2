@@ -1,6 +1,8 @@
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import logo from "../../assets/Logo.png";
+import { baseUrl } from '../../utilities/Utilities';
 
 const Footer = () => {
     const [folders, setFolders] = useState([]);
@@ -10,7 +12,7 @@ const Footer = () => {
     useEffect(() => {
         const fetchFolders = async () => {
             try {
-                const response = await fetch("https://sightseeingroma.pythonanywhere.com/packages/");
+                const response = await fetch(`${baseUrl}packages/`);
                 if (!response.ok) {
                     throw new Error("Failed to fetch data");
                 }
@@ -52,7 +54,7 @@ const Footer = () => {
                 {/* Logo and Description */}
                 <div className="space-y-4  md:text-left">
 
-                    <Link to={'/'}><img src="https://iili.io/2uJqnr7.png" className=" w-1/2  mx-auto md:mx-0" alt="Sightseeing Roma Logo" /></Link>
+                    <Link to={'/'}><img src={logo} className=" w-1/2  mx-auto md:mx-0" alt="Sightseeing Roma Logo" /></Link>
                     <p className="text-sm">
                         At Sightseeing Roma, we believe that every traveler deserves to explore the majestic beauty and rich history of Rome with ease and comfort. Established with a passion for delivering unforgettable experiences, we are your gateway to the heart of this ancient city.
                     </p>
