@@ -8,7 +8,7 @@ const Hero = () => {
   const [heroImage, setHeroImage] = useState("");
 
   useEffect(() => {
-    fetch(baseUrl + "hero_image/")
+    fetch(baseUrl + "hero-image/")
       .then((response) => response.json())
       .then((data) => {
         if (data?.data?.hero_image?.length > 0) {

@@ -36,7 +36,7 @@ const handleStripeCheckout = (title, description, image, date, adult_count, yout
       formData.append('package_identifier', status);
 
       // Make a POST request to your server using the FormData object
-      fetch(`${baseUrl}create_checkout_session/`, {
+      fetch(`${baseUrl}create-checkout-session/`, {
         method: 'POST',
         body: formData,
         // headers: {

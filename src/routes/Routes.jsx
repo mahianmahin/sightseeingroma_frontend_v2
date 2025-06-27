@@ -1,10 +1,6 @@
 import { createBrowserRouter } from 'react-router-dom'
-import EmailSent from '../Components/LoginComponent/EmailSent/EmailSent'
-import ForgotPass from '../Components/LoginComponent/ForgotPass/ForgotPass'
 import Login from '../Components/LoginComponent/Login/Login'
-import NewPass from '../Components/LoginComponent/NewPass/NewPass'
 import Regi from '../Components/LoginComponent/Registation/Regi'
-import Updated from '../Components/LoginComponent/Updated/Updated'
 import ViewMore from '../Components/ViewMore/ViewMore'
 import Main from '../Layouts/Main'
 import AboutUs from '../Page/AboutUs'
@@ -28,11 +24,10 @@ import TermsCondition from '../Page/Terms&Condition'
 import Your_Purchased_Tickets from '../Page/Your_Purchased_Tickets'
 import ProcessTicketsV2 from './../Page/ProcessTicketsV2'
 import TicketTypeSearch from '../Components/Hero/TicketTypeSearch'
-
-
-
-
-
+import { ResetPasswordProvider } from '../Components/LoginComponent/ResetPassword/ResetPasswordContext'
+import RequestReset from '../Components/LoginComponent/ResetPassword/RequestReset'
+import ResetPassword from '../Components/LoginComponent/ResetPassword/ResetPassword'
+import ResetSuccess from '../Components/LoginComponent/ResetPassword/ResetSuccess'
 
 export const router = createBrowserRouter([
   {
@@ -127,30 +122,38 @@ export const router = createBrowserRouter([
   },
   {
     path: '/login',
-    element: <Login></Login>
+    element: <Login />
   },
   {
     path: '/registation',
-    element: <Regi></Regi>
+    element: <Regi />
   },
   {
     path: '/test',
-    element: <TicketTypeSearch></TicketTypeSearch>
+    element: <TicketTypeSearch />
   },
   {
-    path: '/forgotpass',
-    element: <ForgotPass></ForgotPass>
+    path: '/forgot-password',
+    element: (
+      <ResetPasswordProvider>
+        <RequestReset />
+      </ResetPasswordProvider>
+    )
   },
   {
-    path: '/emailsent',
-    element: <EmailSent></EmailSent>
+    path: '/reset-password',
+    element: (
+      <ResetPasswordProvider>
+        <ResetPassword />
+      </ResetPasswordProvider>
+    )
   },
   {
-    path: '/newpass',
-    element: <NewPass></NewPass>
-  },
-  {
-    path: '/updated',
-    element: <Updated></Updated>
+    path: '/reset-success',
+    element: (
+      <ResetPasswordProvider>
+        <ResetSuccess />
+      </ResetPasswordProvider>
+    )
   }
 ])
