@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import logo from "../../assets/Logo.png";
 import { baseUrl } from '../../utilities/Utilities';
+import paymentMethods from '../../assets/payment_banners.png';
 
 const Footer = () => {
     const [folders, setFolders] = useState([]);
@@ -114,7 +115,7 @@ const Footer = () => {
                     {/* Payment Methods */}
                     <h1 className='font-bold mt-10 mb-5'>Payment Methods</h1>
                     <div className="flex space-x-4">
-                        <img src="https://iili.io/2uJuUuI.png" alt="Visa" className="h-6" />
+                        <img src={paymentMethods} alt="Payment Methods" className="h-6" />
 
                     </div>
                 </div>
