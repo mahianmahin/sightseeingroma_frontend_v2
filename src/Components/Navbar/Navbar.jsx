@@ -160,7 +160,7 @@ const Navbar = () => {
                                 </a>
                             </li>
                             {isLoggedIn && (
-                                <li onClick={() => handleMenuClick("/yourticket")}>
+                                <li onClick={() => handleMenuClick("/profile")}>
                                     <a>
                                         <FaUser /> Profile
                                     </a>
@@ -188,7 +188,7 @@ const Navbar = () => {
                 <div className="flex items-center space-x-1">
                     {isLoggedIn && (
                         <div className="block md:block lg:hidden">
-                            <Link to={"/yourticket"}>
+                            <Link to={"/profile"}>
                                 <FaUser />
                             </Link>
                         </div>

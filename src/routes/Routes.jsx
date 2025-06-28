@@ -28,6 +28,8 @@ import { ResetPasswordProvider } from '../Components/LoginComponent/ResetPasswor
 import RequestReset from '../Components/LoginComponent/ResetPassword/RequestReset'
 import ResetPassword from '../Components/LoginComponent/ResetPassword/ResetPassword'
 import ResetSuccess from '../Components/LoginComponent/ResetPassword/ResetSuccess'
+import Profile from '../Page/Profile'
+import RequireAuth from '../Components/RequireAuth'
 
 export const router = createBrowserRouter([
   {
@@ -113,6 +115,10 @@ export const router = createBrowserRouter([
       {
         path: '/verify/:code/',
         element: <ProcessTicketsV2></ProcessTicketsV2>
+      },
+      {
+        path: '/profile',
+        element: <RequireAuth><Profile /></RequireAuth>
       },
       {
         path: '*',
