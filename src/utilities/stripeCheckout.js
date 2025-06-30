@@ -19,7 +19,14 @@ const handleStripeCheckout = async (title, description, image, date, adult_count
     key = 'pk_test_51RUFA3Rl7eg880YGrbKxXn5f4L0jgxm1OJSr191iJkz1m0MccRsWc9OiycCwXWwtbCUW3vR3N5ks6WUjbQUBTN3X00okzcby4o'
   }
 
-  console.log(key);
+  // Calculate total quantity and prepare tracking data
+  const totalQuantity = parseInt(adult_count || 0) + parseInt(youth_count || 0) + parseInt(infant_count || 0);
+  const trackingData = {
+    ticketType: title,
+    quantity: totalQuantity,
+    packageId: packageId,
+    date: date
+  };
 
   // new publishable key from the new stripe account - 04/06/2025
   loadStripe(key)
@@ -36,12 +43,8 @@ const handleStripeCheckout = async (title, description, image, date, adult_count
       formData.append('package_id', packageId);
       formData.append('package_identifier', status);
 
-      // Track payment initiation
-      trackUserActivity(ACTIVITY_TYPES.PAYMENT_INITIATED, {
-        amount: ticketData.amount,
-        ticketType: ticketData.ticketType,
-        quantity: ticketData.quantity
-      });
+      // Track payment initiation with the prepared tracking data
+      trackUserActivity(ACTIVITY_TYPES.PAYMENT_INITIATED, trackingData);
 
       // Make a POST request to your server using the FormData object
       fetch(`${baseUrl}create-checkout-session/`, {
