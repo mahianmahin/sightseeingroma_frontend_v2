@@ -30,6 +30,7 @@ import ResetPassword from '../Components/LoginComponent/ResetPassword/ResetPassw
 import ResetSuccess from '../Components/LoginComponent/ResetPassword/ResetSuccess'
 import Profile from '../Page/Profile'
 import RequireAuth from '../Components/RequireAuth'
+import Analytics from '../Page/Analytics'
 
 export const router = createBrowserRouter([
   {
@@ -125,6 +126,10 @@ export const router = createBrowserRouter([
         element: <NotFound />
       }
     ],
+  },
+  {
+    path: '/analytics',
+    element: <Analytics />
   },
   {
     path: '/login',

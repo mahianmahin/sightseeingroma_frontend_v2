@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { RxCross2 } from "react-icons/rx";
 import { Link, useNavigate } from "react-router-dom";
 import { baseUrl } from "../../../utilities/Utilities";
 import { FaUser, FaEnvelope, FaPhone, FaLock, FaEye, FaEyeSlash } from "react-icons/fa";
 import registration_image from "../../../assets/registration_image.jpg";
+import { trackUserActivity, ACTIVITY_TYPES } from '../../../utilities/activityTracker';
 
 const Regi = () => {
   const navigate = useNavigate();
@@ -78,6 +79,11 @@ const Regi = () => {
 
       if (data.registered === true) {
         navigate("/login");
+
+        // Track successful registration
+        await trackUserActivity(ACTIVITY_TYPES.USER_REGISTER, {
+          email: email
+        });
       }
     } catch (error) {
       console.error("Fetch Error:", error);
@@ -94,6 +100,11 @@ const Regi = () => {
   const toggleConfirmPasswordVisibility = () => {
     setShowConfirmPassword(!showConfirmPassword);
   };
+
+  // Track page view on component mount
+  useEffect(() => {
+    trackUserActivity(ACTIVITY_TYPES.PAGE_VIEW, { pageName: 'Registration' });
+  }, []);
 
   return (
     <div

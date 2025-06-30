@@ -1,10 +1,25 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { trackUserActivity, ACTIVITY_TYPES } from '../utilities/activityTracker';
 
 const PaymentCancel = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    // Track cancelled payment
+    const urlParams = new URLSearchParams(window.location.search);
+    const amount = urlParams.get('amount');
+    const ticketType = urlParams.get('ticketType');
+
+    trackUserActivity(ACTIVITY_TYPES.PAYMENT_CANCELLED, {
+      amount: amount,
+      ticketType: ticketType,
+      status: 'cancelled'
+    });
+
+    // Track page view
+    trackUserActivity(ACTIVITY_TYPES.PAGE_VIEW, { pageName: 'Payment Cancelled' });
+
     // Redirect back to home after 3 seconds
     const timer = setTimeout(() => {
       navigate('/');

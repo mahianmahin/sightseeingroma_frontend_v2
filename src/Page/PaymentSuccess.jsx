@@ -1,10 +1,25 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { trackUserActivity, ACTIVITY_TYPES } from '../utilities/activityTracker';
 
 const PaymentSuccess = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
+        // Track successful payment
+        const urlParams = new URLSearchParams(window.location.search);
+        const amount = urlParams.get('amount');
+        const ticketType = urlParams.get('ticketType');
+
+        trackUserActivity(ACTIVITY_TYPES.PAYMENT_COMPLETED, {
+            amount: amount,
+            ticketType: ticketType,
+            status: 'completed'
+        });
+
+        // Track page view
+        trackUserActivity(ACTIVITY_TYPES.PAGE_VIEW, { pageName: 'Payment Success' });
+
         // Redirect to tickets page after 3 seconds
         const timer = setTimeout(() => {
             navigate('/yourticket');

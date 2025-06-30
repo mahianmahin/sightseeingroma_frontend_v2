@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { RxCross2 } from "react-icons/rx";
 import { Link, useNavigate } from "react-router-dom";
 import { FaUser, FaLock, FaEye, FaEyeSlash } from "react-icons/fa";
 import { baseUrl } from './../../../utilities/Utilities';
+import { trackUserActivity, ACTIVITY_TYPES } from '../../../utilities/activityTracker';
 
 const Login = () => {
     const [loading, setLoading] = useState(false);
@@ -42,6 +43,11 @@ const Login = () => {
                 window.localStorage.setItem("refresh", data.refresh);
                 window.localStorage.setItem("access", data.access);
                 navigate("/");
+
+                // Track successful login
+                await trackUserActivity(ACTIVITY_TYPES.USER_LOGIN, {
+                    email: username
+                });
             } else if (response.status === 401) {
                 setErrorMessage("Invalid username or password!");
                 setError(true);
@@ -54,6 +60,11 @@ const Login = () => {
             setLoading(false);
         }
     };
+
+    // Track page view on component mount
+    useEffect(() => {
+        trackUserActivity(ACTIVITY_TYPES.PAGE_VIEW, { pageName: 'Login' });
+    }, []);
 
     return (
         <div

@@ -1,9 +1,10 @@
 // Import Stripe.js library
 import { loadStripe } from '@stripe/stripe-js';
 import { baseUrl } from './Utilities';
+import { trackUserActivity, ACTIVITY_TYPES } from './activityTracker';
 
 // Function to initiate Stripe Checkout and redirect the user
-const handleStripeCheckout = (title, description, image, date, adult_count, youth_count, infant_count, navigate, packageId, status, loaderTrigger) => {
+const handleStripeCheckout = async (title, description, image, date, adult_count, youth_count, infant_count, navigate, packageId, status, loaderTrigger) => {
   // Show loader if provided
   if (loaderTrigger) {
     loaderTrigger(true);
@@ -35,17 +36,20 @@ const handleStripeCheckout = (title, description, image, date, adult_count, yout
       formData.append('package_id', packageId);
       formData.append('package_identifier', status);
 
+      // Track payment initiation
+      trackUserActivity(ACTIVITY_TYPES.PAYMENT_INITIATED, {
+        amount: ticketData.amount,
+        ticketType: ticketData.ticketType,
+        quantity: ticketData.quantity
+      });
+
       // Make a POST request to your server using the FormData object
       fetch(`${baseUrl}create-checkout-session/`, {
         method: 'POST',
         body: formData,
-        // headers: {
-        //   'Accept': '*/*',
-        //   'Content-Type': 'multipart/form-data; boundary=----WebKitFormBoundaryrEA5qjBhkEFlmZt5',
-        // },
-        // headers: {
-        //   'Authorization': `Bearer ${window.localStorage['access']}`,
-        // },
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('access')}`
+        },
       })
       .then(response => {
         if (response.status === 401) {

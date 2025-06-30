@@ -13,6 +13,7 @@ import logo from "../../assets/Logo.png";
 
 import { useState, useEffect, useRef } from "react";
 import useAuthenticate from "../../hooks/seAuthenticate";
+import { trackUserActivity, ACTIVITY_TYPES } from '../../utilities/activityTracker';
 
 const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -24,10 +25,17 @@ const Navbar = () => {
     useAuthenticate(setIsLoggedIn);
 
     // Logout function
-    function logout() {
-        window.localStorage.clear();
-        window.location.reload();
-        navigate('/'); // Redirect to home after logout
+    async function logout() {
+        try {
+            const email = localStorage.getItem('email'); // If you store user email
+            await trackUserActivity(ACTIVITY_TYPES.USER_LOGOUT, { email });
+        } catch (error) {
+            console.error('Error tracking logout:', error);
+        } finally {
+            window.localStorage.clear();
+            window.location.reload();
+            navigate('/');
+        }
     }
 
     // Close the menu after navigating to the desired route

@@ -3,6 +3,7 @@ import { FaSearch } from "react-icons/fa";
 import { FiSearch } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import { baseUrl } from "../../utilities/Utilities";
+import { trackUserActivity, ACTIVITY_TYPES } from '../../utilities/activityTracker';
 
 // Emoji mapping for each ticket type
 const TICKET_TYPE_EMOJIS = {
@@ -84,8 +85,29 @@ const TicketTypeSearch = () => {
             setErrorMessage("Please select a ticket type.");
             return;
         }
+
+        // Track ticket search
+        trackUserActivity(ACTIVITY_TYPES.TICKET_SEARCH, {
+            ticketType: ticketType
+        });
+
         navigate(`/search?ticketType=${ticketType}`);
     };
+
+    const handleTicketTypeSelect = (type) => {
+        setTicketType(type);
+        clearErrorMessage();
+
+        // Track ticket view
+        trackUserActivity(ACTIVITY_TYPES.TICKET_VIEW, {
+            ticketType: type
+        });
+    };
+
+    // Track page view on component mount
+    useEffect(() => {
+        trackUserActivity(ACTIVITY_TYPES.PAGE_VIEW, { pageName: 'Ticket Search' });
+    }, []);
 
     const clearErrorMessage = () => {
         setErrorMessage("");
@@ -131,7 +153,7 @@ const TicketTypeSearch = () => {
                                         name="ticketType"
                                         value={type}
                                         checked={ticketType === type}
-                                        onChange={(e) => setTicketType(e.target.value)}
+                                        onChange={(e) => handleTicketTypeSelect(e.target.value)}
                                         className="hidden"
                                     />
                                     <div className="flex flex-col">
@@ -218,7 +240,7 @@ const TicketTypeSearch = () => {
                                                 name="ticketType"
                                                 value={type}
                                                 checked={ticketType === type}
-                                                onChange={(e) => setTicketType(e.target.value)}
+                                                onChange={(e) => handleTicketTypeSelect(e.target.value)}
                                                 className="hidden"
                                             />
                                             <div className="flex flex-col">
