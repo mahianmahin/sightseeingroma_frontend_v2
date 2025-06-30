@@ -6,15 +6,27 @@ import { baseUrl } from "../../utilities/Utilities";
 
 // Emoji mapping for each ticket type
 const TICKET_TYPE_EMOJIS = {
-    "24 HOURS": "⏰",
-    "48 HOURS": "🌞",
-    "72 HOURS": "🌟",
-    "1 DAY": "📅",
-    "DAILY TOUR": "🎯",
-    "HALF DAY": "🌓",
-    "ONE RUN": "🚌",
-    "3 PASS": "🎫",
+    "24 hours": "⏰",
+    "48 hours": "🌞",
+    "72 hours": "🌟",
+    "1 day": "📅",
+    "daily tour": "🎯",
+    "half day": "🌓",
+    "one run": "🚌",
+    "3 pass": "🎫",
 };
+
+// Custom order for ticket types (add or reorder as needed)
+const TICKET_TYPE_ORDER = [
+    "half day",
+    "1 day",
+    "24 hours",
+    "48 hours",
+    "72 hours",
+    "daily tour",
+    "one run",
+    "3 pass"
+];
 
 // Skeleton array for loading state
 const SKELETON_COUNT = 8;
@@ -48,8 +60,24 @@ const TicketTypeSearch = () => {
         fetchData();
     }, []);
 
-    // Get unique ticket types from busData and format them
-    const uniqueTicketTypes = [...new Set(busData.map((bus) => bus.duration))];
+    // Get unique ticket types and sort them according to custom order
+    const uniqueTicketTypes = [...new Set(busData.map((bus) => bus.ticket_type))]
+        .sort((a, b) => {
+            const indexA = TICKET_TYPE_ORDER.indexOf(a.toLowerCase());
+            const indexB = TICKET_TYPE_ORDER.indexOf(b.toLowerCase());
+            
+            // If both types are in the order array, sort by their index
+            if (indexA !== -1 && indexB !== -1) {
+                return indexA - indexB;
+            }
+            
+            // If only one type is in the order array, prioritize it
+            if (indexA !== -1) return -1;
+            if (indexB !== -1) return 1;
+            
+            // If neither type is in the order array, maintain their original order
+            return 0;
+        });
 
     const handleSearchTickets = () => {
         if (!ticketType) {
@@ -78,7 +106,7 @@ const TicketTypeSearch = () => {
 
     // Desktop Component
     const DesktopSearch = () => (
-        <div className="w-[100%] mx-auto mt-8 z-30">
+        <div className="w-[100%] uppercase mx-auto mt-8 z-30">
             <div className="bg-gray-200/90 backdrop-blur-sm text-black rounded-lg shadow-md p-4">
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 mb-4">
                     {loading ? (
