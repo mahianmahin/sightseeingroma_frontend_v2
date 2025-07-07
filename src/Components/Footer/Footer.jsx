@@ -48,6 +48,42 @@ const Footer = () => {
         return routeMap[normalizedName] || `/${normalizedName.replace(/\s+/g, '')}`;
     };
 
+    // Newsletter state and handler
+    const [newsletterEmail, setNewsletterEmail] = useState("");
+    const [newsletterStatus, setNewsletterStatus] = useState(null); // 'success' | 'error' | null
+    const [newsletterLoading, setNewsletterLoading] = useState(false);
+
+    const handleNewsletterSubmit = async (e) => {
+        e.preventDefault();
+        setNewsletterStatus(null);
+        setNewsletterLoading(true);
+        try {
+            const response = await fetch(`${baseUrl}newsletter/subscribe/`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email: newsletterEmail })
+            });
+            let data = {};
+            try {
+                data = await response.json();
+            } catch (e) {}
+            if (
+                data && (data.message === "Email already subscribed" || data.error === "Email already subscribed")
+            ) {
+                setNewsletterStatus("already");
+            } else if (response.ok) {
+                setNewsletterStatus("success");
+                setNewsletterEmail("");
+            } else {
+                setNewsletterStatus("error");
+            }
+        } catch (err) {
+            setNewsletterStatus("error");
+        } finally {
+            setNewsletterLoading(false);
+        }
+    };
+
     return (
         <div className="bg-black font-color-1 py-10 px-2 md:px-4">
             <div className="container mx-auto px-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -99,18 +135,33 @@ const Footer = () => {
                 <div className=" md:text-left">
                     <h3 className="font-semibold pb-4 text-lg">Stay Updated</h3>
                     <p className="text-sm mb-4">Sign up to receive exclusive offers, travel tips, and the latest bus routes directly to your inbox.</p>
-                    <div className="flex justify-start items-center w-full max-w-md ">
+                    <form className="flex justify-start items-center w-full max-w-md " onSubmit={handleNewsletterSubmit}>
                         <input
                             type="email"
                             placeholder="Email address"
                             className=" p-2 text-black text-sm sm:text-base   rounded-l focus:outline-none"
+                            value={newsletterEmail}
+                            onChange={e => setNewsletterEmail(e.target.value)}
+                            required
+                            disabled={newsletterLoading}
                         />
                         <button
-                            className="bg-yellow-500 text-black font-semibold px-2 sm:px-2 py-2 text-sm sm:text-base w-auto sm:w-36 md:w-40 rounded-r whitespace-nowrap"
+                            type="submit"
+                            className="bg-yellow-500 text-black font-semibold px-2 sm:px-2 py-2 text-sm sm:text-base w-auto sm:w-36 md:w-40 rounded-r whitespace-nowrap disabled:opacity-60"
+                            disabled={newsletterLoading}
                         >
-                            HOP IN!
+                            {newsletterLoading ? "..." : "HOP IN!"}
                         </button>
-                    </div>
+                    </form>
+                    {newsletterStatus === "success" && (
+                        <p className="text-green-400 mt-2 text-sm">Thank you for subscribing! Please check your email.</p>
+                    )}
+                    {newsletterStatus === "already" && (
+                        <p className="text-yellow-400 mt-2 text-sm">This email is already subscribed to our newsletter.</p>
+                    )}
+                    {newsletterStatus === "error" && (
+                        <p className="text-red-400 mt-2 text-sm">Subscription failed. Please try again later.</p>
+                    )}
 
                     {/* Payment Methods */}
                     <h1 className='font-bold mt-10 mb-5'>Payment Methods</h1>
