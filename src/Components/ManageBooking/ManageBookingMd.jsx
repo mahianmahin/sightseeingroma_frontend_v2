@@ -219,7 +219,7 @@ const ManageBookingMd = () => {
           </div>
         </div>
       </div>
-      <Description />
+      <Description description={data?.description} />
       <Similar />
     </div>
   );
