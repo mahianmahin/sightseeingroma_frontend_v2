@@ -89,7 +89,7 @@ const ManageBookingMd = () => {
   }
 
   return (
-    <div className="container mx-auto">
+    <div className="container mx-auto pt-24"> {/* Changed from pt-16 to pt-24 */}
       {bigLoader && <Loader />}
       <div>
         <div className="">

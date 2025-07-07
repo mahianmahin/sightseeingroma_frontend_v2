@@ -85,7 +85,7 @@ const ManageBookingSm = () => {
   }
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen pt-24"> {/* Changed from pt-16 to pt-24 */}
       <div>
         <div className="md:hidden block">
         <div>

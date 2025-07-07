@@ -20,7 +20,7 @@ const ImageCarousel = ({ images }) => {
         <img
           src={images[currentIndex]}
           alt={`Slide ${currentIndex + 1}`}
-          className="block w-full h-full object-cover cursor-pointer"
+          className="block w-full h-full object-contain cursor-pointer"
           onClick={() => setSelectedImage(images[currentIndex])} // Open selected image
         />
       </div>

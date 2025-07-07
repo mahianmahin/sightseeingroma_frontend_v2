@@ -18,7 +18,7 @@ const NotFound = () => {
                         We couldn't find the page you were looking for. The page might have been removed, 
                         renamed, or doesn't exist.
                     </p>
-                    <div className="space-y-4">
+                    {/* <div className="space-y-4">
                         <Link 
                             to="/"
                             className="inline-block bg-red-800 text-white px-8 py-3 rounded-lg hover:bg-red-900 transition-colors duration-300"
@@ -28,7 +28,7 @@ const NotFound = () => {
                         <p className="text-gray-500 text-sm mt-4">
                             Need help? <Link to="/aboutus" className="text-red-800 hover:underline">Contact us</Link>
                         </p>
-                    </div>
+                    </div> */}
                 </div>
             </div>
         </div>
