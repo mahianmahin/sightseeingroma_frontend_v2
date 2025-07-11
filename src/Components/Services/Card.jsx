@@ -2,9 +2,22 @@ import { FaRegClock } from "react-icons/fa";
 import { HiOutlineTicket } from "react-icons/hi";
 import { baseUrl } from "../../utilities/Utilities";
 import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
 
-const Card = ({ title, subtitle, image, duration, ticketCount, price, id, company, id1 }) => {
+const Card = ({ title, subtitle, image, duration, ticketCount, price, id, company, id1, thumbnail_small, thumbnail_large }) => {
     const navigate = useNavigate();
+    const [isLargeScreen, setIsLargeScreen] = useState(false);
+
+    // Check screen size on mount and resize
+    useEffect(() => {
+        const checkScreenSize = () => {
+            setIsLargeScreen(window.innerWidth >= 768);
+        };
+
+        checkScreenSize();
+        window.addEventListener('resize', checkScreenSize);
+        return () => window.removeEventListener('resize', checkScreenSize);
+    }, []);
 
     let calculatedStatus = duration ? "E9" : "E8";
 
@@ -25,14 +38,36 @@ const Card = ({ title, subtitle, image, duration, ticketCount, price, id, compan
         }
     };
 
+    // Determine which image to use based on screen size and availability
+    const getImageSrc = () => {
+        if (isLargeScreen && thumbnail_large) {
+            return `${baseUrl}${thumbnail_large}`;
+        } else if (!isLargeScreen && thumbnail_small) {
+            return `${baseUrl}${thumbnail_small}`;
+        } else if (thumbnail_large) {
+            return `${baseUrl}${thumbnail_large}`;
+        } else if (thumbnail_small) {
+            return `${baseUrl}${thumbnail_small}`;
+        } else {
+            // Fallback to old image field if new fields are not available
+            return `${baseUrl}${image}`;
+        }
+    };
+
     return (
         <div className="w-full bg-white shadow-lg rounded-lg overflow-hidden mx-auto sm:w-11/12 md:w-full h-full flex flex-col">
             {/* Image */}
             <img 
-                src={`${baseUrl}${image}`}
+                src={getImageSrc()}
                 alt={title}
                 className="w-full h-28 md:h-44 object-cover"
             />
+
+            {/* <img 
+                src={Phone}
+                alt={title}
+                className="w-full h-28 md:h-44 object-cover"
+            /> */}
 
             {/* Card Content */}
             <div className="p-2 md:p-4 flex flex-col flex-grow">

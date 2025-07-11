@@ -3,12 +3,23 @@ import { LuTicket } from "react-icons/lu";
 import PropTypes from "prop-types";
 import { baseUrl } from "../../utilities/Utilities";
 import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
 
-const TicketCard = ({ title, subtitle, image, duration, ticketCount, price, id , status, price2 , id1}) => {
+const TicketCard = ({ title, subtitle, image, duration, ticketCount, price, id , status, price2 , id1, thumbnail_small, thumbnail_large}) => {
     const navigate = useNavigate();
-    
-    
+    const [isLargeScreen, setIsLargeScreen] = useState(false);
 
+    // Check screen size on mount and resize
+    useEffect(() => {
+        const checkScreenSize = () => {
+            setIsLargeScreen(window.innerWidth >= 768);
+        };
+
+        checkScreenSize();
+        window.addEventListener('resize', checkScreenSize);
+        return () => window.removeEventListener('resize', checkScreenSize);
+    }, []);
+    
     let calculatedStatus = null;
     if (duration) {
         calculatedStatus = "E9";
@@ -19,11 +30,28 @@ const TicketCard = ({ title, subtitle, image, duration, ticketCount, price, id ,
     const handleBuyNow = () => {
         navigate(`/manageBookings/${calculatedStatus}/${id}`); // Navigate to ManageBooking with the status and id as parameters
     };
+
+    // Determine which image to use based on screen size and availability
+    const getImageSrc = () => {
+        if (isLargeScreen && thumbnail_large) {
+            return `${baseUrl}${thumbnail_large}`;
+        } else if (!isLargeScreen && thumbnail_small) {
+            return `${baseUrl}${thumbnail_small}`;
+        } else if (thumbnail_large) {
+            return `${baseUrl}${thumbnail_large}`;
+        } else if (thumbnail_small) {
+            return `${baseUrl}${thumbnail_small}`;
+        } else {
+            // Fallback to old image field if new fields are not available
+            return `${baseUrl}${image}`;
+        }
+    };
+
     return (
         <div className="w-full mb-2 md:mb-14 mx-auto bg-3 rounded-xl shadow-md overflow-hidden border flex flex-col">
             {/* Image Section */}
             <img
-                src={`${baseUrl}${image}`}
+                src={getImageSrc()}
                 alt={title}
                 className="w-full h-[120px] md:h-[168px] object-cover"
             />

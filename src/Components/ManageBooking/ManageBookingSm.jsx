@@ -27,10 +27,11 @@ const ManageBookingSm = () => {
   const totalYouthPrice = youthCount * youthPrice;
   const totalPrice = totalAdultPrice + totalYouthPrice;
 
-  const imgbig = baseUrlHashless + data?.image_big;
-  const img2 = baseUrlHashless + data?.second_image;
-  const img3 = baseUrlHashless + data?.third_image;
-  const img4 = baseUrlHashless + data?.fourth_image;
+  // Use the new carousel image fields with small variants for mobile
+  const img1 = data?.carousel_one_small ? baseUrlHashless + data.carousel_one_small : (data?.image_big ? baseUrlHashless + data.image_big : '');
+  const img2 = data?.carousel_two_small ? baseUrlHashless + data.carousel_two_small : (data?.second_image ? baseUrlHashless + data.second_image : '');
+  const img3 = data?.carousel_three_small ? baseUrlHashless + data.carousel_three_small : (data?.third_image ? baseUrlHashless + data.third_image : '');
+  const img4 = data?.carousel_four_small ? baseUrlHashless + data.carousel_four_small : (data?.fourth_image ? baseUrlHashless + data.fourth_image : '');
 
   // Fetch package data when the component is mounted or when id/status changes
   useEffect(() => {
@@ -71,7 +72,7 @@ const ManageBookingSm = () => {
       handleStripeCheckout(
         data?.title || '',
         cleanText,
-        baseUrlHashless + data?.image_big,
+        data?.thumbnail_small ? baseUrlHashless + data.thumbnail_small : (data?.image_big ? baseUrlHashless + data.image_big : ''),
         selectedDate,
         adultCount,
         youthCount,
@@ -89,7 +90,7 @@ const ManageBookingSm = () => {
       <div>
         <div className="md:hidden block">
         <div>
-            <DetailsImage img1={imgbig} img2={img2} img3={img3} img4={img4}></DetailsImage>
+            <DetailsImage img1={img1} img2={img2} img3={img3} img4={img4}></DetailsImage>
             
 
           </div>

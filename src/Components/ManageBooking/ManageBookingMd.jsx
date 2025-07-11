@@ -26,10 +26,11 @@ const ManageBookingMd = () => {
   const totalYouthPrice = youthCount * youthPrice;
   const totalPrice = totalAdultPrice + totalYouthPrice;
 
-  const imgbig = baseUrlHashless + data?.image_big;
-  const img2 = baseUrlHashless + data?.second_image;
-  const img3 = baseUrlHashless + data?.third_image;
-  const img4 = baseUrlHashless + data?.fourth_image;
+  // Use the new carousel image fields with large variants for desktop
+  const img1 = data?.carousel_one_large ? baseUrlHashless + data.carousel_one_large : (data?.image_big ? baseUrlHashless + data.image_big : '');
+  const img2 = data?.carousel_two_large ? baseUrlHashless + data.carousel_two_large : (data?.second_image ? baseUrlHashless + data.second_image : '');
+  const img3 = data?.carousel_three_large ? baseUrlHashless + data.carousel_three_large : (data?.third_image ? baseUrlHashless + data.third_image : '');
+  const img4 = data?.carousel_four_large ? baseUrlHashless + data.carousel_four_large : (data?.fourth_image ? baseUrlHashless + data.fourth_image : '');
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -75,7 +76,7 @@ const ManageBookingMd = () => {
       handleStripeCheckout(
         data?.title || '',
         cleanText,
-        baseUrlHashless + data?.image_big,
+        data?.thumbnail_large ? baseUrlHashless + data.thumbnail_large : (data?.image_big ? baseUrlHashless + data.image_big : ''),
         selectedDate,
         adultCount,
         youthCount,
@@ -95,7 +96,7 @@ const ManageBookingMd = () => {
         <div className="">
          
           <div>
-            <Details_image img1={imgbig} img2={img2} img3={img3} img4={img4}></Details_image>
+            <Details_image img1={img1} img2={img2} img3={img3} img4={img4}></Details_image>
 
           </div>
 
