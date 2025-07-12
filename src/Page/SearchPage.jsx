@@ -6,6 +6,8 @@ import { baseUrl } from '../utilities/Utilities';
 import Banner2 from '../Components/Banner2/Banner2';
 import Card from '../Components/Services/Card';
 
+import HeroImage from "../assets/new/Return-Policy.jpg";
+
 const SearchPage = () => {
     const [ticketData, setTicketData] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -53,8 +55,8 @@ const SearchPage = () => {
     return (
         <div className="container mx-auto">
             <Banner2
-                bannerImgmd={'/Banner/b8.png'}
-                bannerImgsm={'/Banner/b7.png'}
+                bannerImgmd={HeroImage}
+                bannerImgsm={HeroImage}
                 title={'Available Tickets'}
                 description={ticketType ? `Showing all ${ticketType} tickets` : 'Find your perfect ticket'}
             />

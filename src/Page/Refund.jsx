@@ -1,12 +1,13 @@
 import Banner2 from './../Components/Banner2/Banner2';
+import RefundImage from "../assets/new/Refund-Policy.jpg";
 
 const Refund = () => {
     return (
         <div className="container mx-auto ">
             {/* Banner Section */}
             <Banner2
-                bannerImgmd={'/Banner/b8.png'}
-                bannerImgsm={'/Banner/b7.png'}
+                bannerImgmd={RefundImage}
+                bannerImgsm={RefundImage}
                 title={'Refund Policy'}
                 description={'Refund Policy and Ticket Cancellations'}
             />

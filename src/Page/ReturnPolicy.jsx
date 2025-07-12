@@ -1,12 +1,13 @@
 import Banner2 from './../Components/Banner2/Banner2';
+import ReturnImage from "../assets/new/Return-Policy.jpg";
 
 const ReturnPolicy = () => {
     return (
         <div className="container mx-auto ">
             {/* Banner Section */}
             <Banner2
-                bannerImgmd={'/Banner/b8.png'}
-                bannerImgsm={'/Banner/b7.png'}
+                bannerImgmd={ReturnImage}
+                bannerImgsm={ReturnImage}
                 title={'Return Policy'}
                 description={'Our return policy'}
             />

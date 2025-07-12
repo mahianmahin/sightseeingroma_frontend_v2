@@ -1,12 +1,13 @@
 import Banner2 from './../Components/Banner2/Banner2';
+import TermsConditionImage from "../assets/new/Terms-&-Conditions.jpg";
 
 const TermsCondition = () => {
     return (
         <div className="container mx-auto">
             {/* Banner Section */}
             <Banner2
-                bannerImgmd={'/Banner/b5.png'}
-                bannerImgsm={'/Banner/b6.png'}
+                bannerImgmd={TermsConditionImage}
+                bannerImgsm={TermsConditionImage}
                 title={'Terms & Conditions'}
                 description={'Important Information & Terms of Use'}
             />

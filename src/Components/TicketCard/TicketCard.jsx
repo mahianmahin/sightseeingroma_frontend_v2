@@ -111,8 +111,13 @@ TicketCard.propTypes = {
     image: PropTypes.string.isRequired,
     duration: PropTypes.string.isRequired,
     ticketCount: PropTypes.number.isRequired,
-    price: PropTypes.number.isRequired, // Change from string to number
-    onClick: PropTypes.func.isRequired,
+    price: PropTypes.number.isRequired,
+    id: PropTypes.number.isRequired,
+    status: PropTypes.string,
+    price2: PropTypes.number,
+    id1: PropTypes.number.isRequired,
+    thumbnail_small: PropTypes.string,
+    thumbnail_large: PropTypes.string,
 };
 
 export default TicketCard;

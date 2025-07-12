@@ -1,12 +1,13 @@
 import { Link } from 'react-router-dom';
 import Banner2 from '../Components/Banner2/Banner2';
+import PageNotFoundImage from '../assets/new/Page-Not-Found-Hero-Image.jpg';
 
 const NotFound = () => {
     return (
         <div className="container mx-auto">
             <Banner2
-                bannerImgmd={'/Banner/b8.png'}
-                bannerImgsm={'/Banner/b7.png'}
+                bannerImgmd={PageNotFoundImage}
+                bannerImgsm={PageNotFoundImage}
                 title={'Page Not Found'}
                 description={'Oops! The page you are looking for does not exist.'}
             />

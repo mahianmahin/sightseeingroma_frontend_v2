@@ -5,6 +5,7 @@ import TicketCard from "../Components/TicketCard/TicketCard";
 import HelmetWrapper from "../utilities/HelmetWrapper";
 import { baseUrl } from '../utilities/Utilities';
 import Similar from "./Similar";
+import BigBusImage from "../assets/new/Big-Bus-Page-Hero-Image.jpg";
 
 const BigBus = () => {
     const [busPackages, setBusPackages] = useState([]);
@@ -34,7 +35,7 @@ const BigBus = () => {
                 {/* Full-width responsive image */}
                 <div className="hidden md:block">
                     <img
-                        src="./Bigbus/bigbus.png"
+                        src={BigBusImage}
                         alt="Big Bus Rome"
                         className="w-full object-contain"
                     />
@@ -42,7 +43,7 @@ const BigBus = () => {
 
                 <div className="block md:hidden">
                     <img
-                        src="./Bigbus/bigbus1.png"
+                        src={BigBusImage}
                         alt="Big Bus Rome"
                         className="w-full object-contain"
                     />

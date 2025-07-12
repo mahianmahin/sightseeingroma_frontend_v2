@@ -109,7 +109,7 @@ const Navbar = () => {
                                     </a>
                                 </li>
                                 <hr />
-                                <li onClick={() => handleMenuClick("/offer")}>
+                                {/* <li onClick={() => handleMenuClick("/offer")}>
                                     <a className="text-base font-semibold">
                                         <IoDocumentTextOutline /> Offer
                                     </a>
@@ -118,7 +118,7 @@ const Navbar = () => {
                                     <a className="text-base font-semibold">
                                         <RiMoneyEuroCircleLine /> Payments
                                     </a>
-                                </li>
+                                </li> */}
                               
                                 {isLoggedIn ? (
                                     <li onClick={logout}>

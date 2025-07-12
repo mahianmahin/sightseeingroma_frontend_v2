@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Banner2 from '../Components/Banner2/Banner2';
 import { useNavigate } from 'react-router-dom';
 import { baseMediaUrl, baseUrl, baseUrlHashless } from '../utilities/Utilities';
-
+import PurchasedTicketImage from "../assets/new/Purchased-Tickets-Section.jpg";
 
 
 const Your_Purchased_Tickets = () => {
@@ -41,8 +41,8 @@ const Your_Purchased_Tickets = () => {
     return (
         <div className='container mx-auto'>
             <Banner2
-                bannerImgmd={'/Banner/b5.png'}
-                bannerImgsm={'/Banner/tikit.png'}
+                bannerImgmd={PurchasedTicketImage}
+                bannerImgsm={PurchasedTicketImage}
                 title={'Your Purchased Tickets'}
                 description={'View and manage all your booked tickets in one place'}
             />

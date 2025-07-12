@@ -96,7 +96,7 @@ const ManageBookingMd = () => {
         <div className="">
          
           <div>
-            <Details_image img1={img1} img2={img2} img3={img3} img4={img4}></Details_image>
+            <Details_image img1={img1} img2={img2} img3={img3} img4={img4} data={data}></Details_image>
 
           </div>
 

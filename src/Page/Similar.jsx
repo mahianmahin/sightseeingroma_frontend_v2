@@ -59,6 +59,8 @@ const Similar = () => {
                             title={ticket.title}
                             subtitle={ticket.type}
                             image={ticket.image_big}
+                            thumbnail_small={ticket.thumbnail_small}
+                            thumbnail_large={ticket.thumbnail_large}
                             duration={ticket.duration}
                             ticketCount={ticket.package_tag}
                             price={ticket.adult_price}

@@ -4,6 +4,8 @@ import TicketCard from "../Components/TicketCard/TicketCard";
 import Similar from "./Similar";
 import { FaArrowLeftLong } from "react-icons/fa6";
 import { baseUrl } from '../utilities/Utilities';
+import ILoveRomeImage from "../assets/new/I-Love-Rome-Bus-Hero-Image.jpg";
+
 const LoveRome = () => {
     const [loveRomePackages, setloveRomePackages] = useState([]);
 
@@ -30,7 +32,7 @@ const LoveRome = () => {
             {/* Full-width responsive image */}
             <div className="hidden md:block">
                 <img
-                    src="./LoveRome/banner.png"
+                    src={ILoveRomeImage}
                     alt="Big Bus Rome"
                     className="w-full object-contain"
                 />
@@ -38,7 +40,7 @@ const LoveRome = () => {
 
             <div className="block md:hidden">
                 <img
-                    src="./LoveRome/banner2.png"
+                    src={ILoveRomeImage}
                     alt="Big Bus Rome"
                     className="w-full object-contain"
                 />
@@ -65,6 +67,8 @@ const LoveRome = () => {
                         title={ticket.title}
                         subtitle={ticket.type}
                         image={ticket.image_big}
+                        thumbnail_small={ticket.thumbnail_small}
+                        thumbnail_large={ticket.thumbnail_large}
                         duration={ticket.duration}
                         ticketCount={ticket.package_tag}
                         price={ticket.adult_price}

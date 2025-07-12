@@ -5,6 +5,8 @@ import TicketCard from "../Components/TicketCard/TicketCard";
 import HelmetWrapper from "../utilities/HelmetWrapper";
 import { baseUrl } from '../utilities/Utilities';
 import Similar from "./Similar";
+import GreenLineImage from "../assets/new/GreenLine-Bus-Hero-Image.jpg";
+
 const GreenLine = () => {
     const [greenLinePackages, setgreenLinePackages] = useState([]);
 
@@ -31,7 +33,7 @@ const GreenLine = () => {
             {/* Full-width responsive image */}
             <div className="hidden md:block">
                 <img
-                    src="./GreenLine/banner.png"
+                    src={GreenLineImage}
                     alt="Big Bus Rome"
                     className="w-full object-contain"
                 />
@@ -39,7 +41,7 @@ const GreenLine = () => {
 
             <div className="block md:hidden">
                 <img
-                    src="./GreenLine/g4.png"
+                    src={GreenLineImage}
                     alt="Big Bus Rome"
                     className="w-full object-contain"
                 />
@@ -66,6 +68,8 @@ const GreenLine = () => {
                         title={ticket.title}
                         subtitle={ticket.type}
                         image={ticket.image_big}
+                        thumbnail_small={ticket.thumbnail_small}
+                        thumbnail_large={ticket.thumbnail_large}
                         duration={ticket.duration}
                         ticketCount={ticket.package_tag}
                         price={ticket.adult_price}

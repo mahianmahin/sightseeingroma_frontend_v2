@@ -1,14 +1,15 @@
 import Banner2 from "../Components/Banner2/Banner2";
+import AboutUsImage from "../assets/new/About-Us.jpg";
 
 const AboutUs = () => {
     return (
         <div className="container mx-auto">
             {/* Banner */}
             <Banner2
-                bannerImgmd={'/Banner/b1.png'}
+                bannerImgmd={AboutUsImage}
                 title={'About Us'}
                 description={'Travel Made Simple. Our Journey, Your Adventure'}
-                bannerImgsm={'/Banner/b2.png'}
+                bannerImgsm={AboutUsImage}
             />
 
             {/* Content Section */}

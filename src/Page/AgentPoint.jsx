@@ -1,5 +1,6 @@
 import HelmetWrapper from '../utilities/HelmetWrapper';
 import Banner2 from './../Components/Banner2/Banner2';
+import AgentPointImage from "../assets/new/Agent-Point-Hero-Section.jpg";
 
 const AgentPoint = () => {
     return ( <>
@@ -7,8 +8,8 @@ const AgentPoint = () => {
         <div className="container mx-auto ">
             {/* Banner Section */}
             <Banner2
-                bannerImgmd={'/Banner/b4.png'}
-                bannerImgsm={'/Banner/b3.png'}
+                bannerImgmd={AgentPointImage}
+                bannerImgsm={AgentPointImage}
                 title={'Agent Point'}
                 description={'Easily book tickets, get travel advice, and more with our local agents'}
             />
