@@ -50,9 +50,9 @@ const handleStripeCheckout = async (title, description, image, date, adult_count
       fetch(`${baseUrl}create-checkout-session/`, {
         method: 'POST',
         body: formData,
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('access')}`
-        },
+        // headers: { // please don't send this header with this request, it will cause unauthorized error that I don't want.
+        //   'Authorization': `Bearer ${localStorage.getItem('access')}`
+        // },
       })
       .then(response => {
         if (response.status === 401) {
