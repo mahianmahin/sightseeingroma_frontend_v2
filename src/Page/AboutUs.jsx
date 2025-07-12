@@ -13,7 +13,7 @@ const AboutUs = () => {
             />
 
             {/* Content Section */}
-            <div className="my-14 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center  md:pl-14  px-5">
+            <div className="my-14 grid grid-cols-1 lg:grid-cols-1 gap-12 items-center  md:pl-14  px-5">
                 {/* Text Content */}
                 <div>
                     <h1 className="font-bold text-2xl md:text-2xl leading-snug">
@@ -59,13 +59,13 @@ const AboutUs = () => {
                 </div>
 
                 {/* Image Section */}
-                <div className="relative">
+                {/* <div className="relative">
                     <img
                         src="/Banner/Frame.png"
                         alt="Sightseeing Bus"
                         className="rounded-lg hidden md:block w-full h-auto"
                     />
-                </div>
+                </div> */}
             </div>
         </div>
     );
