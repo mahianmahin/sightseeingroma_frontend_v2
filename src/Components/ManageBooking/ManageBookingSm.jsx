@@ -91,8 +91,6 @@ const ManageBookingSm = () => {
         <div className="md:hidden block">
         <div>
             <DetailsImage img1={img1} img2={img2} img3={img3} img4={img4} data={data}></DetailsImage>
-            
-
           </div>
         </div>
       </div>
