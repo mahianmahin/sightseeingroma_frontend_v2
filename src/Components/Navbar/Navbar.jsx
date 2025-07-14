@@ -99,7 +99,7 @@ const Navbar = () => {
                                 <Link to={"/yourticket"}>
                                     <li>
                                         <a className="text-base font-semibold">
-                                            <PiTicketBold /> Manage Bookings
+                                            <PiTicketBold /> Purchase History
                                         </a>
                                     </li>
                                 </Link>
@@ -159,7 +159,7 @@ const Navbar = () => {
                             </li>
                             <li onClick={() => {isLoggedIn ? handleMenuClick("/yourticket") : handleMenuClick("/login")}}>
                                 <a>
-                                    <PiTicketBold /> Manage Bookings
+                                    <PiTicketBold /> Purchase History
                                 </a>
                             </li>
                             <li onClick={() => handleMenuClick("/agentPoints")}>
