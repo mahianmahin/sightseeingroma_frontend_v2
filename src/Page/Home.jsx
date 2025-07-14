@@ -10,7 +10,7 @@ import HelmetWrapper from "../utilities/HelmetWrapper";
 const Home = () => {
     return (
         <>
-            <HelmetWrapper title="Explore & Book Hop-On Hop-Off Bus Tickets | Sightseeing Roma" description="Explore Rome at your own pace with flexible hop-on hop-off bus tickets. Book online for 24, 48, or 72-hour tours from top operators and enjoy unforgettable sights." />
+            <HelmetWrapper title="Sightseeing Roma | Hop-On Hop-Off Panoramic Open Bus Tour Ticket" description="Compare and book hop-on hop-off panoramic open bus tour tickets from top operators. Explore Rome’s top sights at your own pace with flexible passes." />
             <div>
                 <div className="">
                     <Hero></Hero>

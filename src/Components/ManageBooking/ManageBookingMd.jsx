@@ -8,6 +8,7 @@ import { baseUrl, baseUrlHashless } from "../../utilities/Utilities";
 import Description from "../Description/Description";
 import Details_image from "../Details_Image/Details_image";
 import Loader from "../Loader/Loader";
+import HelmetWrapper from "../../utilities/HelmetWrapper";
 
 const ManageBookingMd = () => {
   const { id, status } = useParams();
@@ -92,6 +93,11 @@ const ManageBookingMd = () => {
   }
 
   return (
+    <>
+    {/* Meta information */}
+    <HelmetWrapper title={data?.meta_title} description={data?.meta_description} />
+    
+    
     <div className="container mx-auto pt-24"> {/* Changed from pt-16 to pt-24 */}
       {bigLoader && <Loader />}
       <div>
@@ -225,6 +231,7 @@ const ManageBookingMd = () => {
       <Description description={data?.description} />
       <Similar />
     </div>
+    </>
   );
 };
 
