@@ -84,7 +84,7 @@ const TermsCondition = () => {
                         <p className='mb-3'>For inquiries, assistance, or feedback regarding our services, please contact us at:</p>
 
                         Email: hello@sightseeingroma.com <br />
-                        Phone: +393286076514 <br />
+                        Phone: +39 327 3633 993 <br />
                         Address: Via Antonio Fogazzaro,5, cap-00137, Roma, Italy
                     </p>
                 </div>

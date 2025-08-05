@@ -62,8 +62,8 @@ const ReturnPolicy = () => {
                         </li>
                         <li>
                             <span className="font-medium">Phone:</span> 
-                            <a href="tel:+393286076514" className=" ml-1">
-                                +393286076514
+                            <a href="tel:+393273633993" className=" ml-1">
+                                +39 327 3633 993
                             </a>
                         </li>
                         <li>

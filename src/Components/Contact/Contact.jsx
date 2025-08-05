@@ -12,7 +12,7 @@ const Contact = () => {
                 <h2 className=" text-lg md:text-3xl font-bold mb-2">From Comfort to Budget, Explore Ticket Options for Every Traveler</h2>
                 <p className="text-gray-600 mb-4">Seamless booking, diverse routes, and flexible schedules at your fingertips</p>
                 <ul className="space-y-2 text-sm md:text-base font-bold">
-                    <li className="flex items-center gap-2"><FaPhoneAlt /> <a href="tel:+393286076514" target="_blank" rel="noopener noreferrer">+393286076514</a></li>
+                    <li className="flex items-center gap-2"><FaPhoneAlt /> <a href="tel:+393273633993" target="_blank" rel="noopener noreferrer">+39 327 3633 993</a></li>
                     <li className="flex items-center gap-2"><IoIosMailUnread /> <a href="mailto:hello@sightseeingroma.com" target="_blank" rel="noopener noreferrer">hello@sightseeingroma.com</a></li>
                     <li className="flex items-center gap-2 underline"><FaLocationDot /> <a href="https://maps.app.goo.gl/5tippW2iGzJ7h8TY7" target="_blank" rel="noopener noreferrer">Piazza del Popolo, 00185 Roma, Italy</a></li>
                 </ul>

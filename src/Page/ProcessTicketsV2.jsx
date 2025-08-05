@@ -18,7 +18,7 @@ export default function ProcessTicketsV2() {
     // Fetch ticket data
     useEffect(() => {
         if (code) {
-            fetch(`${baseUrl}qr/auth/${code}/`)
+            fetch(`${baseUrl}authenticate/${code}/`)
                 .then(response => response.json())
                 .then(data => {
                     setData(data);
@@ -94,15 +94,15 @@ export default function ProcessTicketsV2() {
                         </div>
                     </>
                 ) : (
-                    <div className="flex flex-col items-center mt-5">
-                        <img className="mb-2" src={check} alt="checked_image" />
+                    <div className="flex flex-col items-center mt-20">
+                        <img className="mb-2" src={check} alt="checked_image" style={{ width: '80px', height: '80px' }} />
                         <h4 className="text-green-600 text-lg font-semibold">Ticket claimed successfully!</h4>
                     </div>
                 )
             ) : (
-                <div className="bg-red-100 p-6 rounded-md shadow-md text-center">
+                <div className="bg-red-100 p-6 rounded-md shadow-md text-center mt-20">
                     <h3 className="text-red-600 font-semibold">{data.msg}</h3>
-                    <div className="mt-2 text-sm text-gray-500">expired</div>
+                    <div className="mt-2 text-sm text-gray-500">EXPIRED</div>
                 </div>
             )}
 
