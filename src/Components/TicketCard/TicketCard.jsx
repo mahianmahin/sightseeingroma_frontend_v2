@@ -1,5 +1,6 @@
-import { FaRegClock } from "react-icons/fa6";
+import { FaRegClock, FaStar } from "react-icons/fa6";
 import { LuTicket } from "react-icons/lu";
+import { FiMapPin } from "react-icons/fi";
 import PropTypes from "prop-types";
 import { baseUrl } from "../../utilities/Utilities";
 import { useNavigate } from "react-router-dom";
@@ -48,59 +49,95 @@ const TicketCard = ({ title, subtitle, image, duration, offPrice, ticketCount, p
     };
 
     return (
-        <div className="w-full mb-2 md:mb-14 mx-auto bg-3 rounded-xl shadow-md overflow-hidden border flex flex-col">
-            {/* Image Section */}
-            <img
-                src={getImageSrc()}
-                alt={title}
-                className="w-full h-[120px] md:h-[168px] object-cover"
-            />
-
-            {/* Card Content */}
-            <div className="p-4 flex flex-col flex-grow">
-                {/* Tour Type and Duration */}
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-center text-xs md:text-sm mb-2 whitespace-nowrap">
-                    <span className="flex items-center gap-1">
-                        {subtitle}
-                        <span className="mx-1 block md:hidden">|</span>
-                    </span>
-                    <span className="flex items-center gap-1 mt-2 md:mt-0">
-                        <FaRegClock className="text-gray-500" /> {duration}
-                    </span>
-                </div>
-
-                {/* Title */}
-                <h2 className=" text-sm md:text-lg font-semibold  text-gray-800">
-                    {title}
-                </h2>
-
-                {/* Tickets and Price */}
-                <div className="flex items-center justify-between mt-0 md:mt-2">
-                    <div className="flex items-center text-xs md:text-sm text-gray-500">
-                        <LuTicket className="mr-1" />
-                        <span># {id1}</span>
+        <div className="group w-full mb-4 md:mb-6 mx-auto bg-white rounded-2xl shadow-lg hover:shadow-xl overflow-hidden border border-gray-100 flex flex-col transition-all duration-300 transform hover:-translate-y-1">
+            {/* Image Section with Enhanced Overlay */}
+            <div className="relative overflow-hidden">
+                <img
+                    src={getImageSrc()}
+                    alt={title}
+                    className="w-full h-[140px] md:h-[180px] object-cover transition-transform duration-500 group-hover:scale-110"
+                />
+                
+                {/* Gradient Overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                
+                {/* Duration Badge */}
+                <div className="absolute top-3 right-3">
+                    <div className="bg-white/95 backdrop-blur-sm text-gray-800 text-xs font-semibold px-3 py-1.5 rounded-full flex items-center gap-1 shadow-lg">
+                        <FaRegClock className="w-3 h-3 text-[#930B31]" />
+                        <span>{duration}</span>
                     </div>
                 </div>
 
-                {/* Pricing */}
-                <div className="flex items-center mt-1 md:mt-2 gap-1 whitespace-nowrap">
-    <h3 className="font-normal text-sm md:text-md">Starting From <strike>€{offPrice}</strike></h3>
-    <span className="text-xs md:text-lg font-bold text-gray-800">€{price}</span>
-    <span className="hidden text-xs text-gray-500 sm:inline md:text-sm">(Per person)</span>
-</div>
-<div className="block sm:hidden text-xs text-gray-500 mt-1">(Per person)</div>
-
+                {/* Premium Badge */}
+                <div className="absolute top-3 left-3">
+                    <span className="bg-[#930B31] text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-lg">
+                        POPULAR
+                    </span>
+                </div>
             </div>
 
-            {/* Button */}
-           <div className="mb-4 mx-2">
-           <button
-                className="w-full py-2 px-5 mt-0 md:mt-3 text-white bg-2 md:rounded-lg rounded-3xl text-xs md:text-lg md:font-medium"
-                onClick={handleBuyNow} // Call the passed onClick handler
-            >
-                Buy Tickets
-            </button>
-           </div>
+            {/* Card Content */}
+            <div className="p-4 md:p-5 flex flex-col flex-grow">
+                {/* Category and Rating */}
+                <div className="flex justify-between items-center mb-3">
+                    <span className="inline-flex items-center gap-1.5 text-xs font-medium text-[#930B31] bg-red-50 px-3 py-1.5 rounded-full">
+                        <FiMapPin className="w-3 h-3" />
+                        {subtitle}
+                    </span>
+                    {/* <div className="flex items-center gap-1">
+                        <FaStar className="w-3 h-3 text-yellow-400 fill-current" />
+                        <span className="text-xs text-gray-600 font-medium">4.9</span>
+                    </div> */}
+                </div>
+
+                {/* Title */}
+                <h2 className="text-sm md:text-lg font-bold text-gray-800 leading-tight mb-3 line-clamp-2 group-hover:text-[#930B31] transition-colors duration-200">
+                    {title}
+                </h2>
+
+                {/* Ticket Info */}
+                <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-1.5 text-xs md:text-sm text-gray-500 bg-gray-50 px-3 py-1.5 rounded-lg">
+                        <LuTicket className="w-4 h-4 text-[#930B31]" />
+                        <span className="font-medium">#{id1}</span>
+                    </div>
+                </div>
+
+                {/* Enhanced Pricing Section */}
+                <div className="mb-4">
+                    <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-baseline gap-2">
+                            {offPrice && (
+                                <span className="text-sm text-gray-400 line-through font-medium">
+                                    €{offPrice}
+                                </span>
+                            )}
+                            <span className="text-xl md:text-2xl font-bold text-[#930B31]">
+                                €{price}
+                            </span>
+                        </div>
+                        {offPrice && (
+                            <span className="bg-green-100 text-green-800 text-xs font-bold px-2 py-1 rounded-full">
+                                -{Math.round(((offPrice - price) / offPrice) * 100)}%
+                            </span>
+                        )}
+                    </div>
+                    <p className="text-xs text-gray-500">
+                        <span className="font-medium">Starting from</span> • Per person
+                    </p>
+                </div>
+
+                {/* Enhanced Button */}
+                <div className="mt-auto">
+                    <button
+                        className="w-full bg-gradient-to-r from-[#930B31] to-red-700 hover:from-red-700 hover:to-[#930B31] text-white font-bold py-3 md:py-3.5 px-6 rounded-xl text-sm md:text-base transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+                        onClick={handleBuyNow}
+                    >
+                        Book Your Tickets
+                    </button>
+                </div>
+            </div>
         </div>
     );
 };
@@ -118,6 +155,7 @@ TicketCard.propTypes = {
     id1: PropTypes.number.isRequired,
     thumbnail_small: PropTypes.string,
     thumbnail_large: PropTypes.string,
+    offPrice: PropTypes.number,
 };
 
 export default TicketCard;
