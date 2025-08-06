@@ -102,6 +102,7 @@ const Services = () => {
               ticketCount={ticket.package_tag}
               price={ticket.adult_price}
               price2={ticket.youth_price}
+              offPrice={ticket.off_price}
               company={ticket.company}
               id1={ticket.id}
             />

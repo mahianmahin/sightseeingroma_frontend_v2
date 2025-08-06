@@ -4,7 +4,7 @@ import { baseUrl } from "../../utilities/Utilities";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 
-const Card = ({ title, subtitle, image, duration, ticketCount, price, id, company, id1, thumbnail_small, thumbnail_large }) => {
+const Card = ({ title, subtitle, image, duration, offPrice, ticketCount, price, id, company, id1, thumbnail_small, thumbnail_large }) => {
     const navigate = useNavigate();
     const [isLargeScreen, setIsLargeScreen] = useState(false);
 
@@ -94,7 +94,7 @@ const Card = ({ title, subtitle, image, duration, ticketCount, price, id, compan
                     {/* Price */}
                     <div className="mt-3">
                         <p className="text-xs sm:text-sm md:text-lg font-semibold">
-                            Start From €{price} <span className="text-xs sm:text-sm font-normal">(Per person)</span>
+                            Starting From <strike>€{offPrice}</strike>  €{price} <span className="text-xs sm:text-sm font-normal">(Per person)</span>
                         </p>
                     </div>
                 </div>
