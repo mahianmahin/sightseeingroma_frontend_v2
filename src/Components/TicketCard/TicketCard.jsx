@@ -5,7 +5,7 @@ import { baseUrl } from "../../utilities/Utilities";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 
-const TicketCard = ({ title, subtitle, image, duration, ticketCount, price, id , status, price2 , id1, thumbnail_small, thumbnail_large}) => {
+const TicketCard = ({ title, subtitle, image, duration, offPrice, ticketCount, price, id , status, price2 , id1, thumbnail_small, thumbnail_large}) => {
     const navigate = useNavigate();
     const [isLargeScreen, setIsLargeScreen] = useState(false);
 
@@ -84,8 +84,8 @@ const TicketCard = ({ title, subtitle, image, duration, ticketCount, price, id ,
 
                 {/* Pricing */}
                 <div className="flex items-center mt-1 md:mt-2 gap-1 whitespace-nowrap">
-    <h3 className="font-normal text-sm md:text-md">Start From</h3>
-    <span className="text-xs md:text-lg font-bold text-gray-800">€ {price}</span>
+    <h3 className="font-normal text-sm md:text-md">Starting From <strike>€{offPrice}</strike></h3>
+    <span className="text-xs md:text-lg font-bold text-gray-800">€{price}</span>
     <span className="hidden text-xs text-gray-500 sm:inline md:text-sm">(Per person)</span>
 </div>
 <div className="block sm:hidden text-xs text-gray-500 mt-1">(Per person)</div>

@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { FaArrowLeftLong } from "react-icons/fa6";
 import { useParams, useNavigate } from "react-router-dom";
 import { baseUrl } from "../../utilities/Utilities";
@@ -7,36 +7,108 @@ import Banner2 from "../Banner2/Banner2";
 import TicketCard from "../TicketCard/TicketCard";
 
 const ViewMore = () => {
-    const [busPackages, setBusPackages] = useState([]);
-    const [similar, setSimilar] = useState([]);
+    const [allPackages, setAllPackages] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
     const { hours, company } = useParams();
     const navigate = useNavigate();
 
+    // Memoize filtered packages to avoid unnecessary recalculations
+    const { busPackages, similar } = useMemo(() => {
+        if (!allPackages.length) return { busPackages: [], similar: [] };
+
+        const companyPackages = allPackages.filter(
+            (item) => item.company.toLowerCase() === company?.toLowerCase()
+        );
+
+        const similarPackages = allPackages.filter(
+            (item) => item.duration === hours && item.company.toLowerCase() !== company?.toLowerCase()
+        );
+
+        return { busPackages: companyPackages, similar: similarPackages };
+    }, [allPackages, company, hours]);
+
+    // Fetch data only once and store all packages
     useEffect(() => {
-        axios
-            .get(`${baseUrl}packages/`)
-            .then((response) => {
-                const allPackages = response.data.bus_data || [];
+        let isMounted = true;
+        
+        const fetchData = async () => {
+            try {
+                setLoading(true);
+                setError(null);
+                
+                const response = await axios.get(`${baseUrl}packages/`);
+                
+                if (isMounted) {
+                    setAllPackages(response.data.bus_data || []);
+                }
+            } catch (err) {
+                if (isMounted) {
+                    console.error("Error fetching data:", err);
+                    setError("Failed to load packages. Please try again later.");
+                }
+            } finally {
+                if (isMounted) {
+                    setLoading(false);
+                }
+            }
+        };
 
-                const companyPackages = allPackages.filter(
-                    (item) => item.company.toLowerCase() === company?.toLowerCase()
-                );
-                setBusPackages(companyPackages);
+        fetchData();
 
-                const similarPackages = allPackages.filter(
-                    (item) => item.duration === hours
-                );
-                setSimilar(similarPackages);
-            })
-            .catch((error) => {
-                console.error("Error fetching data:", error);
-            });
-    }, [hours, company]);
+        return () => {
+            isMounted = false;
+        };
+    }, []);
 
-    // Simplified Back Button
-    const handleBackClick = () => {
-        navigate(-1); // Always try to go back one step
-    };
+    // Optimized back navigation
+    const handleBackClick = useCallback(() => {
+        navigate(-1);
+    }, [navigate]);
+
+    // Render loading state
+    if (loading) {
+        return (
+            <div className="container mx-auto">
+                <Banner2
+                    bannerImgmd={"/Banner/b8.png"}
+                    bannerImgsm={"/Banner/b7.png"}
+                    title={"Explore more with us"}
+                    description={"Discover the best of Rome with our exclusive bus packages"}
+                />
+                <div className="px-4 md:px-8 py-16">
+                    <div className="flex justify-center items-center">
+                        <div className="text-lg text-gray-600">Loading packages...</div>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    // Render error state
+    if (error) {
+        return (
+            <div className="container mx-auto">
+                <Banner2
+                    bannerImgmd={"/Banner/b8.png"}
+                    bannerImgsm={"/Banner/b7.png"}
+                    title={"Explore more with us"}
+                    description={"Discover the best of Rome with our exclusive bus packages"}
+                />
+                <div className="px-4 md:px-8 py-16">
+                    <div className="text-center">
+                        <p className="text-red-500 text-lg">{error}</p>
+                        <button 
+                            onClick={() => window.location.reload()} 
+                            className="mt-4 px-6 py-2 bg-[#930B31] text-white rounded-lg hover:bg-red-800"
+                        >
+                            Retry
+                        </button>
+                    </div>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="container mx-auto">
@@ -64,7 +136,7 @@ const ViewMore = () => {
                     <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-2 md:gap-x-10">
                         {busPackages.map((ticket) => (
                             <TicketCard
-                                key={ticket.id}
+                                key={`company-${ticket.id}-${ticket.package_tag}`}
                                 id={ticket.package_tag}
                                 status={ticket.status}
                                 title={ticket.title}
@@ -77,6 +149,7 @@ const ViewMore = () => {
                                 price={ticket.adult_price}
                                 price2={ticket.youth_price}
                                 id1={ticket.id}
+                                offPrice={ticket.off_price}
                             />
                         ))}
                     </div>
@@ -97,17 +170,20 @@ const ViewMore = () => {
                     <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-2 md:gap-x-10">
                         {similar.map((ticket) => (
                             <TicketCard
-                                key={ticket.package_tag}
+                                key={`similar-${ticket.package_tag}-${ticket.id}`}
                                 id={ticket.package_tag}
                                 status={ticket.status}
                                 title={ticket.title}
                                 subtitle={ticket.type}
                                 image={ticket.image_big}
+                                thumbnail_small={ticket.thumbnail_small}
+                                thumbnail_large={ticket.thumbnail_large}
                                 duration={ticket.duration}
                                 ticketCount={ticket.package_tag}
                                 price={ticket.adult_price}
                                 price2={ticket.youth_price}
                                 id1={ticket.id}
+                                offPrice={ticket.off_price}
                             />
                         ))}
                     </div>
