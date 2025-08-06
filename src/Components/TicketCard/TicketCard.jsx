@@ -60,70 +60,51 @@ const TicketCard = ({ title, subtitle, image, duration, offPrice, ticketCount, p
                 
                 {/* Gradient Overlay */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                
-                {/* Duration Badge */}
-                <div className="absolute top-3 right-3">
-                    <div className="bg-white/95 backdrop-blur-sm text-gray-800 text-xs font-semibold px-3 py-1.5 rounded-full flex items-center gap-1 shadow-lg">
-                        <FaRegClock className="w-3 h-3 text-[#930B31]" />
-                        <span>{duration}</span>
-                    </div>
-                </div>
-
-                {/* Premium Badge */}
-                <div className="absolute top-3 left-3">
-                    <span className="bg-[#930B31] text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-lg">
-                        POPULAR
-                    </span>
-                </div>
             </div>
 
             {/* Card Content */}
-            <div className="p-4 md:p-5 flex flex-col flex-grow">
+            <div className="p-3 md:p-5 flex flex-col flex-grow">
                 {/* Category and Rating */}
-                <div className="flex justify-between items-center mb-3">
-                    <span className="inline-flex items-center gap-1.5 text-xs font-medium text-[#930B31] bg-red-50 px-3 py-1.5 rounded-full">
-                        <FiMapPin className="w-3 h-3" />
+                <div className="flex justify-between items-center mb-2 md:mb-3">
+                    <span className="inline-flex items-center gap-1 text-[10px] md:text-xs font-medium text-[#930B31] bg-red-50 px-2 py-1 md:px-3 md:py-1.5 rounded-full">
+                        <FiMapPin className="w-2 h-2 md:w-3 md:h-3" />
                         {subtitle}
                     </span>
-                    {/* <div className="flex items-center gap-1">
-                        <FaStar className="w-3 h-3 text-yellow-400 fill-current" />
-                        <span className="text-xs text-gray-600 font-medium">4.9</span>
-                    </div> */}
                 </div>
 
                 {/* Title */}
-                <h2 className="text-sm md:text-lg font-bold text-gray-800 leading-tight mb-3 line-clamp-2 group-hover:text-[#930B31] transition-colors duration-200">
+                <h2 className="text-xs md:text-lg font-bold text-gray-800 leading-tight mb-2 md:mb-3 line-clamp-2 group-hover:text-[#930B31] transition-colors duration-200">
                     {title}
                 </h2>
 
                 {/* Ticket Info */}
-                <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center gap-1.5 text-xs md:text-sm text-gray-500 bg-gray-50 px-3 py-1.5 rounded-lg">
-                        <LuTicket className="w-4 h-4 text-[#930B31]" />
+                <div className="flex items-center justify-between mb-3 md:mb-4">
+                    <div className="flex items-center gap-1 text-[10px] md:text-sm text-gray-500 bg-gray-50 px-2 py-1 md:px-3 md:py-1.5 rounded-lg">
+                        <LuTicket className="w-3 h-3 md:w-4 md:h-4 text-[#930B31]" />
                         <span className="font-medium">#{id1}</span>
                     </div>
                 </div>
 
                 {/* Enhanced Pricing Section */}
-                <div className="mb-4">
-                    <div className="flex items-center justify-between mb-2">
-                        <div className="flex items-baseline gap-2">
+                <div className="mb-3 md:mb-4">
+                    <div className="flex items-center justify-between mb-1 md:mb-2">
+                        <div className="flex items-baseline gap-1 md:gap-2">
                             {offPrice && (
-                                <span className="text-sm text-gray-400 line-through font-medium">
+                                <span className="text-[10px] md:text-sm text-gray-400 line-through font-medium">
                                     €{offPrice}
                                 </span>
                             )}
-                            <span className="text-xl md:text-2xl font-bold text-[#930B31]">
+                            <span className="text-sm md:text-2xl font-bold text-[#930B31]">
                                 €{price}
                             </span>
                         </div>
                         {offPrice && (
-                            <span className="bg-green-100 text-green-800 text-xs font-bold px-2 py-1 rounded-full">
+                            <span className="bg-green-100 text-green-800 text-[9px] md:text-xs font-bold px-1.5 py-0.5 md:px-2 md:py-1 rounded-full">
                                 -{Math.round(((offPrice - price) / offPrice) * 100)}%
                             </span>
                         )}
                     </div>
-                    <p className="text-xs text-gray-500">
+                    <p className="text-[9px] md:text-xs text-gray-500">
                         <span className="font-medium">Starting from</span> • Per person
                     </p>
                 </div>
@@ -131,7 +112,7 @@ const TicketCard = ({ title, subtitle, image, duration, offPrice, ticketCount, p
                 {/* Enhanced Button */}
                 <div className="mt-auto">
                     <button
-                        className="w-full bg-gradient-to-r from-[#930B31] to-red-700 hover:from-red-700 hover:to-[#930B31] text-white font-bold py-3 md:py-3.5 px-6 rounded-xl text-sm md:text-base transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+                        className="w-full bg-gradient-to-r from-[#930B31] to-red-700 hover:from-red-700 hover:to-[#930B31] text-white font-bold py-2 md:py-3.5 px-4 md:px-6 rounded-lg md:rounded-xl text-[10px] md:text-base transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
                         onClick={handleBuyNow}
                     >
                         Book Your Tickets

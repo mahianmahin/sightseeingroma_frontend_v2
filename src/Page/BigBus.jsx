@@ -63,7 +63,7 @@ const BigBus = () => {
                     </div>
 
                     {/* Render tickets dynamically */}
-                    <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-2 md:gap-x-10">
+                    <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-10">
                         {busPackages.map((ticket, index) => (
                             <TicketCard
                                 key={ticket}

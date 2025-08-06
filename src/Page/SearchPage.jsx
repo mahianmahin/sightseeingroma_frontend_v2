@@ -79,7 +79,7 @@ const SearchPage = () => {
                         </button>
                     </div>
                 ) : ticketData.length > 0 ? (
-                    <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 my-10 md:my-24 gap-x-2 md:gap-x-10 gap-y-8">
+                    <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 my-10 md:my-24 gap-3 md:gap-10 gap-y-8">
                         {ticketData.map((ticket) => (
                             <Card
                                 key={ticket.id}

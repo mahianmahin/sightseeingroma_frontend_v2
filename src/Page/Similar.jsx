@@ -51,7 +51,7 @@ const Similar = () => {
             ) : error ? (
                 <p className="text-center text-red-500">Failed to load packages. Please try again later.</p>
             ) : (
-                <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-2 md:gap-x-10">
+                <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-10">
                     {similarPackages.length > 0 ? (
                         similarPackages.map((ticket, index) => (
                             <TicketCard
