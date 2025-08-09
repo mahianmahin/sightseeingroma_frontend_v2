@@ -9,6 +9,11 @@ const Footer = () => {
     const [folders, setFolders] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [socialLinks, setSocialLinks] = useState({
+        facebook: "https://www.facebook.com/sightseeingroma", // fallback values
+        instagram: "https://www.instagram.com/sightseeingroma"
+    });
+    const [socialLoading, setSocialLoading] = useState(true);
 
     useEffect(() => {
         const fetchFolders = async () => {
@@ -29,7 +34,28 @@ const Footer = () => {
             }
         };
 
+        const fetchSocialLinks = async () => {
+            try {
+                const response = await fetch(`${baseUrl}website-settings/`);
+                if (response.ok) {
+                    const result = await response.json();
+                    if (result.status === 200 && result.data) {
+                        setSocialLinks({
+                            facebook: result.data.website_facebook || socialLinks.facebook,
+                            instagram: result.data.website_instagram || socialLinks.instagram
+                        });
+                    }
+                }
+            } catch (error) {
+                console.error("Error fetching social links:", error);
+                // Keep fallback values if API fails
+            } finally {
+                setSocialLoading(false);
+            }
+        };
+
         fetchFolders();
+        fetchSocialLinks();
     }, []);
 
     // Function to generate route path from folder name
@@ -180,9 +206,22 @@ const Footer = () => {
 
                 {/* Social Media Icons */}
                 <div className="flex space-x-4 text-lg pb-3 md:pb-0">
-                    <a href="https://www.facebook.com/sightseeingroma" className="hover:text-gray-400"><i className="fab fa-facebook-f"></i></a>
-                    {/* <a href="#" className="hover:text-gray-400"><i className="fab fa-youtube"></i></a> */}
-                    <a href="https://www.instagram.com/sightseeingroma" className="hover:text-gray-400"><i className="fab fa-instagram"></i></a>
+                    {socialLoading ? (
+                        <>
+                            <div className="w-6 h-6 bg-gray-600 rounded animate-pulse"></div>
+                            <div className="w-6 h-6 bg-gray-600 rounded animate-pulse"></div>
+                        </>
+                    ) : (
+                        <>
+                            <a href={socialLinks.facebook} target="_blank" rel="noopener noreferrer" className="hover:text-gray-400">
+                                <i className="fab fa-facebook-f"></i>
+                            </a>
+                            {/* <a href="#" className="hover:text-gray-400"><i className="fab fa-youtube"></i></a> */}
+                            <a href={socialLinks.instagram} target="_blank" rel="noopener noreferrer" className="hover:text-gray-400">
+                                <i className="fab fa-instagram"></i>
+                            </a>
+                        </>
+                    )}
                 </div>
             </div>
             

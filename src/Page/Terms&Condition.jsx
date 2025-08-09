@@ -1,7 +1,41 @@
 import Banner2 from './../Components/Banner2/Banner2';
 import TermsConditionImage from "../assets/new/Terms-&-Conditions.jpg";
+import { useState, useEffect } from "react";
+import { baseUrl } from "../utilities/Utilities";
 
 const TermsCondition = () => {
+    const [contactData, setContactData] = useState({
+        phone: "+39 327 3633 993", // fallback values
+        email: "hello@sightseeingroma.com",
+        address: "Via Antonio Fogazzaro,5, cap-00137, Roma, Italy"
+    });
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchContactData = async () => {
+            try {
+                const response = await fetch(`${baseUrl}website-settings/`);
+                if (response.ok) {
+                    const result = await response.json();
+                    if (result.status === 200 && result.data) {
+                        setContactData({
+                            phone: result.data.website_phone_number || contactData.phone,
+                            email: result.data.website_email || contactData.email,
+                            address: result.data.website_address || contactData.address
+                        });
+                    }
+                }
+            } catch (error) {
+                console.error("Error fetching contact data:", error);
+                // Keep fallback values if API fails
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchContactData();
+    }, []);
+
     return (
         <div className="container mx-auto">
             {/* Banner Section */}
@@ -83,9 +117,19 @@ const TermsCondition = () => {
                     <p>
                         <p className='mb-3'>For inquiries, assistance, or feedback regarding our services, please contact us at:</p>
 
-                        Email: hello@sightseeingroma.com <br />
-                        Phone: +39 327 3633 993 <br />
-                        Address: Via Antonio Fogazzaro,5, cap-00137, Roma, Italy
+                        {loading ? (
+                            <div className="space-y-2">
+                                <div className="h-4 bg-gray-200 rounded animate-pulse w-64"></div>
+                                <div className="h-4 bg-gray-200 rounded animate-pulse w-48"></div>
+                                <div className="h-4 bg-gray-200 rounded animate-pulse w-80"></div>
+                            </div>
+                        ) : (
+                            <>
+                                Email: {contactData.email} <br />
+                                Phone: {contactData.phone} <br />
+                                Address: {contactData.address}
+                            </>
+                        )}
                     </p>
                 </div>
 

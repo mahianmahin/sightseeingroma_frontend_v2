@@ -1,7 +1,41 @@
 import Banner2 from './../Components/Banner2/Banner2';
 import ReturnImage from "../assets/new/Return-Policy.jpg";
+import { useState, useEffect } from "react";
+import { baseUrl } from "../utilities/Utilities";
 
 const ReturnPolicy = () => {
+    const [contactData, setContactData] = useState({
+        phone: "+39 327 3633 993", // fallback values
+        email: "hello@sightseeingroma.com",
+        address: "Via Antonio Fogazzaro, 5, cap–00137, Roma, Italy"
+    });
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchContactData = async () => {
+            try {
+                const response = await fetch(`${baseUrl}website-settings/`);
+                if (response.ok) {
+                    const result = await response.json();
+                    if (result.status === 200 && result.data) {
+                        setContactData({
+                            phone: result.data.website_phone_number || contactData.phone,
+                            email: result.data.website_email || contactData.email,
+                            address: result.data.website_address || contactData.address
+                        });
+                    }
+                }
+            } catch (error) {
+                console.error("Error fetching contact data:", error);
+                // Keep fallback values if API fails
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchContactData();
+    }, []);
+
     return (
         <div className="container mx-auto ">
             {/* Banner Section */}
@@ -32,12 +66,20 @@ const ReturnPolicy = () => {
                         </li>
                         <li>
                             <span className="font-medium">Notification:</span> Kindly inform us of your intention to return your ticket by contacting our customer support team via email at 
-                            <a href="mailto:hello@sightseeingroma.com" className=" ml-1">
-                                hello@sightseeingroma.com
-                            </a> or by phone at 
-                            <a href="tel:+393286076514" className="ml-1">
-                                +393286076514
-                            </a>. Please provide your order details for faster processing.
+                            {loading ? (
+                                <span className="inline-block w-32 h-4 bg-gray-200 rounded animate-pulse ml-1"></span>
+                            ) : (
+                                <a href={`mailto:${contactData.email}`} className=" ml-1">
+                                    {contactData.email}
+                                </a>
+                            )} or by phone at 
+                            {loading ? (
+                                <span className="inline-block w-24 h-4 bg-gray-200 rounded animate-pulse ml-1"></span>
+                            ) : (
+                                <a href={`tel:${contactData.phone}`} className="ml-1">
+                                    {contactData.phone}
+                                </a>
+                            )}. Please provide your order details for faster processing.
                         </li>
                         <li>
                             <span className="font-medium">Ticket Validity:</span> Ensure that your ticket is still within its validity period, as expired tickets are not eligible for return.
@@ -48,28 +90,36 @@ const ReturnPolicy = () => {
                     </ul>
                 </div>
 
-                <div>
+                                <div>
                     <h2 className="text-xl font-bold ">Contact Us</h2>
                     <p className="mt-2 ">
-                        If you have any questions or concerns regarding our Return & Refund Policy, please don’t hesitate to reach out to us. Our dedicated customer support team is available to assist you and ensure your satisfaction.
+                        If you have any questions or concerns regarding our Return & Refund Policy, please don't hesitate to reach out to us. Our dedicated customer support team is available to assist you and ensure your satisfaction.
                     </p>
-                    <ul className="mt-4 space-y-2 ">
-                        <li>
-                            <span className="font-medium">Email:</span> 
-                            <a href="mailto:hello@sightseeingroma.com" className=" ml-1">
-                                hello@sightseeingroma.com
-                            </a>
-                        </li>
-                        <li>
-                            <span className="font-medium">Phone:</span> 
-                            <a href="tel:+393273633993" className=" ml-1">
-                                +39 327 3633 993
-                            </a>
-                        </li>
-                        <li>
-                            <span className="font-medium">Address:</span> Via Antonio Fogazzaro, 5, cap–00137, Roma, Italy
-                        </li>
-                    </ul>
+                    {loading ? (
+                        <div className="mt-4 space-y-2">
+                            <div className="h-4 bg-gray-200 rounded animate-pulse w-64"></div>
+                            <div className="h-4 bg-gray-200 rounded animate-pulse w-48"></div>
+                            <div className="h-4 bg-gray-200 rounded animate-pulse w-80"></div>
+                        </div>
+                    ) : (
+                        <ul className="mt-4 space-y-2 ">
+                            <li>
+                                <span className="font-medium">Email:</span> 
+                                <a href={`mailto:${contactData.email}`} className=" ml-1">
+                                    {contactData.email}
+                                </a>
+                            </li>
+                            <li>
+                                <span className="font-medium">Phone:</span> 
+                                <a href={`tel:${contactData.phone}`} className=" ml-1">
+                                    {contactData.phone}
+                                </a>
+                            </li>
+                            <li>
+                                <span className="font-medium">Address:</span> {contactData.address}
+                            </li>
+                        </ul>
+                    )}
                 </div>
 
                 <div>
