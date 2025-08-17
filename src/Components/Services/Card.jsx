@@ -58,7 +58,7 @@ const Card = ({ title, subtitle, image, duration, offPrice, ticketCount, price, 
     return (
         <div className="group w-full bg-white shadow-lg hover:shadow-xl rounded-2xl overflow-hidden mx-auto h-full flex flex-col transition-all duration-300 transform hover:-translate-y-1 border border-gray-100">
             {/* Image Container with Overlay */}
-            <div className="relative overflow-hidden">
+            <div onClick={handleBuyNow} className="relative overflow-hidden">
                 <img 
                     src={getImageSrc()}
                     alt={title}
@@ -71,7 +71,7 @@ const Card = ({ title, subtitle, image, duration, offPrice, ticketCount, price, 
 
             {/* Card Content */}
             <div className="p-3 md:p-5 flex flex-col flex-grow">
-                <div className="flex-grow">
+                <div onClick={handleBuyNow} className="flex-grow">
                     {/* Category and Rating */}
                     <div className="flex justify-between items-center mb-2">
                         <span className="inline-flex items-center gap-1 text-[10px] md:text-xs font-medium text-[#930B31] bg-red-50 px-1.5 py-0.5 md:px-2 md:py-1 rounded-full">
@@ -111,7 +111,7 @@ const Card = ({ title, subtitle, image, duration, offPrice, ticketCount, price, 
                         {offPrice && (
                             <div className="inline-flex items-center mt-1">
                                 <span className="bg-green-100 text-green-800 text-[9px] md:text-xs font-bold px-1 py-0.5 md:px-2 rounded-full">
-                                    SAVE €{offPrice - price}
+                                    SAVE {Math.round(((offPrice - price) / offPrice) * 100)}%
                                 </span>
                             </div>
                         )}

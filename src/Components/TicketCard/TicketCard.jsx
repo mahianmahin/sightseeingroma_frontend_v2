@@ -51,7 +51,7 @@ const TicketCard = ({ title, subtitle, image, duration, offPrice, ticketCount, p
     return (
         <div className="group w-full mb-4 md:mb-6 mx-auto bg-white rounded-2xl shadow-lg hover:shadow-xl overflow-hidden border border-gray-100 flex flex-col transition-all duration-300 transform hover:-translate-y-1">
             {/* Image Section with Enhanced Overlay */}
-            <div className="relative overflow-hidden">
+            <div onClick={handleBuyNow} className="relative overflow-hidden">
                 <img
                     src={getImageSrc()}
                     alt={title}
@@ -65,7 +65,7 @@ const TicketCard = ({ title, subtitle, image, duration, offPrice, ticketCount, p
             {/* Card Content */}
             <div className="p-3 md:p-5 flex flex-col flex-grow">
                 {/* Category and Rating */}
-                <div className="flex justify-between items-center mb-2 md:mb-3">
+                <div onClick={handleBuyNow} className="flex justify-between items-center mb-2 md:mb-3">
                     <span className="inline-flex items-center gap-1 text-[10px] md:text-xs font-medium text-[#930B31] bg-red-50 px-2 py-1 md:px-3 md:py-1.5 rounded-full">
                         <FiMapPin className="w-2 h-2 md:w-3 md:h-3" />
                         {subtitle}
@@ -73,12 +73,12 @@ const TicketCard = ({ title, subtitle, image, duration, offPrice, ticketCount, p
                 </div>
 
                 {/* Title */}
-                <h2 className="text-xs md:text-lg font-bold text-gray-800 leading-tight mb-2 md:mb-3 line-clamp-2 group-hover:text-[#930B31] transition-colors duration-200">
+                <h2 onClick={handleBuyNow} className="text-xs md:text-lg font-bold text-gray-800 leading-tight mb-2 md:mb-3 line-clamp-2 group-hover:text-[#930B31] transition-colors duration-200">
                     {title}
                 </h2>
 
                 {/* Ticket Info */}
-                <div className="flex items-center justify-between mb-3 md:mb-4">
+                <div onClick={handleBuyNow} className="flex items-center justify-between mb-3 md:mb-4">
                     <div className="flex items-center gap-1 text-[10px] md:text-sm text-gray-500 bg-gray-50 px-2 py-1 md:px-3 md:py-1.5 rounded-lg">
                         <LuTicket className="w-3 h-3 md:w-4 md:h-4 text-[#930B31]" />
                         <span className="font-medium">#{id1}</span>
@@ -86,7 +86,7 @@ const TicketCard = ({ title, subtitle, image, duration, offPrice, ticketCount, p
                 </div>
 
                 {/* Enhanced Pricing Section */}
-                <div className="mb-3 md:mb-4">
+                <div onClick={handleBuyNow} className="mb-3 md:mb-4">
                     <div className="flex items-center justify-between mb-1 md:mb-2">
                         <div className="flex items-baseline gap-1 md:gap-2">
                             {offPrice && (
@@ -100,7 +100,7 @@ const TicketCard = ({ title, subtitle, image, duration, offPrice, ticketCount, p
                         </div>
                         {offPrice && (
                             <span className="bg-green-100 text-green-800 text-[9px] md:text-xs font-bold px-1.5 py-0.5 md:px-2 md:py-1 rounded-full">
-                                -{Math.round(((offPrice - price) / offPrice) * 100)}%
+                                SAVE {Math.round(((offPrice - price) / offPrice) * 100)}%
                             </span>
                         )}
                     </div>

@@ -88,28 +88,34 @@ const Services = () => {
           </p>
           
           {/* Stats Section */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8 max-w-4xl mx-auto">
+          <div className="grid grid-cols-3 md:grid-cols-3 gap-4 mt-8 max-w-3xl mx-auto">
+            
             <div className="bg-white p-4 rounded-lg shadow-sm">
               <FaRoute className="text-[#930B31] text-2xl mx-auto mb-2" />
-              <p className="text-2xl font-bold text-gray-800">{folders.length}</p>
+              <p className="text-xl font-bold text-gray-800">{folders.length}</p>
               <p className="text-sm text-gray-600">Bus Services</p>
             </div>
-            <div className="bg-white p-4 rounded-lg shadow-sm">
+            
+            {/* <div className="bg-white p-4 rounded-lg shadow-sm">
               <FaTicketAlt className="text-[#930B31] text-2xl mx-auto mb-2" />
               <p className="text-2xl font-bold text-gray-800">{busData.length}</p>
               <p className="text-sm text-gray-600">Total Packages</p>
-            </div>
+            </div> */}
+            
             <div className="bg-white p-4 rounded-lg shadow-sm">
               <FaMapMarkedAlt className="text-[#930B31] text-2xl mx-auto mb-2" />
-              <p className="text-2xl font-bold text-gray-800">Rome</p>
+              <p className="text-xl font-bold text-gray-800">Rome</p>
               <p className="text-sm text-gray-600">City Coverage</p>
             </div>
+            
             <div className="bg-white p-4 rounded-lg shadow-sm">
               <FaBus className="text-[#930B31] text-2xl mx-auto mb-2" />
-              <p className="text-2xl font-bold text-gray-800">24/7</p>
+              <p className="text-xl font-bold text-gray-800">24/7</p>
               <p className="text-sm text-gray-600">Service Hours</p>
             </div>
+          
           </div>
+        
         </div>
 
         {/* Service Selection */}
