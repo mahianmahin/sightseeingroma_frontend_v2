@@ -10,15 +10,9 @@ const HeroBottom = () => {
     ];
 
     return (
-        <div className="bg-[#FAD50266] py-8 md:py-12 overflow-hidden">
+        <div className="bg-[#FAD50266] py-4 md:py-12 overflow-hidden">
             {/* Top Row - Slides Right */}
-            <div className="relative mb-0 md:mb-5 mb-5">
-                {/* Fade Effect Left */}
-                {/* <div className="absolute left-0 top-0 w-16 md:w-32 h-full bg-gradient-to-r from-[#FAD50266] to-transparent z-10"></div> */}
-
-                {/* Fade Effect Right */}
-                {/* <div className="absolute right-0 top-0 w-16 md:w-32 h-full bg-gradient-to-l from-[#FAD50266] to-transparent z-10"></div> */}
-
+            <div className="relative mb-0 md:mb-0 mb-0">
                 {/* Scrolling Container */}
                 <div className="flex animate-scroll-right">
                     {/* Multiple sets to fill the entire row seamlessly */}
