@@ -5,6 +5,9 @@ import { useParams, useNavigate } from "react-router-dom";
 import { baseUrl } from "../../utilities/Utilities";
 import Banner2 from "../Banner2/Banner2";
 import TicketCard from "../TicketCard/TicketCard";
+import useStaticContent from "../../hooks/useStaticContent";
+import useEditorCheck from "../../hooks/useEditorCheck";
+import EditWrapper from "../Edit_Wrapper/EditWrapper";
 
 const ViewMore = () => {
     const [allPackages, setAllPackages] = useState([]);
@@ -61,6 +64,15 @@ const ViewMore = () => {
         };
     }, []);
 
+    const { isEditor } = useEditorCheck();
+    const { getContentByTag, hasContent, refreshContent } = useStaticContent('view-more');
+    
+    const renderContent = (contentTag, fallbackText = "Loading...") => {
+    return hasContent(contentTag)
+        ? <span dangerouslySetInnerHTML={{ __html: getContentByTag(contentTag) }}></span>
+        : <div>{fallbackText}</div>;
+    };
+
     // Optimized back navigation
     const handleBackClick = useCallback(() => {
         navigate(-1);
@@ -70,12 +82,19 @@ const ViewMore = () => {
     if (loading) {
         return (
             <div className="container mx-auto">
-                <Banner2
-                    bannerImgmd={"/Banner/b8.png"}
-                    bannerImgsm={"/Banner/b7.png"}
-                    title={"Explore more with us"}
-                    description={"Discover the best of Rome with our exclusive bus packages"}
-                />
+                
+                <Banner2 bannerImgmd={"/Banner/b8.png"} bannerImgsm={"/Banner/b7.png"}>
+                    
+                    <EditWrapper isEditor={isEditor} contentTag={"view-more-title"} refreshContent={refreshContent}>
+                        {renderContent('view-more-title')}
+                    </EditWrapper>
+
+                    
+                    <EditWrapper isEditor={isEditor} contentTag={"view-more-subtitle"} refreshContent={refreshContent}>
+                        {renderContent('view-more-subtitle')}
+                    </EditWrapper>
+                </Banner2>
+                
                 <div className="px-4 md:px-8 py-16">
                     <div className="flex justify-center items-center">
                         <div className="text-lg text-gray-600">Loading packages...</div>
@@ -89,12 +108,16 @@ const ViewMore = () => {
     if (error) {
         return (
             <div className="container mx-auto">
-                <Banner2
-                    bannerImgmd={"/Banner/b8.png"}
-                    bannerImgsm={"/Banner/b7.png"}
-                    title={"Explore more with us"}
-                    description={"Discover the best of Rome with our exclusive bus packages"}
-                />
+                <Banner2 bannerImgmd={"/Banner/b8.png"} bannerImgsm={"/Banner/b7.png"}>
+                    <EditWrapper isEditor={isEditor} contentTag={"view-more-title"} refreshContent={refreshContent}>
+                        {renderContent('view-more-title')}
+                    </EditWrapper>
+
+                    
+                    <EditWrapper isEditor={isEditor} contentTag={"view-more-subtitle"} refreshContent={refreshContent}>
+                        {renderContent('view-more-subtitle')}
+                    </EditWrapper>
+                </Banner2>
                 <div className="px-4 md:px-8 py-16">
                     <div className="text-center">
                         <p className="text-red-500 text-lg">{error}</p>
@@ -113,12 +136,16 @@ const ViewMore = () => {
     return (
         <div className="container mx-auto">
             {/* Banner */}
-            <Banner2
-                bannerImgmd={"/Banner/b8.png"}
-                bannerImgsm={"/Banner/b7.png"}
-                title={"Explore more with us"}
-                description={"Discover the best of Rome with our exclusive bus packages"}
-            />
+            <Banner2 bannerImgmd={"/Banner/b8.png"} bannerImgsm={"/Banner/b7.png"}>
+                <EditWrapper isEditor={isEditor} contentTag={"view-more-title"} refreshContent={refreshContent}>
+                    {renderContent('view-more-title')}
+                </EditWrapper>
+
+                    
+                <EditWrapper isEditor={isEditor} contentTag={"view-more-subtitle"} refreshContent={refreshContent}>
+                    {renderContent('view-more-subtitle')}
+                </EditWrapper>
+            </Banner2>
 
             {/* Same Categories Section */}
             <div className="px-4 md:px-8">
@@ -129,7 +156,11 @@ const ViewMore = () => {
                             <FaArrowLeftLong size={20} />
                         </button>
                     </div> */}
-                    <h1 className="text-2xl font-bold uppercase">Same Categories</h1>
+                    
+                    <EditWrapper isEditor={isEditor} contentTag={"view-more-same-categories"} refreshContent={refreshContent}>
+                        {renderContent('view-more-same-categories', 'Same Categories')}
+                    </EditWrapper>
+                
                 </div>
 
                 {busPackages.length > 0 ? (
@@ -163,7 +194,9 @@ const ViewMore = () => {
             {/* Similar Categories Section */}
             <div className="px-4 md:px-8">
                 <div className="py-7 md:py-10">
-                    <h1 className="text-2xl font-bold uppercase">Similar Options</h1>
+                    <EditWrapper isEditor={isEditor} contentTag={"view-more-similar-options"} refreshContent={refreshContent}>
+                        {renderContent('view-more-similar-options', 'Similar Options')}
+                    </EditWrapper>
                 </div>
 
                 {similar.length > 0 ? (

@@ -46,7 +46,7 @@ export default function EditWrapper({children, isEditor, contentTag, content = "
     return (
         <>
         {isEditor ? <div className="wrapper my-2 border-2 border-dashed border-red-100 p-2 relative hover:border-yellow-500 transition-all duration-300">
-            <button onClick={handleEditClick} className="absolute top-3 right-3 bg-red-500 text-white text-[20px] md:text-xs px-2 py-1 rounded hover:bg-red-600 transition-colors duration-200 z-10 h-10 w-20">EDIT</button>
+            <button onClick={handleEditClick} className="absolute font-bold top-1 right-1 bg-orange-500 text-white text-[20px] md:text-xs px-2 py-1 rounded hover:bg-red-600 transition-colors duration-200 z-10 h-10 w-15">EDIT</button>
             {children}
         </div> : children}
 
@@ -59,12 +59,3 @@ export default function EditWrapper({children, isEditor, contentTag, content = "
         </>
     )
 }
-
-
-
-
-
-{/* <h1 class="text-2xl sm:text-3xl md:text-3xl lg:text-5xl font-semibold mb-2 md:mb-3 leading-tight">
-              Experience the City Tour <br className="hidden md:block" /> - Your Ticket to Freedom
-              <br class="hidden lg:block" /> & Adventure
-             </h1> */}

@@ -5,6 +5,9 @@ import Banner2 from '../Components/Banner2/Banner2';
 import { useNavigate } from 'react-router-dom';
 import { baseMediaUrl, baseUrl, baseUrlHashless } from '../utilities/Utilities';
 import PurchasedTicketImage from "../assets/new/Purchased-Tickets-Section.jpg";
+import EditWrapper from '../Components/Edit_Wrapper/EditWrapper';
+import useEditorCheck from '../hooks/useEditorCheck';
+import useStaticContent from '../hooks/useStaticContent';
 
 
 const Your_Purchased_Tickets = () => {
@@ -47,18 +50,31 @@ const Your_Purchased_Tickets = () => {
     }, [navigate]);
 
 
+    const { isEditor } = useEditorCheck();
+    const { getContentByTag, hasContent, refreshContent } = useStaticContent('purchase-history');
 
+    const renderContent = (contentTag, fallbackText = "Loading...") => {
+    return hasContent(contentTag)
+      ? <span dangerouslySetInnerHTML={{ __html: getContentByTag(contentTag) }}></span>
+      : <div>{fallbackText}</div>;
+    };
 
 
 
     return (
         <div className="min-h-screen bg-[#F2F2F7]">
-            <Banner2
-                bannerImgmd={PurchasedTicketImage}
-                bannerImgsm={PurchasedTicketImage}
-                title={'Your Purchased Tickets'}
-                description={'View and manage all your booked tickets in one place'}
-            />
+            <Banner2 bannerImgmd={PurchasedTicketImage} bannerImgsm={PurchasedTicketImage}>
+                
+                <EditWrapper isEditor={isEditor} contentTag={"purchase-history-title"} refreshContent={refreshContent}>
+                    {renderContent('purchase-history-title')}
+                </EditWrapper>
+
+                <EditWrapper isEditor={isEditor} contentTag={"purchase-history-subtitle"} refreshContent={refreshContent}>
+                    {renderContent('purchase-history-subtitle')}
+                </EditWrapper>
+
+                
+            </Banner2>
 
             <div className="container mx-auto px-4 py-8 md:py-12">
                 {/* Stats Section */}
@@ -120,21 +136,9 @@ const Your_Purchased_Tickets = () => {
 
                 {/* Empty State */}
                 {!loading && !error && data.length === 0 && (
-                    <div className="text-center py-16">
-                        <div className="bg-white p-12 rounded-2xl shadow-md max-w-md mx-auto">
-                            <FaClipboardList className="text-6xl text-gray-300 mx-auto mb-6" />
-                            <h3 className="text-2xl font-bold text-gray-800 mb-4">No Tickets Found</h3>
-                            <p className="text-gray-600 mb-6">
-                                You haven't purchased any tickets yet. Start exploring our amazing bus tours!
-                            </p>
-                            <button 
-                                onClick={() => navigate('/')}
-                                className="bg-[#930B31] text-white px-8 py-3 rounded-lg hover:bg-red-800 transition-colors font-semibold"
-                            >
-                                Browse Tours
-                            </button>
-                        </div>
-                    </div>
+                    <EditWrapper isEditor={isEditor} contentTag={"purchase-history-no-tickets-found"} refreshContent={refreshContent}>
+                        {renderContent('purchase-history-no-tickets-found')}
+                    </EditWrapper>
                 )}
 
 

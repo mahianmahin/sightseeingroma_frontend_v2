@@ -4,6 +4,10 @@ import { Link } from 'react-router-dom';
 import logo from "../../assets/Logo.png";
 import { baseUrl } from '../../utilities/Utilities';
 import paymentMethods from '../../assets/payment_banners.png';
+import useStaticContent from '../../hooks/useStaticContent';
+import EditWrapper from '../Edit_Wrapper/EditWrapper';
+import useEditorCheck from '../../hooks/useEditorCheck';
+import { render } from 'react-dom';
 
 const Footer = () => {
     const [folders, setFolders] = useState([]);
@@ -110,6 +114,15 @@ const Footer = () => {
         }
     };
 
+    const { isEditor } = useEditorCheck();
+    const { getContentByTag, hasContent, refreshContent } = useStaticContent('footer');
+
+    const renderContent = (contentTag, fallbackText = "Loading...") => {
+    return hasContent(contentTag)
+      ? <span dangerouslySetInnerHTML={{ __html: getContentByTag(contentTag) }}></span>
+      : <div>{fallbackText}</div>;
+    };
+
     return (
         <div className="bg-black font-color-1 py-10 px-2 md:px-4">
             <div className="container mx-auto px-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -118,17 +131,22 @@ const Footer = () => {
                 <div className="space-y-4  md:text-left">
 
                     <Link to={'/'}><img src={logo} className=" w-1/2  mx-auto md:mx-0" alt="Sightseeing Roma Logo" /></Link>
-                    <p className="text-sm">
-                        At Sightseeing Roma, we believe that every traveler deserves to explore the majestic beauty and rich history of Rome with ease and comfort. Established with a passion for delivering unforgettable experiences, we are your gateway to the heart of this ancient city.
-                    </p>
+
+                    <EditWrapper isEditor={isEditor} contentTag={"footer-text"} refreshContent={refreshContent}>
+                      {renderContent('footer-text')}
+                    </EditWrapper>
+                
                 </div>
 
                 {/* Bus Services and About Section */}
                 <div className="grid grid-cols-2 gap-8">
                     {/* Bus Services */}
                     <div className=" md:text-left">
-                        <h3 className="font-semibold pb-4 text-lg">Bus Services</h3>
-                        
+
+                        <EditWrapper isEditor={isEditor} contentTag={"footer-bus-services-title"} refreshContent={refreshContent}>
+                            {renderContent('footer-bus-services-title')}
+                        </EditWrapper>
+
                         <ul className="flex flex-col space-y-2 text-sm">
                             {loading ? (
                                 <li>Loading services...</li>
@@ -146,7 +164,11 @@ const Footer = () => {
 
                     {/* About */}
                     <div className=" md:text-left">
-                        <h3 className="font-semibold pb-4 text-lg">About</h3>
+                        
+                        <EditWrapper isEditor={isEditor} contentTag={"footer-about-title"} refreshContent={refreshContent}>
+                            {renderContent('footer-about-title')}
+                        </EditWrapper>
+                        
                         <ul className="flex flex-col space-y-2 text-sm">
                             <Link to={'/aboutus'}><li>About Us</li></Link>
                             <Link to={'/terms'}><li>Terms & Conditions</li></Link>
@@ -159,8 +181,15 @@ const Footer = () => {
 
                 {/* Newsletter */}
                 <div className=" md:text-left">
-                    <h3 className="font-semibold pb-4 text-lg">Stay Updated</h3>
-                    <p className="text-sm mb-4">Sign up to receive exclusive offers, travel tips, and the latest bus routes directly to your inbox.</p>
+                    
+                    <EditWrapper isEditor={isEditor} contentTag={"footer-newsletter-title"} refreshContent={refreshContent}>
+                        {renderContent('footer-newsletter-title')}
+                    </EditWrapper>
+
+                    <EditWrapper isEditor={isEditor} contentTag={"footer-newsletter-text"} refreshContent={refreshContent}>
+                        {renderContent('footer-newsletter-text')}
+                    </EditWrapper>
+                    
                     <form className="flex justify-start items-center w-full max-w-md " onSubmit={handleNewsletterSubmit}>
                         <input
                             type="email"
@@ -190,10 +219,13 @@ const Footer = () => {
                     )}
 
                     {/* Payment Methods */}
-                    <h1 className='font-bold mt-10 mb-5'>Payment Methods</h1>
+                    
+                    <EditWrapper isEditor={isEditor} contentTag={"footer-payment-methods-title"} refreshContent={refreshContent}>
+                        {renderContent('footer-payment-methods-title')}
+                    </EditWrapper>
+                    
                     <div className="flex space-x-4">
                         <img src={paymentMethods} alt="Payment Methods" className="h-6" />
-
                     </div>
                 </div>
             </div>
