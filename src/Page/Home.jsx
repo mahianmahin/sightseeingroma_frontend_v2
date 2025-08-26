@@ -6,22 +6,37 @@ import TicketTypeSearch from '../Components/Hero/TicketTypeSearch';
 import Work from '../Components/How-Its-Work/Work';
 import Services from '../Components/Services/Services';
 import HelmetWrapper from "../utilities/HelmetWrapper";
+import useEditorCheck from '../hooks/useEditorCheck';
+import EditButton from '../Components/EditPanel/EditButton';
+import useStaticContent from '../hooks/useStaticContent';
 
 const Home = () => {
+    // Use the custom hook for editor check
+    const { isEditor, error } = useEditorCheck();
+    const {getContentByTag, hasContent, loading, refreshContent} = useStaticContent('home-page');
+
     return (
         <>
             <HelmetWrapper title="Sightseeing Roma | Hop-On Hop-Off Panoramic Open Bus Tour Ticket" description="Compare and book hop-on hop-off panoramic open bus tour tickets from top operators. Explore Rome’s top sights at your own pace with flexible passes." />
+            <EditButton isEditor={isEditor} error={error} page="home" />
             <div>
                 <div className="">
-                    <Hero></Hero>
+
+                    <Hero isEditor={isEditor} loading={loading} hasContent={hasContent} getContentByTag={getContentByTag} refreshContent={refreshContent}></Hero>
+
                     <div className="block md:hidden">
                         <TicketTypeSearch />
                         <HeroBottom></HeroBottom>
                     </div>
+
                     <Work></Work>
+
                     <Services></Services>
+
                     <Banner></Banner>
+
                     <Contact></Contact>
+
                 </div>
             </div>
         </>

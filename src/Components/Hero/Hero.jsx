@@ -3,8 +3,9 @@ import HeroBottom from "./HeroBottom";
 
 import { baseMediaUrl, baseUrl } from "../../utilities/Utilities";
 import TicketTypeSearch from "./TicketTypeSearch";
+import EditWrapper from "../Edit_Wrapper/EditWrapper";
 
-const Hero = () => {
+const Hero = (props) => {
   const [heroImage, setHeroImage] = useState("");
 
   useEffect(() => {
@@ -33,14 +34,17 @@ const Hero = () => {
         {/* Text Content */}
         <div className="text-white px-6 sm:px-5 md:px-16 h-full flex flex-col justify-center text-center md:text-start relative z-20">
           {/* hero text */}
+          
           <div className="mt-16 md:mt-12">
-            <h1 className="text-2xl sm:text-3xl md:text-3xl lg:text-5xl font-semibold mb-2 md:mb-3 leading-tight">
-              Experience the City Tour <br className="hidden md:block" /> - Your Ticket to Freedom{" "}
-              <br className="hidden lg:block" /> & Adventure
-            </h1>
+            <EditWrapper isEditor={props.isEditor} contentTag={"hero-big-title"} refreshContent={props.refreshContent}>
+              {props.hasContent('hero-big-title') ? <span dangerouslySetInnerHTML={{__html: props.getContentByTag('hero-big-title') }}></span> : <div>Loading...</div>}
+            </EditWrapper>
+
+
             <h5 className="text-sm md:text-lg leading-relaxed">
-              Enjoy unlimited stops and start exploring the city's top{" "}
-              <br className="hidden md:block" /> sights at your own pace
+              <EditWrapper isEditor={props.isEditor} contentTag={"hero-subtitle"} refreshContent={props.refreshContent}>
+              {props.hasContent('hero-subtitle') ? <span dangerouslySetInnerHTML={{__html: props.getContentByTag('hero-subtitle') }}></span> : <div>Loading...</div>}
+              </EditWrapper>
             </h5>
           </div>
 
