@@ -31,11 +31,11 @@ const Home = () => {
 
                     <Work></Work>
 
-                    <Services></Services>
+                    <Services isEditor={isEditor} loading={loading} hasContent={hasContent} getContentByTag={getContentByTag} refreshContent={refreshContent}></Services>
 
-                    <Banner></Banner>
+                    <Banner isEditor={isEditor} loading={loading} hasContent={hasContent} getContentByTag={getContentByTag} refreshContent={refreshContent}></Banner>
 
-                    <Contact></Contact>
+                    <Contact isEditor={isEditor} loading={loading} hasContent={hasContent} getContentByTag={getContentByTag} refreshContent={refreshContent}></Contact>
 
                 </div>
             </div>

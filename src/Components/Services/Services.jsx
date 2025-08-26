@@ -2,14 +2,15 @@ import React, { useEffect, useState } from "react";
 import { FaBus, FaMapMarkedAlt, FaTicketAlt, FaRoute } from "react-icons/fa";
 import { baseUrl } from "../../utilities/Utilities";
 import Card from "./Card";
+import EditWrapper from "../Edit_Wrapper/EditWrapper";
 
-const Services = () => {
+const Services = (props) => {
   const [activeTab, setActiveTab] = useState(0);
   const [busData, setBusData] = useState([]);
   const [folders, setFolders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [tabLoading, setTabLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState(null);  
 
   useEffect(() => {
     const fetchData = async () => {
@@ -43,7 +44,14 @@ const Services = () => {
     (bus) => folders[activeTab] && bus.folder === folders[activeTab].id
   );
 
-  if (loading) {
+  // Utility function to render content with loading fallback
+    const renderContent = (contentTag, fallbackText = "Loading...") => {
+    return props.hasContent(contentTag) 
+      ? <span dangerouslySetInnerHTML={{__html: props.getContentByTag(contentTag)}}></span> 
+      : <div>{fallbackText}</div>;
+  };
+
+  if (props.loading) {
     return (
       <div className="min-h-screen bg-[#F2F2F7] flex items-center justify-center">
         <div className="text-center">
@@ -80,12 +88,18 @@ const Services = () => {
           {/* <div className="inline-flex items-center justify-center w-16 h-16 bg-[#930B31] rounded-full mb-6">
             <FaBus className="text-white text-2xl" />
           </div> */}
-          <h3 className="text-2xl md:text-4xl lg:text-5xl font-bold text-gray-800 mb-4">
-            Choose Your Bus Service
-          </h3>
-          <p className="text-gray-600 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
+
+          <EditWrapper isEditor={props.isEditor} contentTag={"services-title"} refreshContent={props.refreshContent}>
+            {renderContent('services-title')}
+          </EditWrapper>
+          
+          <EditWrapper isEditor={props.isEditor} contentTag={"services-subtitle"} refreshContent={props.refreshContent}>
+            {renderContent('services-subtitle')}
+          </EditWrapper>
+          
+          {/* <p className="text-gray-600 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
             Reserve your seat from available bus rides. From comfort to budget, explore ticket options for every traveler.
-          </p>
+          </p> */}
           
           {/* Stats Section */}
           <div className="grid grid-cols-3 md:grid-cols-3 gap-4 mt-8 max-w-3xl mx-auto">
@@ -121,12 +135,15 @@ const Services = () => {
         {/* Service Selection */}
         <div className="bg-white rounded-2xl shadow-lg p-6 md:p-8 mb-8">
           <div className="text-center mb-8">
-            <h2 className="text-xl md:text-2xl font-bold text-gray-800 mb-2">
-              Select Your Preferred Service
-            </h2>
-            <p className="text-gray-600">
-              Choose from our premium bus service providers
-            </p>
+            
+            <EditWrapper isEditor={props.isEditor} contentTag={"select-service-title"} refreshContent={props.refreshContent}>
+              {renderContent('select-service-title')}
+            </EditWrapper>
+
+            <EditWrapper isEditor={props.isEditor} contentTag={"select-service-subtitle"} refreshContent={props.refreshContent}>
+              {renderContent('select-service-subtitle')}
+            </EditWrapper>
+
           </div>
 
           {/* Enhanced Tabs */}

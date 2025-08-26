@@ -38,6 +38,20 @@ const formatHTML = (html) => {
   return formatted.trim();
 };
 
+// Function to detect if the content has light or dark text
+const detectTextColor = (htmlContent) => {
+  // Check for explicit color styles or classes that indicate white/light text
+  const hasLightText = htmlContent.includes('text-white') || 
+                      htmlContent.includes('color: white') ||
+                      htmlContent.includes('color: #fff') ||
+                      htmlContent.includes('color: #ffffff') ||
+                      htmlContent.includes('color:white') ||
+                      htmlContent.includes('color:#fff') ||
+                      htmlContent.includes('color:#ffffff');
+  
+  return hasLightText ? 'light' : 'dark';
+};
+
 const EditContentModal = ({ 
   isOpen, 
   onClose, 
@@ -77,6 +91,12 @@ const EditContentModal = ({
     onClose();
   };
 
+  // Determine the appropriate background for preview based on text color
+  const textColorType = detectTextColor(editedContent);
+  const previewBackgroundClass = textColorType === 'light' 
+    ? 'bg-gray-800' // Dark background for light text
+    : 'bg-white';   // White background for dark text
+
   if (!isOpen) return null;
 
   return createPortal(
@@ -103,9 +123,9 @@ const EditContentModal = ({
               <FaEye className="text-black" />
               <span className="text-sm font-medium text-black">Preview</span>
             </div>
-            <div className="flex-1 p-4 overflow-auto bg-white">
+            <div className={`flex-1 p-4 overflow-auto ${previewBackgroundClass}`}>
               <div 
-                className="prose max-w-none text-black"
+                className="prose max-w-none"
                 dangerouslySetInnerHTML={{ __html: editedContent }}
               />
             </div>

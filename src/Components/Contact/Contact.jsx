@@ -4,8 +4,9 @@ import { IoIosMailUnread } from "react-icons/io";
 import { useState, useEffect } from "react";
 import { baseUrl } from "../../utilities/Utilities";
 import GetInTouch from '../../assets/new/Get-in-Touch.jpg';
+import EditWrapper from "../Edit_Wrapper/EditWrapper";
 
-const Contact = () => {
+const Contact = (props) => {
     const [contactData, setContactData] = useState({
         phone: "+39 327 3633 993", // fallback values
         email: "hello@sightseeingroma.com",
@@ -40,13 +41,27 @@ const Contact = () => {
         fetchContactData();
     }, []);
 
+    const renderContent = (contentTag, fallbackText = "Loading...") => {
+    return props.hasContent(contentTag) 
+      ? <span dangerouslySetInnerHTML={{__html: props.getContentByTag(contentTag)}}></span> 
+      : <div>{fallbackText}</div>;
+    };
+
     return (
         <div className="flex flex-col md:flex-row md:justify-between md:items-center p-6 md:p-12 ">
             {/* Contact Info */}
             <div className="text-left md:w-1/2 mb-6 md:mb-0">
-                <p className="py-2 my-4 text-2xl font-bold text-gray-800 border-b-4 border-yellow-500 inline-block">Get In Touch</p>
-                <h2 className=" text-lg md:text-3xl font-bold mb-2">From Comfort to Budget, Explore Ticket Options for Every Traveler</h2>
-                <p className="text-gray-600 mb-4">Seamless booking, diverse routes, and flexible schedules at your fingertips</p>
+                <EditWrapper isEditor={props.isEditor} contentTag={"get-in-touch-label"} refreshContent={props.refreshContent}>
+                    {renderContent('get-in-touch-label')}
+                </EditWrapper>
+                
+                <EditWrapper isEditor={props.isEditor} contentTag={"get-in-touch-title"} refreshContent={props.refreshContent}>
+                    {renderContent('get-in-touch-title')}
+                </EditWrapper>
+
+                <EditWrapper isEditor={props.isEditor} contentTag={"get-in-touch-subtitle"} refreshContent={props.refreshContent}>
+                    {renderContent('get-in-touch-subtitle')}
+                </EditWrapper>
                 
                 {loading ? (
                     <div className="space-y-2">
