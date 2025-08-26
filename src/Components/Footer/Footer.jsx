@@ -62,21 +62,6 @@ const Footer = () => {
         fetchSocialLinks();
     }, []);
 
-    // Function to generate route path from folder name
-    const getRoutePath = (folderName) => {
-        // Map folder names to their corresponding routes
-        const routeMap = {
-            'big bus': '/bigbus',
-            'green line': '/greenline',
-            'io_bus': '/iobus',
-            'city sightseeing': '/city',
-            'i love rome': '/loverome'
-        };
-        
-        // Convert to lowercase for case-insensitive matching
-        const normalizedName = folderName.toLowerCase();
-        return routeMap[normalizedName] || `/${normalizedName.replace(/\s+/g, '')}`;
-    };
 
     // Newsletter state and handler
     const [newsletterEmail, setNewsletterEmail] = useState("");
@@ -154,7 +139,7 @@ const Footer = () => {
                                 <li className="text-red-500">{error}</li>
                             ) : (
                                 folders.map((folder) => (
-                                    <Link key={folder.id} to={getRoutePath(folder.name)}>
+                                    <Link key={folder.id} to={`/bus/${folder.company_slug}/${folder.name.toLowerCase()}`}>
                                         <li>{folder.name}</li>
                                     </Link>
                                 ))

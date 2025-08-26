@@ -1,17 +1,12 @@
-import { createBrowserRouter } from 'react-router-dom'
+import { createBrowserRouter, Navigate } from 'react-router-dom'
 import Login from '../Components/LoginComponent/Login/Login'
 import Regi from '../Components/LoginComponent/Registation/Regi'
 import ViewMore from '../Components/ViewMore/ViewMore'
 import Main from '../Layouts/Main'
 import AboutUs from '../Page/AboutUs'
 import AgentPoint from '../Page/AgentPoint'
-import BigBus from '../Page/BigBus'
-import CitySh from '../Page/CitySh'
-import GreenLine from '../Page/GreenLine'
-import Home from '../Page/Home'
-import IOBus from '../Page/IOBus'
-import LoveRome from '../Page/LoveRome'
 import ManageBooking from '../Page/ManageBooking'
+import Home from '../Page/Home'
 import NotFound from '../Page/NotFound'
 import OfferPage from '../Page/OfferPage'
 import PaymentCancel from '../Page/PaymentCancel'
@@ -31,6 +26,7 @@ import ResetSuccess from '../Components/LoginComponent/ResetPassword/ResetSucces
 import Profile from '../Page/Profile'
 import RequireAuth from '../Components/RequireAuth'
 import Analytics from '../Page/Analytics'
+import Companies from '../Page/Companies'
 
 export const router = createBrowserRouter([
   {
@@ -42,24 +38,29 @@ export const router = createBrowserRouter([
         element: <Home />,
       },
       {
+        path: '/bus/:companySlug/:companyName',
+        element: <Companies />
+      },
+      // Legacy redirects for SEO compatibility
+      {
         path: '/bigbus',
-        element : <BigBus></BigBus>
+        element: <Navigate to="/bus/big-bus" replace />
       },
       {
         path: '/greenLine',
-        element:<GreenLine></GreenLine>
+        element: <Navigate to="/bus/green-line" replace />
       },
       {
         path: '/loveRome',
-        element: <LoveRome></LoveRome>
+        element: <Navigate to="/bus/i-love-rome" replace />
       },
       {
         path: '/iobus',
-        element: <IOBus></IOBus>
+        element: <Navigate to="/bus/io-bus" replace />
       },
       {
         path: '/city',
-        element: <CitySh></CitySh>
+        element: <Navigate to="/bus/city-sightseeing" replace />
       },
       {
         path: '/aboutus',

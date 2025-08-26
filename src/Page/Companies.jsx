@@ -3,12 +3,14 @@ import React, { useEffect, useState } from "react";
 import { FaArrowLeftLong } from "react-icons/fa6";
 import TicketCard from "../Components/TicketCard/TicketCard";
 import HelmetWrapper from "../utilities/HelmetWrapper";
-import { baseUrl } from '../utilities/Utilities';
+import scrollToTop, { baseUrl } from '../utilities/Utilities';
 import Similar from "./Similar";
 import BigBusImage from "../assets/new/Big-Bus-Page-Hero-Image.jpg";
+import { useParams } from "react-router-dom";
 
-const BigBus = () => {
+const Companies = () => {
     const [busPackages, setBusPackages] = useState([]);
+    const { companySlug, companyName } = useParams();
 
     // Fetch data using Axios and filter for "big bus" company
     useEffect(() => {
@@ -16,14 +18,15 @@ const BigBus = () => {
             .get(`${baseUrl}packages/`)
             .then((response) => {
                 const filteredPackages = response.data.bus_data.filter(
-                    (item) => item.company.toLowerCase() === "big bus"
+                    (item) => item.company.toLowerCase() === companyName.toLowerCase()
                 );
                 setBusPackages(filteredPackages);
             })
-            .catch((error) => {
+                        .catch((error) => {
                 console.error("Error fetching bigBus data:", error);
             });
-    }, []);
+        scrollToTop();
+    }, [companyName]);
 
     // Function to handle ticket button click
  
@@ -85,11 +88,13 @@ const BigBus = () => {
                 </div>
 
              <div className="mb-12 md:mb-0">
+             
              <Similar />
+             
              </div>
             </div>
         </>
     );
 };
 
-export default BigBus;
+export default Companies;
