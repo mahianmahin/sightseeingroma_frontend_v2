@@ -4,16 +4,21 @@ import { FaArrowLeftLong } from "react-icons/fa6";
 import TicketCard from "../Components/TicketCard/TicketCard";
 import HelmetWrapper from "../utilities/HelmetWrapper";
 import scrollToTop, { baseUrl } from '../utilities/Utilities';
-import Similar from "./Similar";
 import BigBusImage from "../assets/new/Big-Bus-Page-Hero-Image.jpg";
 import { useParams } from "react-router-dom";
+import useStaticContent from "../hooks/useStaticContent";
+import EditWrapper from "../Components/Edit_Wrapper/EditWrapper";
+import useEditorCheck from "../hooks/useEditorCheck";
+import renderContent from "../utilities/renderContent";
 
 const Companies = () => {
     const [busPackages, setBusPackages] = useState([]);
+    const [unfilteredPackages, setUnfilteredPackages] = useState([]);
     const { companySlug, companyName } = useParams();
 
     // Fetch data using Axios and filter for "big bus" company
     useEffect(() => {
+        scrollToTop();
         axios
             .get(`${baseUrl}packages/`)
             .then((response) => {
@@ -21,6 +26,7 @@ const Companies = () => {
                     (item) => item.company.toLowerCase() === companyName.toLowerCase()
                 );
                 setBusPackages(filteredPackages);
+                setUnfilteredPackages(response.data.bus_data);
             })
                         .catch((error) => {
                 console.error("Error fetching bigBus data:", error);
@@ -28,7 +34,8 @@ const Companies = () => {
         scrollToTop();
     }, [companyName]);
 
-    // Function to handle ticket button click
+    const { isEditor } = useEditorCheck();
+    const { getContentByTag, hasContent, refreshContent } = useStaticContent(companySlug);
  
 
     return (
@@ -59,8 +66,9 @@ const Companies = () => {
                     <FaArrowLeftLong size={20}></FaArrowLeftLong>
                    </div>
 
-                        <h1 className="text-3xl font-bold">Available Services</h1>
-                        <p className="text-gray-600">Travel in style with our big bus services</p>
+                        <EditWrapper isEditor={isEditor} contentTag={`${companySlug}-page-title-subtitle`} refreshContent={refreshContent}>
+                            {renderContent(`${companySlug}-page-title-subtitle`, hasContent, getContentByTag)}
+                        </EditWrapper>
 
                         <p className="bg-yellow-300 px-4 py-2 my-5 w-fit font-bold rounded-md text-red-700 text-xs">{companyName.toUpperCase()} SERVICES</p>
                     </div>
@@ -89,7 +97,56 @@ const Companies = () => {
 
              <div className="mb-12 md:mb-0">
              
-             <Similar />
+                {/* Similar Options Section */}
+                {(() => {
+                    // Get all unique durations from current company's packages
+                    const currentCompanyDurations = [...new Set(busPackages.map(pkg => pkg.duration))];
+                    
+                    // Filter packages from other companies with matching durations
+                    const similarPackages = unfilteredPackages.filter(pkg => 
+                        pkg.company.toLowerCase() !== companyName.toLowerCase() && 
+                        currentCompanyDurations.includes(pkg.duration)
+                    );
+
+                    if (similarPackages.length === 0) {
+                        return null; // Don't show section if no similar packages
+                    }
+
+                    return (
+                        <div className="px-4 md:px-8">
+                            <div className="py-7 md:py-10">
+
+                                <EditWrapper isEditor={isEditor} contentTag={`${companySlug}-page-similar`} refreshContent={refreshContent}>
+                                    {renderContent(`${companySlug}-page-similar`, hasContent, getContentByTag)}
+                                </EditWrapper>
+                                
+
+                            </div>
+
+                            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-10">
+                                {similarPackages.map((ticket) => (
+                                    <TicketCard
+                                        key={`similar-${ticket.id}-${ticket.package_tag}`}
+                                        id={ticket.package_tag}
+                                        status={ticket.status}
+                                        title={ticket.title}
+                                        subtitle={ticket.type}
+                                        image={ticket.image_big}
+                                        thumbnail_small={ticket.thumbnail_small}
+                                        thumbnail_large={ticket.thumbnail_large}
+                                        duration={ticket.duration}
+                                        ticketCount={ticket.package_tag}
+                                        price={ticket.adult_price}
+                                        price2={ticket.youth_price}
+                                        id1={ticket.id}
+                                        offPrice={ticket.off_price}
+                                    />
+                                ))}
+                            </div>
+                        </div>
+                    );
+                })()}
+
              
              </div>
             </div>
