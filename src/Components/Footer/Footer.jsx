@@ -2,12 +2,12 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import logo from "../../assets/Logo.png";
-import { baseUrl } from '../../utilities/Utilities';
+import scrollToTop, { baseUrl } from '../../utilities/Utilities';
 import paymentMethods from '../../assets/payment_banners.png';
 import useStaticContent from '../../hooks/useStaticContent';
 import EditWrapper from '../Edit_Wrapper/EditWrapper';
 import useEditorCheck from '../../hooks/useEditorCheck';
-import { render } from 'react-dom';
+import renderContent from '../../utilities/renderContent.jsx';
 
 const Footer = () => {
     const [folders, setFolders] = useState([]);
@@ -102,12 +102,6 @@ const Footer = () => {
     const { isEditor } = useEditorCheck();
     const { getContentByTag, hasContent, refreshContent } = useStaticContent('footer');
 
-    const renderContent = (contentTag, fallbackText = "Loading...") => {
-    return hasContent(contentTag)
-      ? <span dangerouslySetInnerHTML={{ __html: getContentByTag(contentTag) }}></span>
-      : <div>{fallbackText}</div>;
-    };
-
     return (
         <div className="bg-black font-color-1 py-10 px-2 md:px-4">
             <div className="container mx-auto px-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -118,7 +112,7 @@ const Footer = () => {
                     <Link to={'/'}><img src={logo} className=" w-1/2  mx-auto md:mx-0" alt="Sightseeing Roma Logo" /></Link>
 
                     <EditWrapper isEditor={isEditor} contentTag={"footer-text"} refreshContent={refreshContent}>
-                      {renderContent('footer-text')}
+                      {renderContent('footer-text', hasContent, getContentByTag, 'Your trusted partner for exploring Rome')}
                     </EditWrapper>
                 
                 </div>
@@ -129,7 +123,7 @@ const Footer = () => {
                     <div className=" md:text-left">
 
                         <EditWrapper isEditor={isEditor} contentTag={"footer-bus-services-title"} refreshContent={refreshContent}>
-                            {renderContent('footer-bus-services-title')}
+                            {renderContent('footer-bus-services-title', hasContent, getContentByTag, 'Bus Services')}
                         </EditWrapper>
 
                         <ul className="flex flex-col space-y-2 text-sm">
@@ -139,7 +133,7 @@ const Footer = () => {
                                 <li className="text-red-500">{error}</li>
                             ) : (
                                 folders.map((folder) => (
-                                    <Link key={folder.id} to={`/bus/${folder.company_slug}/${folder.name.toLowerCase()}`}>
+                                    <Link onClick={() => {scrollToTop();}} key={folder.id} to={`/bus/${folder.company_slug}/${folder.name.toLowerCase()}`}>
                                         <li>{folder.name}</li>
                                     </Link>
                                 ))
@@ -151,7 +145,7 @@ const Footer = () => {
                     <div className=" md:text-left">
                         
                         <EditWrapper isEditor={isEditor} contentTag={"footer-about-title"} refreshContent={refreshContent}>
-                            {renderContent('footer-about-title')}
+                            {renderContent('footer-about-title', hasContent, getContentByTag, 'About')}
                         </EditWrapper>
                         
                         <ul className="flex flex-col space-y-2 text-sm">
@@ -168,11 +162,11 @@ const Footer = () => {
                 <div className=" md:text-left">
                     
                     <EditWrapper isEditor={isEditor} contentTag={"footer-newsletter-title"} refreshContent={refreshContent}>
-                        {renderContent('footer-newsletter-title')}
+                        {renderContent('footer-newsletter-title', hasContent, getContentByTag, 'Newsletter')}
                     </EditWrapper>
 
                     <EditWrapper isEditor={isEditor} contentTag={"footer-newsletter-text"} refreshContent={refreshContent}>
-                        {renderContent('footer-newsletter-text')}
+                        {renderContent('footer-newsletter-text', hasContent, getContentByTag, 'Subscribe to get updates on our latest offers')}
                     </EditWrapper>
                     
                     <form className="flex justify-start items-center w-full max-w-md " onSubmit={handleNewsletterSubmit}>
@@ -206,7 +200,7 @@ const Footer = () => {
                     {/* Payment Methods */}
                     
                     <EditWrapper isEditor={isEditor} contentTag={"footer-payment-methods-title"} refreshContent={refreshContent}>
-                        {renderContent('footer-payment-methods-title')}
+                        {renderContent('footer-payment-methods-title', hasContent, getContentByTag, 'Payment Methods')}
                     </EditWrapper>
                     
                     <div className="flex space-x-4">

@@ -4,6 +4,7 @@ import HeroBottom from "./HeroBottom";
 import { baseMediaUrl, baseUrl } from "../../utilities/Utilities";
 import TicketTypeSearch from "./TicketTypeSearch";
 import EditWrapper from "../Edit_Wrapper/EditWrapper";
+import renderContent from "../../utilities/renderContent.jsx";
 
 const Hero = (props) => {
   const [heroImage, setHeroImage] = useState("");
@@ -37,13 +38,13 @@ const Hero = (props) => {
           
           <div className="mt-16 md:mt-12">
             <EditWrapper isEditor={props.isEditor} contentTag={"hero-big-title"} refreshContent={props.refreshContent}>
-              {props.hasContent('hero-big-title') ? <span dangerouslySetInnerHTML={{__html: props.getContentByTag('hero-big-title') }}></span> : <div>Loading...</div>}
+              {renderContent('hero-big-title', props.hasContent, props.getContentByTag, 'Discover Amazing Rome')}
             </EditWrapper>
 
 
             <h5 className="text-sm md:text-lg leading-relaxed">
               <EditWrapper isEditor={props.isEditor} contentTag={"hero-subtitle"} refreshContent={props.refreshContent}>
-              {props.hasContent('hero-subtitle') ? <span dangerouslySetInnerHTML={{__html: props.getContentByTag('hero-subtitle') }}></span> : <div>Loading...</div>}
+              {renderContent('hero-subtitle', props.hasContent, props.getContentByTag, 'Experience the eternal city with our guided tours')}
               </EditWrapper>
             </h5>
           </div>

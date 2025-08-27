@@ -3,6 +3,7 @@ import { FaBus, FaMapMarkedAlt, FaTicketAlt, FaRoute } from "react-icons/fa";
 import { baseUrl } from "../../utilities/Utilities";
 import Card from "./Card";
 import EditWrapper from "../Edit_Wrapper/EditWrapper";
+import renderContent from "../../utilities/renderContent.jsx";
 
 const Services = (props) => {
   const [activeTab, setActiveTab] = useState(0);
@@ -44,13 +45,6 @@ const Services = (props) => {
     (bus) => folders[activeTab] && bus.folder === folders[activeTab].id
   );
 
-  // Utility function to render content with loading fallback
-    const renderContent = (contentTag, fallbackText = "Loading...") => {
-    return props.hasContent(contentTag) 
-      ? <span dangerouslySetInnerHTML={{__html: props.getContentByTag(contentTag)}}></span> 
-      : <div>{fallbackText}</div>;
-  };
-
   if (props.loading) {
     return (
       <div className="min-h-screen bg-[#F2F2F7] flex items-center justify-center">
@@ -90,11 +84,11 @@ const Services = (props) => {
           </div> */}
 
           <EditWrapper isEditor={props.isEditor} contentTag={"services-title"} refreshContent={props.refreshContent}>
-            {renderContent('services-title')}
+            {renderContent('services-title', props.hasContent, props.getContentByTag, 'Our Bus Services')}
           </EditWrapper>
           
           <EditWrapper isEditor={props.isEditor} contentTag={"services-subtitle"} refreshContent={props.refreshContent}>
-            {renderContent('services-subtitle')}
+            {renderContent('services-subtitle', props.hasContent, props.getContentByTag, 'Reserve your seat from available bus rides. From comfort to budget, explore ticket options for every traveler.')}
           </EditWrapper>
           
           {/* <p className="text-gray-600 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
@@ -137,11 +131,11 @@ const Services = (props) => {
           <div className="text-center mb-8">
             
             <EditWrapper isEditor={props.isEditor} contentTag={"select-service-title"} refreshContent={props.refreshContent}>
-              {renderContent('select-service-title')}
+              {renderContent('select-service-title', props.hasContent, props.getContentByTag, 'Select Your Service')}
             </EditWrapper>
 
             <EditWrapper isEditor={props.isEditor} contentTag={"select-service-subtitle"} refreshContent={props.refreshContent}>
-              {renderContent('select-service-subtitle')}
+              {renderContent('select-service-subtitle', props.hasContent, props.getContentByTag, 'Choose from our available bus services')}
             </EditWrapper>
 
           </div>

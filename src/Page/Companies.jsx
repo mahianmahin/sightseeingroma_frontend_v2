@@ -59,10 +59,10 @@ const Companies = () => {
                     <FaArrowLeftLong size={20}></FaArrowLeftLong>
                    </div>
 
-                        <h1 className="text-3xl font-bold">Big Bus Service</h1>
-                        <p className="text-gray-600">
-                            Travel in style with our big bus services
-                        </p>
+                        <h1 className="text-3xl font-bold">Available Services</h1>
+                        <p className="text-gray-600">Travel in style with our big bus services</p>
+
+                        <p className="bg-yellow-300 px-4 py-2 my-5 w-fit font-bold rounded-md text-red-700 text-xs">{companyName.toUpperCase()} SERVICES</p>
                     </div>
 
                     {/* Render tickets dynamically */}

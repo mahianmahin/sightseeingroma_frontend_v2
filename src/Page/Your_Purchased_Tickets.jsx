@@ -8,6 +8,7 @@ import PurchasedTicketImage from "../assets/new/Purchased-Tickets-Section.jpg";
 import EditWrapper from '../Components/Edit_Wrapper/EditWrapper';
 import useEditorCheck from '../hooks/useEditorCheck';
 import useStaticContent from '../hooks/useStaticContent';
+import renderContent from '../utilities/renderContent.jsx';
 
 
 const Your_Purchased_Tickets = () => {
@@ -53,24 +54,16 @@ const Your_Purchased_Tickets = () => {
     const { isEditor } = useEditorCheck();
     const { getContentByTag, hasContent, refreshContent } = useStaticContent('purchase-history');
 
-    const renderContent = (contentTag, fallbackText = "Loading...") => {
-    return hasContent(contentTag)
-      ? <span dangerouslySetInnerHTML={{ __html: getContentByTag(contentTag) }}></span>
-      : <div>{fallbackText}</div>;
-    };
-
-
-
     return (
         <div className="min-h-screen bg-[#F2F2F7]">
             <Banner2 bannerImgmd={PurchasedTicketImage} bannerImgsm={PurchasedTicketImage}>
                 
                 <EditWrapper isEditor={isEditor} contentTag={"purchase-history-title"} refreshContent={refreshContent}>
-                    {renderContent('purchase-history-title')}
+                    {renderContent('purchase-history-title', hasContent, getContentByTag, 'Your Purchased Tickets')}
                 </EditWrapper>
 
                 <EditWrapper isEditor={isEditor} contentTag={"purchase-history-subtitle"} refreshContent={refreshContent}>
-                    {renderContent('purchase-history-subtitle')}
+                    {renderContent('purchase-history-subtitle', hasContent, getContentByTag, 'View and manage your ticket purchases')}
                 </EditWrapper>
 
                 
@@ -137,7 +130,7 @@ const Your_Purchased_Tickets = () => {
                 {/* Empty State */}
                 {!loading && !error && data.length === 0 && (
                     <EditWrapper isEditor={isEditor} contentTag={"purchase-history-no-tickets-found"} refreshContent={refreshContent}>
-                        {renderContent('purchase-history-no-tickets-found')}
+                        {renderContent('purchase-history-no-tickets-found', hasContent, getContentByTag, 'No tickets found in your purchase history')}
                     </EditWrapper>
                 )}
 

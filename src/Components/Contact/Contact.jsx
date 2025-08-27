@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import { baseUrl } from "../../utilities/Utilities";
 import GetInTouch from '../../assets/new/Get-in-Touch.jpg';
 import EditWrapper from "../Edit_Wrapper/EditWrapper";
+import renderContent from "../../utilities/renderContent.jsx";
 
 const Contact = (props) => {
     const [contactData, setContactData] = useState({
@@ -41,26 +42,20 @@ const Contact = (props) => {
         fetchContactData();
     }, []);
 
-    const renderContent = (contentTag, fallbackText = "Loading...") => {
-    return props.hasContent(contentTag) 
-      ? <span dangerouslySetInnerHTML={{__html: props.getContentByTag(contentTag)}}></span> 
-      : <div>{fallbackText}</div>;
-    };
-
     return (
         <div className="flex flex-col md:flex-row md:justify-between md:items-center p-6 md:p-12 ">
             {/* Contact Info */}
             <div className="text-left md:w-1/2 mb-6 md:mb-0">
                 <EditWrapper isEditor={props.isEditor} contentTag={"get-in-touch-label"} refreshContent={props.refreshContent}>
-                    {renderContent('get-in-touch-label')}
+                    {renderContent('get-in-touch-label', props.hasContent, props.getContentByTag, 'Get in Touch')}
                 </EditWrapper>
                 
                 <EditWrapper isEditor={props.isEditor} contentTag={"get-in-touch-title"} refreshContent={props.refreshContent}>
-                    {renderContent('get-in-touch-title')}
+                    {renderContent('get-in-touch-title', props.hasContent, props.getContentByTag, 'Get in Touch')}
                 </EditWrapper>
 
                 <EditWrapper isEditor={props.isEditor} contentTag={"get-in-touch-subtitle"} refreshContent={props.refreshContent}>
-                    {renderContent('get-in-touch-subtitle')}
+                    {renderContent('get-in-touch-subtitle', props.hasContent, props.getContentByTag, 'We would love to hear from you!')}
                 </EditWrapper>
                 
                 {loading ? (
