@@ -2,6 +2,10 @@ import Banner2 from './../Components/Banner2/Banner2';
 import ReturnImage from "../assets/new/Return-Policy.jpg";
 import { useState, useEffect } from "react";
 import { baseUrl } from "../utilities/Utilities";
+import renderContent from '../utilities/renderContent';
+import useStaticContent from '../hooks/useStaticContent';
+import useEditorCheck from '../hooks/useEditorCheck';
+import EditWrapper from '../Components/Edit_Wrapper/EditWrapper';
 
 const ReturnPolicy = () => {
     const [contactData, setContactData] = useState({
@@ -36,97 +40,60 @@ const ReturnPolicy = () => {
         fetchContactData();
     }, []);
 
+    const { isEditor } = useEditorCheck();
+    const { getContentByTag, hasContent, refreshContent } = useStaticContent('return-policy');
+
+    // Function to replace template variables in content
+    const replaceTemplateVariables = (content) => {
+        if (!content || typeof content !== 'string') return content;
+        
+        return content
+            .replace(/\{email\}/g, contactData.email)
+            .replace(/\{phone\}/g, contactData.phone)
+            .replace(/\{address\}/g, contactData.address);
+    };
+
+    // Function to get raw content as string
+    const getRawContent = (contentTag, fallback = '') => {
+        if (hasContent(contentTag)) {
+            return getContentByTag(contentTag);
+        }
+        return fallback;
+    };
+
     return (
         <div className="container mx-auto ">
             {/* Banner Section */}
-            <Banner2
-                bannerImgmd={ReturnImage}
-                bannerImgsm={ReturnImage}
-                title={'Return Policy'}
-                description={'Our return policy'}
-            />
+            <Banner2 bannerImgmd={ReturnImage} bannerImgsm={ReturnImage} opacity={0.5} >
+                <EditWrapper isEditor={isEditor} contentTag={"return-policy-title"} refreshContent={refreshContent}>
+                    {renderContent('return-policy-title', hasContent, getContentByTag, 'Return Policy')}
+                </EditWrapper>
+
+                <EditWrapper isEditor={isEditor} contentTag={"return-policy-subtitle"} refreshContent={refreshContent}>
+                    {renderContent('return-policy-subtitle', hasContent, getContentByTag)}
+                </EditWrapper>
+            </Banner2>
             
             {/* Content Section */}
             <div className="my-8 space-y-6 py-3 md:py-5 px-5 md:px-8 md:pr-40">
-                <div>
-                    <h1 className="text-2xl font-bold">Welcome to SightSeeing Roma!</h1>
-                    <p className="mt-4 ">
-                        At SightSeeing Roma, we are committed to ensuring your satisfaction with every aspect of your experience. If for any reason you need to return or request a refund for your purchased ticket, we’ve outlined our policy below to guide you through the process.
-                    </p>
-                </div>
-
-                <div>
-                    <h2 className="text-xl font-bold ">Returns</h2>
-                    <p className="mt-2 ">
-                        We understand that plans can change unexpectedly. If you wish to return your ticket, please adhere to the following guidelines:
-                    </p>
-                    <ul className="list-disc ml-6 mt-4 space-y-2 ">
-                        <li>
-                            <span className="font-medium">Unused Tickets:</span> Tickets that have not been utilized can be returned within 30 days of the purchase date for a full refund.
-                        </li>
-                        <li>
-                            <span className="font-medium">Notification:</span> Kindly inform us of your intention to return your ticket by contacting our customer support team via email at 
-                            {loading ? (
-                                <span className="inline-block w-32 h-4 bg-gray-200 rounded animate-pulse ml-1"></span>
-                            ) : (
-                                <a href={`mailto:${contactData.email}`} className=" ml-1">
-                                    {contactData.email}
-                                </a>
-                            )} or by phone at 
-                            {loading ? (
-                                <span className="inline-block w-24 h-4 bg-gray-200 rounded animate-pulse ml-1"></span>
-                            ) : (
-                                <a href={`tel:${contactData.phone}`} className="ml-1">
-                                    {contactData.phone}
-                                </a>
-                            )}. Please provide your order details for faster processing.
-                        </li>
-                        <li>
-                            <span className="font-medium">Ticket Validity:</span> Ensure that your ticket is still within its validity period, as expired tickets are not eligible for return.
-                        </li>
-                        <li>
-                            <span className="font-medium">Refund Process:</span> Once your return request is received and approved, we will initiate the refund process. Refunds are typically processed within 5-7 business days through the original payment method.
-                        </li>
-                    </ul>
-                </div>
-
-                                <div>
-                    <h2 className="text-xl font-bold ">Contact Us</h2>
-                    <p className="mt-2 ">
-                        If you have any questions or concerns regarding our Return & Refund Policy, please don't hesitate to reach out to us. Our dedicated customer support team is available to assist you and ensure your satisfaction.
-                    </p>
+                <EditWrapper isEditor={isEditor} contentTag={"return-policy-page-content"} refreshContent={refreshContent}>
                     {loading ? (
-                        <div className="mt-4 space-y-2">
-                            <div className="h-4 bg-gray-200 rounded animate-pulse w-64"></div>
-                            <div className="h-4 bg-gray-200 rounded animate-pulse w-48"></div>
-                            <div className="h-4 bg-gray-200 rounded animate-pulse w-80"></div>
+                        <div className="space-y-4">
+                            <div className="h-8 bg-gray-200 rounded animate-pulse w-3/4"></div>
+                            <div className="h-4 bg-gray-200 rounded animate-pulse w-full"></div>
+                            <div className="h-4 bg-gray-200 rounded animate-pulse w-5/6"></div>
+                            <div className="h-6 bg-gray-200 rounded animate-pulse w-1/2 mt-8"></div>
+                            <div className="h-4 bg-gray-200 rounded animate-pulse w-full"></div>
+                            <div className="h-4 bg-gray-200 rounded animate-pulse w-4/5"></div>
                         </div>
                     ) : (
-                        <ul className="mt-4 space-y-2 ">
-                            <li>
-                                <span className="font-medium">Email:</span> 
-                                <a href={`mailto:${contactData.email}`} className=" ml-1">
-                                    {contactData.email}
-                                </a>
-                            </li>
-                            <li>
-                                <span className="font-medium">Phone:</span> 
-                                <a href={`tel:${contactData.phone}`} className=" ml-1">
-                                    {contactData.phone}
-                                </a>
-                            </li>
-                            <li>
-                                <span className="font-medium">Address:</span> {contactData.address}
-                            </li>
-                        </ul>
+                        <div dangerouslySetInnerHTML={{ 
+                            __html: replaceTemplateVariables(
+                                getRawContent('return-policy-page-content', '')
+                            ) 
+                        }} />
                     )}
-                </div>
-
-                <div>
-                    <p className="font-bold">
-                        Thank you for choosing SightSeeing Roma – where every moment is a masterpiece of discovery.
-                    </p>
-                </div>
+                </EditWrapper>
             </div>
         </div>
     );

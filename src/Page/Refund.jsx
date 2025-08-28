@@ -2,6 +2,10 @@ import Banner2 from './../Components/Banner2/Banner2';
 import RefundImage from "../assets/new/Refund-Policy.jpg";
 import { useState, useEffect } from "react";
 import { baseUrl } from "../utilities/Utilities";
+import useEditorCheck from '../hooks/useEditorCheck';
+import useStaticContent from '../hooks/useStaticContent';
+import EditWrapper from '../Components/Edit_Wrapper/EditWrapper';
+import renderContent from '../utilities/renderContent';
 
 const Refund = () => {
     const [contactData, setContactData] = useState({
@@ -36,82 +40,60 @@ const Refund = () => {
         fetchContactData();
     }, []);
 
+    const { isEditor } = useEditorCheck();
+    const { getContentByTag, hasContent, refreshContent } = useStaticContent('refund-policy');
+
+    // Function to replace template variables in content
+    const replaceTemplateVariables = (content) => {
+        if (!content || typeof content !== 'string') return content;
+        
+        return content
+            .replace(/\{email\}/g, contactData.email)
+            .replace(/\{phone\}/g, contactData.phone)
+            .replace(/\{address\}/g, contactData.address);
+    };
+
+    // Function to get raw content as string
+    const getRawContent = (contentTag, fallback = '') => {
+        if (hasContent(contentTag)) {
+            return getContentByTag(contentTag);
+        }
+        return fallback;
+    };
+
     return (
         <div className="container mx-auto ">
             {/* Banner Section */}
-            <Banner2
-                bannerImgmd={RefundImage}
-                bannerImgsm={RefundImage}
-                title={'Refund Policy'}
-                description={'Refund Policy and Ticket Cancellations'}
-            />
+            <Banner2 bannerImgmd={RefundImage} bannerImgsm={RefundImage} opacity={0.5}>
+                <EditWrapper isEditor={isEditor} contentTag={"refund-policy-title"} refreshContent={refreshContent}>
+                    {renderContent('refund-policy-title', hasContent, getContentByTag, 'Refund Policy')}
+                </EditWrapper>
+
+                <EditWrapper isEditor={isEditor} contentTag={"refund-policy-subtitle"} refreshContent={refreshContent}>
+                    {renderContent('refund-policy-subtitle', hasContent, getContentByTag)}
+                </EditWrapper>
+            </Banner2>
             
             {/* Content Section */}
             <div className="my-8 space-y-6 px-5 md:px-8 md:pr-40 py-3 md:py-5">
-                <div>
-                    <h1 className="text-2xl font-bold">Welcome to SightSeeing Roma!</h1>
-                    <p className="mt-4 ">
-                        At SightSeeing Roma, we are committed to ensuring your satisfaction with every aspect of your experience. If for any reason you need to return or request a refund for your purchased ticket, we’ve outlined our policy below to guide you through the process.
-                    </p>
-                </div>
-
-                <div>
-                    <h2 className="text-xl font-bold ">Refund</h2>
-                    <p className="mt-2 ">
-                    We aim to provide a hassle-free refund process for our customers. Below are the conditions under which refunds may be issued:
-                    </p>
-                    <ul className="list-disc ml-6 mt-4 space-y-2 ">
-                        <li>
-                            <span className="font-medium">Service Disruptions: </span>In the event of service disruptions or cancellations initiated by SightSeeing Roma, we will provide a full refund for affected tickets.
-                        </li>
-                        <li>
-                            <span className="font-medium">Quality Concerns:</span> If you encounter any issues with the quality or standard of our services, please reach out to us immediately. We will investigate the matter thoroughly and offer an appropriate resolution, which may include a refund.
-                           
-                        </li>
-                        <li>
-                            <span className="font-medium">Cancellation by Customer:</span> Customers can request refunds for their purchased tickets due to unforeseen circumstances or changes in plans. Refunds will be subject to the terms outlined in our Returns section above.
-                        </li>
-                        <li>
-                            <span className="font-medium">Unauthorised Transactions:</span> If you suspect unauthorised use of your payment method or any fraudulent activity related to your purchase, please notify us promptly. We will investigate the matter and take necessary actions, including issuing refunds if applicable.
-                        </li>
-                    </ul>
-                </div>
-
-                <div>
-                    <h2 className="text-xl font-bold ">Contact Us</h2>
-                    <p className="mt-2 ">
-                        If you have any questions or concerns regarding our Return & Refund Policy, please don't hesitate to reach out to us. Our dedicated customer support team is available to assist you and ensure your satisfaction.
-                    </p>
+                <EditWrapper isEditor={isEditor} contentTag={"refund-policy-page-content"} refreshContent={refreshContent}>
                     {loading ? (
-                        <div className="mt-4 space-y-2">
-                            <div className="h-4 bg-gray-200 rounded animate-pulse w-64"></div>
-                            <div className="h-4 bg-gray-200 rounded animate-pulse w-48"></div>
-                            <div className="h-4 bg-gray-200 rounded animate-pulse w-80"></div>
+                        <div className="space-y-4">
+                            <div className="h-8 bg-gray-200 rounded animate-pulse w-3/4"></div>
+                            <div className="h-4 bg-gray-200 rounded animate-pulse w-full"></div>
+                            <div className="h-4 bg-gray-200 rounded animate-pulse w-5/6"></div>
+                            <div className="h-6 bg-gray-200 rounded animate-pulse w-1/2 mt-8"></div>
+                            <div className="h-4 bg-gray-200 rounded animate-pulse w-full"></div>
+                            <div className="h-4 bg-gray-200 rounded animate-pulse w-4/5"></div>
                         </div>
                     ) : (
-                        <ul className="mt-4 space-y-2 ">
-                            <li>
-                                <span className="font-medium">Email:</span> 
-                                <a href={`mailto:${contactData.email}`} className=" ml-1">
-                                    {contactData.email}
-                                </a>
-                            </li>
-                            <li>
-                                <span className="font-medium">Phone:</span> 
-                                <a href={`tel:${contactData.phone}`} className=" ml-1">
-                                    {contactData.phone}
-                                </a>
-                            </li>
-                            <li>
-                                <span className="font-medium">Address:</span> {contactData.address}
-                            </li>
-                        </ul>
+                        <div dangerouslySetInnerHTML={{ 
+                            __html: replaceTemplateVariables(
+                                getRawContent('refund-policy-page-content', '')
+                            ) 
+                        }} />
                     )}
-                </div>                <div>
-                    <p className="font-bold">
-                        Thank you for choosing SightSeeing Roma – where every moment is a masterpiece of discovery.
-                    </p>
-                </div>
+                </EditWrapper>
             </div>
         </div>
     );

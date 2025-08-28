@@ -43,26 +43,6 @@ export const router = createBrowserRouter([
       },
       // Legacy redirects for SEO compatibility
       {
-        path: '/bigbus',
-        element: <Navigate to="/bus/big-bus" replace />
-      },
-      {
-        path: '/greenLine',
-        element: <Navigate to="/bus/green-line" replace />
-      },
-      {
-        path: '/loveRome',
-        element: <Navigate to="/bus/i-love-rome" replace />
-      },
-      {
-        path: '/iobus',
-        element: <Navigate to="/bus/io-bus" replace />
-      },
-      {
-        path: '/city',
-        element: <Navigate to="/bus/city-sightseeing" replace />
-      },
-      {
         path: '/aboutus',
         element: <AboutUs></AboutUs>
       },

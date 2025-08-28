@@ -90,6 +90,7 @@ const Companies = () => {
                                 price={ticket.adult_price}
                                 price2={ticket.youth_price}
                                 id1={ticket.id}
+                                offPrice={ticket.off_price}
                             />
                         ))}
                     </div>

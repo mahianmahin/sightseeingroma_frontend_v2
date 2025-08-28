@@ -3,8 +3,17 @@ import { Outlet } from "react-router-dom";
 import Footer from "../Components/Footer/Footer";
 import Navbar from "../Components/Navbar/Navbar";
 import { Toaster } from 'react-hot-toast';
+import { useState } from "react";
 
 const Main = () => {
+
+    const [contactData, setContactData] = useState({
+        phone: "+39 327 3633 993", // fallback values
+        email: "hello@sightseeingroma.com",
+        address: "Via Antonio Fogazzaro, 5, cap–00137, Roma, Italy"
+    });
+
+
     return (
         <div>
             <Helmet>
