@@ -14,6 +14,7 @@ import useEditorCheck from "../../hooks/useEditorCheck";
 import useStaticContent from "../../hooks/useStaticContent";
 import EditWrapper from "../Edit_Wrapper/EditWrapper";
 import renderContent from "../../utilities/renderContent";
+import Description2 from "../Description/Description2";
 
 const ManageBookingMd = () => {
   const { id, status } = useParams();
@@ -278,8 +279,10 @@ const ManageBookingMd = () => {
           </div>
         </div>
       </div>
-      <Description description={data?.description} />
       
+      {/* <Description description={data?.description} /> */}
+      <Description2 description={data?.description} />
+
       <div className="mb-12 md:mb-0">
         {/* Similar Options Section */}
         {(() => {
