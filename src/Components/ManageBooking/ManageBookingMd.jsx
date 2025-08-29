@@ -15,6 +15,7 @@ import useStaticContent from "../../hooks/useStaticContent";
 import EditWrapper from "../Edit_Wrapper/EditWrapper";
 import renderContent from "../../utilities/renderContent";
 import Description2 from "../Description/Description2";
+import TicketEditModal from "../TicketEditModal/TicketEditModal";
 
 const ManageBookingMd = () => {
   const { id, status } = useParams();
@@ -31,6 +32,9 @@ const ManageBookingMd = () => {
   const [allPackages, setAllPackages] = useState([]);
   const [similarLoading, setSimilarLoading] = useState(true);
   const [similarError, setSimilarError] = useState(false);
+  
+  // Ticket edit modal state
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   const adultPrice = data?.adult_price || 0;
   const youthPrice = data?.youth_price || 0;
@@ -128,6 +132,14 @@ const ManageBookingMd = () => {
   const { isEditor } = useEditorCheck();
   const { getContentByTag, hasContent, refreshContent } = useStaticContent('ticket-details');
 
+  // Handle ticket data update after editing
+  const handleTicketUpdate = (updatedData) => {
+    setData(prevData => ({
+      ...prevData,
+      ...updatedData
+    }));
+  };
+
   return (
     <>
     {/* Meta information */}
@@ -148,13 +160,29 @@ const ManageBookingMd = () => {
       </div>
 
       <div className="flex flex-col mt-16 space-y-4 pb-8 px-8">
-        <div className="flex items-center gap-6">
-          <p>{data?.type}</p>
-          <div className="flex items-center gap-2">
-            <FaRegClock />
-            <p className="font-bold">{data?.duration}</p>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-6">
+            <p>{data?.type}</p>
+            <div className="flex items-center gap-2">
+              <FaRegClock />
+              <p className="font-bold">{data?.duration}</p>
+            </div>
           </div>
+          
+          {/* Edit Button - Only show for editors */}
+          {isEditor && (
+            <button
+              onClick={() => setIsEditModalOpen(true)}
+              className="flex items-center gap-2 px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white rounded-lg transition-colors duration-200"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+              </svg>
+              Edit Ticket
+            </button>
+          )}
         </div>
+        
         <h2 className="text-xl md:text-3xl font-bold mb-2">{data?.title}</h2>
         
         <EditWrapper isEditor={isEditor} contentTag={"ticket-details-steps"} refreshContent={refreshContent}>
@@ -336,6 +364,14 @@ const ManageBookingMd = () => {
           );
         })()}
       </div>
+
+      {/* Ticket Edit Modal */}
+      <TicketEditModal
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        ticketData={data}
+        onSave={handleTicketUpdate}
+      />
     </div>
     </>
   );

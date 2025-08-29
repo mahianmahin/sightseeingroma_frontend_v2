@@ -13,6 +13,7 @@ import useEditorCheck from "../../hooks/useEditorCheck";
 import useStaticContent from "../../hooks/useStaticContent";
 import EditWrapper from "../Edit_Wrapper/EditWrapper";
 import renderContent from "../../utilities/renderContent";
+import TicketEditModal from "../TicketEditModal/TicketEditModal";
 
 
 const ManageBookingSm = () => {
@@ -30,6 +31,9 @@ const ManageBookingSm = () => {
   const [similarLoading, setSimilarLoading] = useState(true);
   const [similarError, setSimilarError] = useState(false);
   const [bigLoader, setBigLoader] = useState(false);
+  
+  // Ticket edit modal state
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   const adultPrice = data?.adult_price || 0;
   const youthPrice = data?.youth_price || 0;
@@ -120,6 +124,14 @@ const ManageBookingSm = () => {
   const { isEditor } = useEditorCheck();
   const { getContentByTag, hasContent, refreshContent } = useStaticContent('ticket-details');
 
+  // Handle ticket data update after editing
+  const handleTicketUpdate = (updatedData) => {
+    setData(prevData => ({
+      ...prevData,
+      ...updatedData
+    }));
+  };
+
   return (
     <div className="min-h-screen pt-24"> {/* Changed from pt-16 to pt-24 */}
       <div>
@@ -143,6 +155,19 @@ const ManageBookingSm = () => {
             <FaRegClock />
             <p className="font-bold">{data?.duration}</p>
           </div>
+          
+          {/* Edit Button - Only show for editors */}
+          {isEditor && (
+            <button
+              onClick={() => setIsEditModalOpen(true)}
+              className="ml-auto flex items-center gap-1 px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded transition-colors duration-200"
+            >
+              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+              </svg>
+              Edit
+            </button>
+          )}
         </div>
         <h2 className="text-sm  font-semibold mb-2">{data?.title}</h2>
 
@@ -354,6 +379,14 @@ const ManageBookingSm = () => {
           );
         })()}
       </div>
+
+      {/* Ticket Edit Modal */}
+      <TicketEditModal
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        ticketData={data}
+        onSave={handleTicketUpdate}
+      />
     </div>
   );
 };
