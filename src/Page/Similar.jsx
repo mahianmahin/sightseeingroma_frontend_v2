@@ -68,6 +68,7 @@ const Similar = () => {
                             id={ticket.package_tag}
                             status={ticket.status}
                             id1={ticket.id}
+                            offPrice={ticket.off_price}
                            
                             />
                         ))

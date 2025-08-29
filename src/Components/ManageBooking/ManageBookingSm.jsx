@@ -3,11 +3,16 @@ import { FaRegClock } from "react-icons/fa";
 import { FaArrowLeftLong } from "react-icons/fa6";
 import { MdKeyboardArrowRight } from "react-icons/md";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import Similar from "../../Page/Similar";
+import axios from "axios";
+import TicketCard from "../TicketCard/TicketCard";
 import handleStripeCheckout from "../../utilities/stripeCheckout";
 import { baseUrl, baseUrlHashless } from "../../utilities/Utilities";
 import Description from "../Description/Description";
 import DetailsImage from './../Details_Image/Details_image';
+import useEditorCheck from "../../hooks/useEditorCheck";
+import useStaticContent from "../../hooks/useStaticContent";
+import EditWrapper from "../Edit_Wrapper/EditWrapper";
+import renderContent from "../../utilities/renderContent";
 
 
 const ManageBookingSm = () => {
@@ -19,6 +24,11 @@ const ManageBookingSm = () => {
   const [selectedDate, setSelectedDate] = useState('');
   const [message, setMessage] = useState('');
   const [showMessage, setShowMessage] = useState(false);
+  
+  // Similar packages state
+  const [allPackages, setAllPackages] = useState([]);
+  const [similarLoading, setSimilarLoading] = useState(true);
+  const [similarError, setSimilarError] = useState(false);
   const [bigLoader, setBigLoader] = useState(false);
 
   const adultPrice = data?.adult_price || 0;
@@ -36,6 +46,8 @@ const ManageBookingSm = () => {
   // Fetch package data when the component is mounted or when id/status changes
   useEffect(() => {
     window.scrollTo(0, 0);
+    
+    // Fetch package data
     fetch(`${baseUrl}package/${status}/${id}/`)
       .then(response => {
         if (!response.ok) {
@@ -54,6 +66,26 @@ const ManageBookingSm = () => {
         setMessage('Failed to load data. Please try again later.');
         setShowMessage(true);
       });
+
+    // Fetch all packages for similar packages
+    const fetchAllPackages = async () => {
+      try {
+        const response = await axios.get(`${baseUrl}packages/`);
+        if (response.status === 200) {
+          setAllPackages(response.data.bus_data || []);
+        } else {
+          console.error("Unexpected response status:", response.status);
+          setSimilarError(true);
+        }
+      } catch (err) {
+        console.error("Error fetching similar packages:", err);
+        setSimilarError(true);
+      } finally {
+        setSimilarLoading(false);
+      }
+    };
+
+    fetchAllPackages();
   }, [id, status]);
 
   function handleStripeCheckoutFunction(adultCount, youthCount) {
@@ -84,6 +116,9 @@ const ManageBookingSm = () => {
       );
     }
   }
+
+  const { isEditor } = useEditorCheck();
+  const { getContentByTag, hasContent, refreshContent } = useStaticContent('ticket-details');
 
   return (
     <div className="min-h-screen pt-24"> {/* Changed from pt-16 to pt-24 */}
@@ -265,7 +300,60 @@ const ManageBookingSm = () => {
       </div>
 
       <Description description={data?.description} />
-      <Similar />
+      
+      <div className="mb-12 md:mb-0">
+        {/* Similar Options Section */}
+        {(() => {
+          if (similarLoading || !data || !allPackages.length) {
+            return similarLoading ? (
+              <div className="px-4 md:px-8 py-7 md:py-10">
+                <p className="text-center text-gray-600">Loading similar packages...</p>
+              </div>
+            ) : null;
+          }
+
+          // Filter packages with same duration but different package_tag
+          const similarPackages = allPackages.filter(pkg => 
+            pkg.duration === data.duration && 
+            pkg.package_tag !== data.package_tag
+          ).slice(0, 8); // Limit to 8 similar packages
+
+          if (similarPackages.length === 0) {
+            return null; // Don't show section if no similar packages
+          }
+
+          return (
+            <div className="px-4 md:px-8">
+              <div className="py-7 md:py-10">
+                <EditWrapper isEditor={isEditor} contentTag={"ticket-details-similar"} refreshContent={refreshContent}>
+                  {renderContent("ticket-details-similar", hasContent, getContentByTag, '<h1 class="text-2xl font-bold mb-4">Explore Similar Packages</h1>')}
+                </EditWrapper>
+              </div>
+
+              <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-10">
+                {similarPackages.map((ticket) => (
+                  <TicketCard
+                    key={`similar-${ticket.id}-${ticket.package_tag}`}
+                    id={ticket.package_tag}
+                    status={ticket.status}
+                    title={ticket.title}
+                    subtitle={ticket.type}
+                    image={ticket.image_big}
+                    thumbnail_small={ticket.thumbnail_small}
+                    thumbnail_large={ticket.thumbnail_large}
+                    duration={ticket.duration}
+                    ticketCount={ticket.package_tag}
+                    price={ticket.adult_price}
+                    price2={ticket.youth_price}
+                    id1={ticket.id}
+                    offPrice={ticket.off_price}
+                  />
+                ))}
+              </div>
+            </div>
+          );
+        })()}
+      </div>
     </div>
   );
 };

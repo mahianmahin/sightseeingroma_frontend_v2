@@ -2,13 +2,18 @@ import { useEffect, useState } from "react";
 import { FaRegClock } from "react-icons/fa";
 import { MdKeyboardArrowRight } from "react-icons/md";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import Similar from "../../Page/Similar";
+import axios from "axios";
+import TicketCard from "../TicketCard/TicketCard";
 import handleStripeCheckout from "../../utilities/stripeCheckout";
 import { baseUrl, baseUrlHashless } from "../../utilities/Utilities";
 import Description from "../Description/Description";
 import Details_image from "../Details_Image/Details_image";
 import Loader from "../Loader/Loader";
 import HelmetWrapper from "../../utilities/HelmetWrapper";
+import useEditorCheck from "../../hooks/useEditorCheck";
+import useStaticContent from "../../hooks/useStaticContent";
+import EditWrapper from "../Edit_Wrapper/EditWrapper";
+import renderContent from "../../utilities/renderContent";
 
 const ManageBookingMd = () => {
   const { id, status } = useParams();
@@ -20,6 +25,11 @@ const ManageBookingMd = () => {
   const [message, setMessage] = useState('');
   const [showMessage, setShowMessage] = useState(false);
   const [bigLoader, setBigLoader] = useState(false);
+  
+  // Similar packages state
+  const [allPackages, setAllPackages] = useState([]);
+  const [similarLoading, setSimilarLoading] = useState(true);
+  const [similarError, setSimilarError] = useState(false);
 
   const adultPrice = data?.adult_price || 0;
   const youthPrice = data?.youth_price || 0;
@@ -37,6 +47,8 @@ const ManageBookingMd = () => {
 
   useEffect(() => {
     window.scrollTo(0, 0);
+    
+    // Fetch package data
     fetch(`${baseUrl}package/${status}/${id}/`)
       .then(response => {
         if (!response.ok) {
@@ -55,6 +67,26 @@ const ManageBookingMd = () => {
         setMessage('Failed to load data. Please try again later.');
         setShowMessage(true);
       });
+
+    // Fetch all packages for similar packages
+    const fetchAllPackages = async () => {
+      try {
+        const response = await axios.get(`${baseUrl}packages/`);
+        if (response.status === 200) {
+          setAllPackages(response.data.bus_data || []);
+        } else {
+          console.error("Unexpected response status:", response.status);
+          setSimilarError(true);
+        }
+      } catch (err) {
+        console.error("Error fetching similar packages:", err);
+        setSimilarError(true);
+      } finally {
+        setSimilarLoading(false);
+      }
+    };
+
+    fetchAllPackages();
   }, [id, status]);
 
   const getCleanText = (htmlText) => {
@@ -92,6 +124,9 @@ const ManageBookingMd = () => {
     }
   }
 
+  const { isEditor } = useEditorCheck();
+  const { getContentByTag, hasContent, refreshContent } = useStaticContent('ticket-details');
+
   return (
     <>
     {/* Meta information */}
@@ -120,22 +155,29 @@ const ManageBookingMd = () => {
           </div>
         </div>
         <h2 className="text-xl md:text-3xl font-bold mb-2">{data?.title}</h2>
-        <div className="flex items-center gap-0 md:gap-3 color-1 font-semibold">
-          <p>Select ticket</p>
-          <MdKeyboardArrowRight size={20} />
-          <p>Payment</p>
-          <MdKeyboardArrowRight size={20} />
-          <p>Confirm ticket</p>
-        </div>
+        
+        <EditWrapper isEditor={isEditor} contentTag={"ticket-details-steps"} refreshContent={refreshContent}>
+          {renderContent('ticket-details-steps', hasContent, getContentByTag)}
+        </EditWrapper>
+
+
       </div>
 
       <div className="flex flex-col md:flex-row bg-[#F2F2F7] gap-6 py-10 px-8">
         <div className="flex-1 bg-white p-6 border rounded-lg">
-          <h3 className="text-xl font-semibold mb-4">Book Your Tickets</h3>
+
+          <EditWrapper isEditor={isEditor} contentTag={"ticket-details-heading"} refreshContent={refreshContent}>
+            {renderContent('ticket-details-heading', hasContent, getContentByTag)}
+          </EditWrapper>
+          
           <div className="flex justify-between items-center mb-6 border rounded-lg py-5 px-4">
             <div>
               <h4 className="text-lg font-bold">Adult - € {adultPrice}</h4>
-              <p className="text-gray-500 text-sm">Adult: between 19 to 99 years old</p>
+              
+              <EditWrapper isEditor={isEditor} contentTag={"ticket-details-adult-description"} refreshContent={refreshContent}>
+                {renderContent('ticket-details-adult-description', hasContent, getContentByTag)}
+              </EditWrapper>
+            
             </div>
             <div className="flex items-center gap-5">
               <h1 className="text-lg font-bold color-1">€ {totalAdultPrice}</h1>
@@ -160,7 +202,11 @@ const ManageBookingMd = () => {
           <div className="flex justify-between items-center mb-6 border py-5 px-4 rounded-lg">
             <div>
               <h4 className="text-lg font-bold">Youth - € {youthPrice}</h4>
-              <p className="text-gray-500 text-sm">Youth: between 6 to 18 years old</p>
+
+              <EditWrapper isEditor={isEditor} contentTag={"ticket-details-youth-description"} refreshContent={refreshContent}>
+                {renderContent('ticket-details-youth-description', hasContent, getContentByTag)}
+              </EditWrapper>
+            
             </div>
             <div className="flex items-center gap-5">
               <h1 className="text-lg font-bold color-1">€ {totalYouthPrice}</h1>
@@ -182,9 +228,9 @@ const ManageBookingMd = () => {
             </div>
           </div>
 
-          <p className="color-1 text-sm font-semibold mt-4">
-            *Note: Children aged 0-5 years can travel free of charge and do not require a ticket.*
-          </p>
+          <EditWrapper isEditor={isEditor} contentTag={"ticket-details-note"} refreshContent={refreshContent}>
+            {renderContent('ticket-details-note', hasContent, getContentByTag)}
+          </EditWrapper>
 
           <div className="text-sm mt-20 flex gap-4">
             <Link to={"/returnPolicy"} className="text-blue-600 hover:underline">
@@ -198,7 +244,11 @@ const ManageBookingMd = () => {
 
         <div className="w-full md:w-1/3">
           <div className="bg-gray-50 border-4 border-gray-300 p-6 rounded-lg shadow">
-            <h3 className="text-xl font-semibold mb-4">Summary</h3>
+            
+            <EditWrapper isEditor={isEditor} contentTag={"ticket-details-summary-title"} refreshContent={refreshContent}>
+              {renderContent('ticket-details-summary-title', hasContent, getContentByTag, 'Summary')}
+            </EditWrapper>
+
             <div className="mb-2">
               <p className="flex justify-between items-center">
                 <span>Total ticket price (adult):</span>
@@ -229,7 +279,60 @@ const ManageBookingMd = () => {
         </div>
       </div>
       <Description description={data?.description} />
-      <Similar />
+      
+      <div className="mb-12 md:mb-0">
+        {/* Similar Options Section */}
+        {(() => {
+          if (similarLoading || !data || !allPackages.length) {
+            return similarLoading ? (
+              <div className="px-4 md:px-8 py-7 md:py-10">
+                <p className="text-center text-gray-600">Loading similar packages...</p>
+              </div>
+            ) : null;
+          }
+
+          // Filter packages with same duration but different package_tag
+          const similarPackages = allPackages.filter(pkg => 
+            pkg.duration === data.duration && 
+            pkg.package_tag !== data.package_tag
+          ).slice(0, 8); // Limit to 8 similar packages
+
+          if (similarPackages.length === 0) {
+            return null; // Don't show section if no similar packages
+          }
+
+          return (
+            <div className="px-4 md:px-8">
+              <div className="py-7 md:py-10">
+                <EditWrapper isEditor={isEditor} contentTag={"ticket-details-explore-similar"} refreshContent={refreshContent}>
+                  {renderContent("ticket-details-explore-similar", hasContent, getContentByTag)}
+                </EditWrapper>
+              </div>
+
+              <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-10">
+                {similarPackages.map((ticket) => (
+                  <TicketCard
+                    key={`similar-${ticket.id}-${ticket.package_tag}`}
+                    id={ticket.package_tag}
+                    status={ticket.status}
+                    title={ticket.title}
+                    subtitle={ticket.type}
+                    image={ticket.image_big}
+                    thumbnail_small={ticket.thumbnail_small}
+                    thumbnail_large={ticket.thumbnail_large}
+                    duration={ticket.duration}
+                    ticketCount={ticket.package_tag}
+                    price={ticket.adult_price}
+                    price2={ticket.youth_price}
+                    id1={ticket.id}
+                    offPrice={ticket.off_price}
+                  />
+                ))}
+              </div>
+            </div>
+          );
+        })()}
+      </div>
     </div>
     </>
   );
