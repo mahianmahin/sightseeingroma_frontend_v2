@@ -5,6 +5,10 @@ import { baseUrl } from '../utilities/Utilities';
 
 import Banner2 from '../Components/Banner2/Banner2';
 import Card from '../Components/Services/Card';
+import useEditorCheck from '../hooks/useEditorCheck';
+import useStaticContent from '../hooks/useStaticContent';
+import EditWrapper from '../Components/Edit_Wrapper/EditWrapper';
+import renderContent from '../utilities/renderContent.jsx';
 
 import HeroImage from "../assets/new/Return-Policy.jpg";
 
@@ -13,6 +17,10 @@ const SearchPage = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const { search } = useLocation();
+
+    // Editor and content hooks
+    const { isEditor } = useEditorCheck();
+    const { getContentByTag, hasContent, refreshContent } = useStaticContent('search');
 
     // Get query parameters
     const queryParams = new URLSearchParams(search);
@@ -55,11 +63,18 @@ const SearchPage = () => {
     return (
         <div className="container mx-auto">
             <Banner2
+                opacity={0.6}
                 bannerImgmd={HeroImage}
                 bannerImgsm={HeroImage}
-                title={'Available Tickets'}
-                description={ticketType ? `Showing all ${ticketType} tickets` : 'Find your perfect ticket'}
-            />
+            >
+                <EditWrapper isEditor={isEditor} contentTag={"search-page-title"} refreshContent={refreshContent}>
+                    {renderContent('search-page-title', hasContent, getContentByTag, 'Available Tickets')}
+                </EditWrapper>
+
+                <EditWrapper isEditor={isEditor} contentTag={"search-page-subtitle"} refreshContent={refreshContent}>
+                    {renderContent('search-page-subtitle', hasContent, getContentByTag, ticketType ? `Showing all ${ticketType} tickets` : 'Find your perfect ticket')}
+                </EditWrapper>
+            </Banner2>
 
             <div className="px-4 md:px-8">
                 {/* Loading, Error, or Data Display */}
@@ -90,11 +105,14 @@ const SearchPage = () => {
                                 image={ticket.image_big}
                                 thumbnail_small={ticket.thumbnail_small}
                                 thumbnail_large={ticket.thumbnail_large}
+                                thumbnail_small_alt={ticket.thumbnail_small_alt}
+                                thumbnail_large_alt={ticket.thumbnail_large_alt}
                                 duration={ticket.duration}
                                 ticketCount={ticket.package_tag}
                                 price={ticket.adult_price}
                                 price2={ticket.youth_price}
                                 company={ticket.company}
+                                offPrice={ticket.off_price}
                                 id1={ticket.id}
                             />
                         ))}

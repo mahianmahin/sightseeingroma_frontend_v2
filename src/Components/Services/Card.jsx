@@ -5,7 +5,7 @@ import { baseUrl } from "../../utilities/Utilities";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 
-const Card = ({ title, subtitle, image, duration, offPrice, ticketCount, price, id, company, id1, thumbnail_small, thumbnail_large }) => {
+const Card = ({ title, subtitle, image, duration, offPrice, ticketCount, price, id, company, id1, thumbnail_small, thumbnail_large, thumbnail_small_alt, thumbnail_large_alt }) => {
     const navigate = useNavigate();
     const [isLargeScreen, setIsLargeScreen] = useState(false);
 
@@ -55,13 +55,29 @@ const Card = ({ title, subtitle, image, duration, offPrice, ticketCount, price, 
         }
     };
 
+    // Determine which alt text to use based on screen size and availability
+    const getImageAlt = () => {
+        if (isLargeScreen && thumbnail_large_alt) {
+            return thumbnail_large_alt;
+        } else if (!isLargeScreen && thumbnail_small_alt) {
+            return thumbnail_small_alt;
+        } else if (thumbnail_large_alt) {
+            return thumbnail_large_alt;
+        } else if (thumbnail_small_alt) {
+            return thumbnail_small_alt;
+        } else {
+            // Fallback to title
+            return title;
+        }
+    };
+
     return (
         <div className="group w-full bg-white shadow-lg hover:shadow-xl rounded-2xl overflow-hidden mx-auto h-full flex flex-col transition-all duration-300 transform hover:-translate-y-1 border border-gray-100">
             {/* Image Container with Overlay */}
             <div onClick={handleBuyNow} className="relative overflow-hidden">
                 <img 
                     src={getImageSrc()}
-                    alt={title}
+                    alt={getImageAlt()}
                     className="w-full h-32 md:h-48 object-cover transition-transform duration-300 group-hover:scale-105"
                 />
                 

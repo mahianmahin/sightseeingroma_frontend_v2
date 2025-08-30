@@ -6,7 +6,7 @@ import { baseUrl } from "../../utilities/Utilities";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 
-const TicketCard = ({ title, subtitle, image, duration, offPrice, ticketCount, price, id , status, price2 , id1, thumbnail_small, thumbnail_large}) => {
+const TicketCard = ({ title, subtitle, image, duration, offPrice, ticketCount, price, id , status, price2 , id1, thumbnail_small, thumbnail_large, thumbnail_small_alt, thumbnail_large_alt}) => {
     const navigate = useNavigate();
     const [isLargeScreen, setIsLargeScreen] = useState(false);
 
@@ -48,13 +48,29 @@ const TicketCard = ({ title, subtitle, image, duration, offPrice, ticketCount, p
         }
     };
 
+    // Determine which alt text to use based on screen size and availability
+    const getImageAlt = () => {
+        if (isLargeScreen && thumbnail_large_alt) {
+            return thumbnail_large_alt;
+        } else if (!isLargeScreen && thumbnail_small_alt) {
+            return thumbnail_small_alt;
+        } else if (thumbnail_large_alt) {
+            return thumbnail_large_alt;
+        } else if (thumbnail_small_alt) {
+            return thumbnail_small_alt;
+        } else {
+            // Fallback to title
+            return title;
+        }
+    };
+
     return (
         <div className="group w-full mb-4 md:mb-6 mx-auto bg-white rounded-2xl shadow-lg hover:shadow-xl overflow-hidden border border-gray-100 flex flex-col transition-all duration-300 transform hover:-translate-y-1">
             {/* Image Section with Enhanced Overlay */}
             <div onClick={handleBuyNow} className="relative overflow-hidden">
                 <img
                     src={getImageSrc()}
-                    alt={title}
+                    alt={getImageAlt()}
                     className="w-full h-[140px] md:h-[180px] object-cover transition-transform duration-500 group-hover:scale-110"
                 />
                 
@@ -136,6 +152,8 @@ TicketCard.propTypes = {
     id1: PropTypes.number.isRequired,
     thumbnail_small: PropTypes.string,
     thumbnail_large: PropTypes.string,
+    thumbnail_small_alt: PropTypes.string,
+    thumbnail_large_alt: PropTypes.string,
     offPrice: PropTypes.number,
 };
 
