@@ -41,6 +41,9 @@ const MediaLibraryModal = ({
     media_type: 'image'
   });
   const [previewUrl, setPreviewUrl] = useState(null);
+  const [maxUploadSize, setMaxUploadSize] = useState(5); // Default 5MB
+  const [uploadSizeUnit, setUploadSizeUnit] = useState('MB'); // MB or KB
+  const [messages, setMessages] = useState([]); // Array of {id, type, text, timestamp}
 
   // Cleanup preview URL when component unmounts or file changes
   useEffect(() => {
@@ -61,13 +64,40 @@ const MediaLibraryModal = ({
     console.log('Preview URL state changed:', previewUrl);
   }, [previewUrl]);
 
+  // Auto-remove messages after 5 seconds
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setMessages(prev => prev.filter(msg => Date.now() - msg.timestamp < 5000));
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, [messages]);
+
+  // Helper function to add messages
+  const addMessage = (type, text) => {
+    const message = {
+      id: Date.now() + Math.random(),
+      type, // 'success', 'error', 'warning', 'info'
+      text,
+      timestamp: Date.now()
+    };
+    setMessages(prev => [...prev, message]);
+  };
+
+  // Helper function to remove specific message
+  const removeMessage = (id) => {
+    setMessages(prev => prev.filter(msg => msg.id !== id));
+  };
+
   // Fetch media library when modal opens
   useEffect(() => {
     if (isOpen) {
       fetchMediaLibrary();
+      fetchWebsiteSettings();
       setSelectedItems([]);
       setSearchTerm('');
       setFilterType('all');
+      setMessages([]); // Clear messages when modal opens
       // Reset upload form and preview when modal opens
       setUploadForm({ name: '', alt_text: '', file: null, media_type: 'image' });
       if (previewUrl) {
@@ -86,16 +116,45 @@ const MediaLibraryModal = ({
       setMediaItems(data.data || []);
     } catch (error) {
       console.error('Error fetching media library:', error);
-      toast.error('Failed to load media library');
+      addMessage('error', 'Failed to load media library');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchWebsiteSettings = async () => {
+    try {
+      const response = await fetch(`${baseUrl}website-settings/`);
+      if (!response.ok) throw new Error('Failed to fetch website settings');
+      const data = await response.json();
+      
+      if (data.data && data.data.max_image_upload_size_mb !== undefined) {
+        const sizeValue = data.data.max_image_upload_size_mb;
+        
+        // If integer, treat as MB; if fractional (< 1), treat as KB
+        if (Number.isInteger(sizeValue) && sizeValue >= 1) {
+          setMaxUploadSize(sizeValue);
+          setUploadSizeUnit('MB');
+        } else if (sizeValue < 1) {
+          // Convert fractional MB to KB (e.g., 0.5 MB = 500 KB)
+          setMaxUploadSize(sizeValue * 1000);
+          setUploadSizeUnit('KB');
+        } else {
+          // Fractional but >= 1, treat as MB
+          setMaxUploadSize(sizeValue);
+          setUploadSizeUnit('MB');
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching website settings:', error);
+      // Keep default values if settings fetch fails
     }
   };
 
   const handleUpload = async (e) => {
     e.preventDefault();
     if (!uploadForm.file) {
-      toast.error('Please select a file');
+      addMessage('error', 'Please select a file');
       return;
     }
 
@@ -103,7 +162,7 @@ const MediaLibraryModal = ({
       setUploading(true);
       const accessToken = localStorage.getItem('access');
       if (!accessToken) {
-        toast.error('Authentication required');
+        addMessage('error', 'Authentication required');
         return;
       }
 
@@ -126,7 +185,7 @@ const MediaLibraryModal = ({
         throw new Error(errorData.message || 'Upload failed');
       }
 
-      toast.success('Media uploaded successfully!');
+      addMessage('success', 'Media uploaded successfully!');
       setUploadForm({ name: '', alt_text: '', file: null, media_type: 'image' });
       if (previewUrl) {
         URL.revokeObjectURL(previewUrl);
@@ -135,7 +194,7 @@ const MediaLibraryModal = ({
       fetchMediaLibrary();
     } catch (error) {
       console.error('Error uploading media:', error);
-      toast.error(error.message || 'Failed to upload media');
+      addMessage('error', error.message || 'Failed to upload media');
     } finally {
       setUploading(false);
     }
@@ -145,7 +204,7 @@ const MediaLibraryModal = ({
     try {
       const accessToken = localStorage.getItem('access');
       if (!accessToken) {
-        toast.error('Authentication required');
+        addMessage('error', 'Authentication required');
         return;
       }
 
@@ -183,13 +242,13 @@ const MediaLibraryModal = ({
 
       const updatedFields = Object.keys(filteredData);
       const fieldText = updatedFields.length === 1 ? updatedFields[0] : `${updatedFields.length} fields`;
-      toast.success(`Media ${fieldText} updated successfully!`);
+      addMessage('success', `Media ${fieldText} updated successfully!`);
       
       setEditingItem(null);
       fetchMediaLibrary();
     } catch (error) {
       console.error('Error updating media:', error);
-      toast.error(error.message || 'Failed to update media');
+      addMessage('error', error.message || 'Failed to update media');
     }
   };
 
@@ -201,7 +260,7 @@ const MediaLibraryModal = ({
     try {
       const accessToken = localStorage.getItem('access');
       if (!accessToken) {
-        toast.error('Authentication required');
+        addMessage('error', 'Authentication required');
         return;
       }
 
@@ -217,11 +276,11 @@ const MediaLibraryModal = ({
         throw new Error(errorData.message || 'Delete failed');
       }
 
-      toast.success('Media deleted successfully!');
+      addMessage('success', 'Media deleted successfully!');
       fetchMediaLibrary();
     } catch (error) {
       console.error('Error deleting media:', error);
-      toast.error(error.message || 'Failed to delete media');
+      addMessage('error', error.message || 'Failed to delete media');
     }
   };
 
@@ -256,6 +315,28 @@ const MediaLibraryModal = ({
     onClose();
   };
 
+  const validateFileSize = (file) => {
+    const fileSizeInBytes = file.size;
+    let maxSizeInBytes;
+    
+    if (uploadSizeUnit === 'MB') {
+      maxSizeInBytes = maxUploadSize * 1024 * 1024; // Convert MB to bytes
+    } else {
+      maxSizeInBytes = maxUploadSize * 1024; // Convert KB to bytes
+    }
+    
+    if (fileSizeInBytes > maxSizeInBytes) {
+      const fileSizeDisplay = uploadSizeUnit === 'MB' 
+        ? `${(fileSizeInBytes / (1024 * 1024)).toFixed(2)} MB`
+        : `${(fileSizeInBytes / 1024).toFixed(2)} KB`;
+      
+      addMessage('error', `File size (${fileSizeDisplay}) exceeds the maximum limit of ${maxUploadSize} ${uploadSizeUnit}`);
+      return false;
+    }
+    
+    return true;
+  };
+
   const handleFileSelect = (e) => {
     const selectedFile = e.target.files?.[0];
     console.log('File selected:', selectedFile); // Debug log
@@ -266,6 +347,13 @@ const MediaLibraryModal = ({
         type: selectedFile.type,
         size: selectedFile.size
       });
+      
+      // Validate file size first
+      if (!validateFileSize(selectedFile)) {
+        // Clear the input
+        e.target.value = '';
+        return;
+      }
       
       // Cleanup previous preview URL
       if (previewUrl) {
@@ -327,6 +415,32 @@ const MediaLibraryModal = ({
     }
   };
 
+  const formatFileSize = (bytes) => {
+    if (bytes === 0) return '0 B';
+    
+    const k = 1024;
+    const sizes = ['B', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  };
+
+  const getFileSizeColor = (fileSize) => {
+    let maxSizeInBytes;
+    
+    if (uploadSizeUnit === 'MB') {
+      maxSizeInBytes = maxUploadSize * 1024 * 1024;
+    } else {
+      maxSizeInBytes = maxUploadSize * 1024;
+    }
+    
+    const percentage = (fileSize / maxSizeInBytes) * 100;
+    
+    if (percentage > 90) return 'text-red-500'; // Very close to limit
+    if (percentage > 75) return 'text-orange-500'; // Getting close
+    return 'text-green-500'; // Safe size
+  };
+
   const filteredItems = mediaItems.filter(item => {
     const matchesSearch = item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          (item.alt_text && item.alt_text.toLowerCase().includes(searchTerm.toLowerCase()));
@@ -354,13 +468,62 @@ const MediaLibraryModal = ({
           </button>
         </div>
 
+        {/* Message Area */}
+        {messages.length > 0 && (
+          <div className="px-6 py-3 border-b border-gray-200 bg-gray-50">
+            <div className="space-y-2">
+              {messages.map((message) => (
+                <div
+                  key={message.id}
+                  className={`flex items-center justify-between p-3 rounded-md border ${
+                    message.type === 'success'
+                      ? 'bg-green-50 border-green-200 text-green-800'
+                      : message.type === 'error'
+                      ? 'bg-red-50 border-red-200 text-red-800'
+                      : message.type === 'warning'
+                      ? 'bg-yellow-50 border-yellow-200 text-yellow-800'
+                      : 'bg-blue-50 border-blue-200 text-blue-800'
+                  }`}
+                >
+                  <div className="flex items-center gap-2">
+                    {message.type === 'success' && (
+                      <FaCheck className="text-green-600 flex-shrink-0" />
+                    )}
+                    {message.type === 'error' && (
+                      <FaTimes className="text-red-600 flex-shrink-0" />
+                    )}
+                    {message.type === 'warning' && (
+                      <FaEdit className="text-yellow-600 flex-shrink-0" />
+                    )}
+                    {message.type === 'info' && (
+                      <FaImages className="text-blue-600 flex-shrink-0" />
+                    )}
+                    <span className="text-sm font-medium">{message.text}</span>
+                  </div>
+                  <button
+                    onClick={() => removeMessage(message.id)}
+                    className="text-gray-400 hover:text-gray-600 transition-colors duration-200 p-1"
+                  >
+                    <FaTimes className="text-xs" />
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Upload Section */}
         {allowUpload && (
           <div className="p-6 border-b border-gray-200 bg-gray-50">
             <div className="bg-white rounded-lg p-4 border-2 border-dashed border-gray-300">
               <div className="flex items-center gap-4 mb-4">
                 <FaCloudUploadAlt className="text-blue-600 text-2xl" />
-                <h3 className="text-lg font-semibold text-gray-800">Upload New Media</h3>
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-800">Upload New Media</h3>
+                  <p className="text-sm text-gray-600">
+                    Maximum file size: {maxUploadSize} {uploadSizeUnit}
+                  </p>
+                </div>
               </div>
               
               <form onSubmit={handleUpload} className="space-y-4">
@@ -376,7 +539,9 @@ const MediaLibraryModal = ({
                       <h4 className="text-sm font-medium text-gray-700">Selected File:</h4>
                       <span className="text-xs text-gray-500">{uploadForm.file.name}</span>
                       <span className="text-xs text-blue-500">Type: {uploadForm.media_type}</span>
-                      <span className="text-xs text-green-500">Size: {Math.round(uploadForm.file.size / 1024)}KB</span>
+                      <span className={`text-xs ${getFileSizeColor(uploadForm.file.size)}`}>
+                        Size: {formatFileSize(uploadForm.file.size)}
+                      </span>
                     </div>
                     <div className="flex justify-center">
                       {previewUrl ? (
@@ -451,6 +616,9 @@ const MediaLibraryModal = ({
                       className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
                       accept="*/*"
                     />
+                    <p className="text-xs text-gray-500 mt-1">
+                      Max: {maxUploadSize} {uploadSizeUnit}
+                    </p>
                   </div>
                 </div>
 
@@ -716,7 +884,7 @@ const MediaLibraryModal = ({
                           </p>
                           <div className="flex items-center justify-between mt-2">
                             <span className="text-xs text-gray-500">
-                              {Math.round(item.file_size / 1024)}KB
+                              {formatFileSize(item.file_size)}
                             </span>
                             <div className="flex items-center gap-1">
                               {getMediaIcon(item.media_type)}
