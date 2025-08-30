@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { FaTimes, FaSave, FaEdit, FaEuroSign } from 'react-icons/fa';
 import EditContentModal from '../Edit_Wrapper/EditContentModal';
-import { baseUrl } from '../../utilities/Utilities';
+import MediaLibraryModal from '../MediaLibraryModal/MediaLibraryModal';
+import { baseMediaUrl, baseUrl, baseUrlHashless } from '../../utilities/Utilities';
 import toast from 'react-hot-toast';
 
 const TicketEditModal = ({ 
@@ -23,6 +24,8 @@ const TicketEditModal = ({
   });
   const [isDescriptionModalOpen, setIsDescriptionModalOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [isMediaLibraryOpen, setIsMediaLibraryOpen] = useState(false);
+  const [selectedImageField, setSelectedImageField] = useState(null);
 
   useEffect(() => {
     if (ticketData && isOpen) {
@@ -51,6 +54,83 @@ const TicketEditModal = ({
       ...prev,
       description: newDescription
     }));
+  };
+
+  // Helper function to get the field name from image data
+  const getImageFieldName = (imageText) => {
+    const fieldMap = {
+      'Thumbnail Small': 'thumbnail_small',
+      'Thumbnail Large': 'thumbnail_large',
+      'Carousel One Small': 'carousel_one_small',
+      'Carousel One Large': 'carousel_one_large',
+      'Carousel Two Small': 'carousel_two_small',
+      'Carousel Two Large': 'carousel_two_large',
+      'Carousel Three Small': 'carousel_three_small',
+      'Carousel Three Large': 'carousel_three_large',
+      'Carousel Four Small': 'carousel_four_small',
+      'Carousel Four Large': 'carousel_four_large'
+    };
+    return fieldMap[imageText];
+  };
+
+  // Handle opening media library for image replacement
+  const handleReplaceImage = (imageData) => {
+    const fieldName = getImageFieldName(imageData.text);
+    if (fieldName) {
+      setSelectedImageField({ fieldName, imageData });
+      setIsMediaLibraryOpen(true);
+    }
+  };
+
+  // Handle media selection from library
+  const handleMediaSelect = async (selectedMedia) => {
+    if (!selectedImageField) return;
+
+    try {
+      const accessToken = localStorage.getItem('access');
+      if (!accessToken) {
+        toast.error('Authentication required');
+        return;
+      }
+
+      // Create absolute URL for the selected media
+      const mediaUrl = selectedMedia.file.startsWith('http') 
+        ? selectedMedia.file 
+        : `${baseUrlHashless}${selectedMedia.file}`;
+
+      // Update the package with the new image
+      const updateData = {
+        [selectedImageField.fieldName]: mediaUrl
+      };
+
+      const response = await fetch(`${baseUrl}update-bus-package/${ticketData.package_tag}/`, {
+        method: 'PATCH',
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(updateData)
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to update image');
+      }
+
+      const result = await response.json();
+      toast.success('Image updated successfully!');
+      
+      // Update the component with new data
+      if (onSave) {
+        onSave(result.data);
+      }
+
+      setIsMediaLibraryOpen(false);
+      setSelectedImageField(null);
+    } catch (error) {
+      console.error('Error updating image:', error);
+      toast.error(error.message || 'Failed to update image');
+    }
   };
 
   const handleSave = async () => {
@@ -109,11 +189,65 @@ const TicketEditModal = ({
     onClose();
   };
 
-  if (!isOpen) return null;
+  const ticketImages = ticketData ? [
+    {
+      "image": ticketData.thumbnail_small,
+      "alt_text": ticketData.thumbnail_small_alt,
+      "text": "Thumbnail Small"
+    },
+    {
+      "image": ticketData.thumbnail_large,
+      "alt_text": ticketData.thumbnail_large_alt,
+      "text": "Thumbnail Large"
+    },
+    {
+      "image": ticketData.carousel_one_small,
+      "alt_text": ticketData.carousel_one_small_alt,
+      "text": "Carousel One Small"
+    },
+    {
+      "image": ticketData.carousel_one_large,
+      "alt_text": ticketData.carousel_one_large_alt,
+      "text": "Carousel One Large"
+    },
+    {
+      "image": ticketData.carousel_two_small,
+      "alt_text": ticketData.carousel_two_small_alt,
+      "text": "Carousel Two Small"
+    },
+    {
+      "image": ticketData.carousel_two_large,
+      "alt_text": ticketData.carousel_two_large_alt,
+      "text": "Carousel Two Large"
+    },
+    {
+      "image": ticketData.carousel_three_small,
+      "alt_text": ticketData.carousel_three_small_alt,
+      "text": "Carousel Three Small"
+    },
+    {
+      "image": ticketData.carousel_three_large,
+      "alt_text": ticketData.carousel_three_large_alt,
+      "text": "Carousel Three Large"
+    },
+    {
+      "image": ticketData.carousel_four_small,
+      "alt_text": ticketData.carousel_four_small_alt,
+      "text": "Carousel Four Small"
+    },
+    {
+      "image": ticketData.carousel_four_large,
+      "alt_text": ticketData.carousel_four_large_alt,
+      "text": "Carousel Four Large"
+    }
+  ] : [];
+
+
+  if (!isOpen || !ticketData) return null;
 
   return createPortal(
     <div className="fixed inset-0 bg-black/50 z-[999999] flex items-center justify-center p-4">
-      <div className="bg-white rounded-lg shadow-xl w-full max-w-4xl h-[90vh] flex flex-col relative z-[999999]">
+      <div className="bg-white rounded-lg shadow-xl w-[1800px] max-w-4xl h-[90vh] flex flex-col relative z-[999999]">
         
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-200">
@@ -132,7 +266,41 @@ const TicketEditModal = ({
         {/* Content */}
         <div className="flex-1 overflow-auto p-6">
           <div className="space-y-6">
-            
+
+            {/* Images */}
+            <div className="bg-gray-50 p-4 rounded-lg">
+              <h3 className="text-lg font-semibold text-gray-800 mb-4">Images</h3>
+              
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {ticketImages.map((imageData, index) => (
+                  imageData.image ? (
+                    <div key={index} className="relative group">
+                      <img 
+                        src={`${baseUrlHashless}${imageData.image}`} 
+                        alt={imageData.alt_text || `Image ${index + 1}`} 
+                        className="w-full h-48 object-cover rounded-lg border border-gray-200" 
+                      />
+                      <div className="absolute inset-0 bg-black bg-opacity-80 opacity-0 group-hover:opacity-100 transition-opacity duration-200 rounded-lg flex items-end justify-end p-4">
+                        <div className="text-right">
+                          <p className="text-white text-sm mb-2 font-bold">{imageData.text}</p>
+                          <p className="text-white text-sm mb-2">Alt Text: {imageData.alt_text}</p>
+                          <div className="flex gap-2">
+                            <button 
+                              onClick={() => handleReplaceImage(imageData)}
+                              className="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded transition-colors duration-200 w-full"
+                            >
+                              Replace
+                            </button>
+                            {/* <button className="px-3 py-1 bg-red-600 hover:bg-red-700 text-white text-xs rounded transition-colors duration-200">Remove</button> */}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ) : null
+                ))}
+              </div>
+            </div>
+
             {/* Basic Information */}
             <div className="bg-gray-50 p-4 rounded-lg">
               <h3 className="text-lg font-semibold text-gray-800 mb-4">Basic Information</h3>
@@ -322,6 +490,22 @@ const TicketEditModal = ({
         content={editedData.description}
         onSave={handleDescriptionSave}
         title="Edit Ticket Description"
+      />
+
+      {/* Media Library Modal */}
+      <MediaLibraryModal
+        isOpen={isMediaLibraryOpen}
+        onClose={() => {
+          setIsMediaLibraryOpen(false);
+          setSelectedImageField(null);
+        }}
+        onSelectMedia={handleMediaSelect}
+        allowSelection={true}
+        selectionMode="single"
+        title={`Select Image for ${selectedImageField?.imageData?.text || 'Package'}`}
+        allowUpload={true}
+        allowEdit={true}
+        allowDelete={true}
       />
     </div>,
     document.body

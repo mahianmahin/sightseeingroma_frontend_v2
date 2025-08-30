@@ -48,8 +48,6 @@ const ManageBookingMd = () => {
   const img3 = data?.carousel_three_large ? baseUrlHashless + data.carousel_three_large : (data?.third_image ? baseUrlHashless + data.third_image : '');
   const img4 = data?.carousel_four_large ? baseUrlHashless + data.carousel_four_large : (data?.fourth_image ? baseUrlHashless + data.fourth_image : '');
 
-  console.log(img1, img2, img3, img4);
-
   useEffect(() => {
     window.scrollTo(0, 0);
     
