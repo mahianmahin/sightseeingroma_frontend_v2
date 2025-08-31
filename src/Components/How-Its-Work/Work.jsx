@@ -2,12 +2,18 @@ import { FaCreditCard, FaQrcode, FaMapMarkerAlt, FaCheckCircle } from "react-ico
 import { TiTickOutline } from "react-icons/ti";
 import processImage from "../../assets/process_image.png";
 import EditImageWrapper from "../Edit_Wrapper/EditImageWrapper";
+import EditWrapper from "../Edit_Wrapper/EditWrapper";
 import { baseUrlHashless } from "../../utilities/Utilities";
+import renderContent from "../../utilities/renderContent";
 
 const Work = (props) => {
     // Get process image from static content or fallback to imported image
     const processImageData = props.getImageByTag ? props.getImageByTag('process') : null;
     const processImageUrl = processImageData?.image?.file ? `${baseUrlHashless}${processImageData.image.file}` : processImage;
+    
+    // Get process steps content from static content
+    const processStepsContent = props.getContentByTag ? props.getContentByTag('process-steps') : '';
+    
     return (
         <EditImageWrapper
             isEditor={props.isEditor}
@@ -20,70 +26,15 @@ const Work = (props) => {
             >
             {/* Container */}
             <div className="flex flex-col lg:flex-row h-full items-center lg:items-start justify-center lg:justify-end px-6 lg:px-20">
-                {/* Timeline */}
-                <div className="space-y-10 max-w-md relative">
-                    {/* Vertical Line */}
-                    <div className="absolute left-5 top-10 bottom-12 md:bottom-16 border-l-2 border-dotted border-gray-300"></div>
-
-                    {/* Step 1 */}
-                    <div className="flex items-start space-x-4 relative">
-                        <div className="bg-white rounded-full p-2 z-10">
-                            <TiTickOutline className="text-[#7F001D]" size={24} />
-                        </div>
-                        <div>
-                            <div className="text-sm font-bold text-yellow-500">01</div>
-                            <h3 className="text-lg font-semibold">Book Ticket</h3>
-                            <p className="text-sm">Ticket bookings made through our website or outlets are subject to availability.</p>
-                        </div>
-                    </div>
-
-                    {/* Step 2 */}
-                    <div className="flex items-start space-x-4 relative">
-                        <div className="bg-white rounded-full p-2 z-10">
-                            <FaCreditCard className="text-[#7F001D]" size={24} />
-                        </div>
-                        <div>
-                            <div className="text-sm font-bold text-yellow-500">02</div>
-                            <h3 className="text-lg font-semibold">Payment</h3>
-                            <p className="text-sm">Payment for bookings can be made securely through our website using major credit cards or other payment methods specified.</p>
-                        </div>
-                    </div>
-
-                   
-                    {/* <div className="flex items-start space-x-4 relative">
-                        <div className="bg-white rounded-full p-2 z-10">
-                            <FaQrcode className="text-[#7F001D]" size={24} />
-                        </div>
-                        <div>
-                            <div className="text-sm font-bold text-yellow-500">03</div>
-                            <h3 className="text-lg font-semibold">Get a QR Code</h3>
-                            <p className="text-sm">Get a QR code from our website after successful payment process completion.</p>
-                        </div>
-                    </div>
-
-                   <div className="flex items-start space-x-4 relative">
-                        <div className="bg-white rounded-full p-2 z-10">
-                            <FaMapMarkerAlt className="text-[#7F001D]" size={24} />
-                        </div>
-                        <div>
-                            <div className="text-sm font-bold text-yellow-500">04</div>
-                            <h3 className="text-lg font-semibold">Show QR Code at Agent Point</h3>
-                            <p className="text-sm">Get a QR code from our website after successful payment process completion.</p>
-                        </div>
-                    </div>  */}
-
-                    {/* Step 5 */}
-                    <div className="flex items-start space-x-4 relative">
-                        <div className="bg-white rounded-full p-2 z-10">
-                            <FaCheckCircle className="text-[#7F001D]" size={24} />
-                        </div>
-                        <div>
-                            <div className="text-sm font-bold text-yellow-500">03</div>
-                            <h3 className="text-lg font-semibold">You are Good to Go</h3>
-                            <p className="text-sm">Collect your ticket from our agent point and find your ideal ride here</p>
-                        </div>
+            <div className="space-y-10 max-w-md relative">
+                <div className="absolute left-5 top-10 bottom-12 md:bottom-16 border-l-2 border-dotted border-gray-300"></div>
+                    <div>
+                        <EditWrapper isEditor={props.isEditor} contentTag="process-steps" refreshContent={props.refreshContent}>
+                            {renderContent('process-steps', props.hasContent, props.getContentByTag)}
+                        </EditWrapper>
                     </div>
                 </div>
+                    
             </div>
             </div>
         </EditImageWrapper>

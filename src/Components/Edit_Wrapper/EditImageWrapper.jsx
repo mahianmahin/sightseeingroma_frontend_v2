@@ -82,8 +82,8 @@ export default function EditImageWrapper({
                 selectionMode="single"
                 title="Select Image"
                 allowUpload={true}
-                allowEdit={false}
-                allowDelete={false}
+                allowEdit={true}
+                allowDelete={true}
             />
         </>
     );

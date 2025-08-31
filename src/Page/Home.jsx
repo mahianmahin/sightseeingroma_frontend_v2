@@ -29,7 +29,7 @@ const Home = () => {
                         <HeroBottom></HeroBottom>
                     </div>
 
-                    <Work isEditor={isEditor} getImageByTag={getImageByTag} refreshContent={refreshContent}></Work>
+                    <Work isEditor={isEditor} hasContent={hasContent} getContentByTag={getContentByTag} getImageByTag={getImageByTag} refreshContent={refreshContent}></Work>
 
                     <Services isEditor={isEditor} loading={loading} hasContent={hasContent} getContentByTag={getContentByTag} refreshContent={refreshContent}></Services>
 
