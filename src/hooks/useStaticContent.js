@@ -4,6 +4,7 @@ import { baseUrl } from '../utilities/Utilities';
 const useStaticContent = (pageSlug) => {
     const [pageData, setPageData] = useState(null);
     const [contentBlocks, setContentBlocks] = useState([]);
+    const [pageImages, setPageImages] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
@@ -21,6 +22,7 @@ const useStaticContent = (pageSlug) => {
                     if (data.status === 200) {
                         setPageData(data.page);
                         setContentBlocks(data.content_blocks || []);
+                        setPageImages(data.page_images || []);
                     } else {
                         setError('Failed to fetch content');
                     }
@@ -53,10 +55,21 @@ const useStaticContent = (pageSlug) => {
         return processedHTML;
     };
 
-    // Helper function to get content by unique tag
+    // Helper function to get content by unique tag (checks both content blocks and page images)
     const getContentByTag = (uniqueTag) => {
-        const block = contentBlocks.find(block => block.unique_tag === uniqueTag);
-        return block ? processHTMLContent(block.block_content) : '';
+        // First check content blocks
+        const contentBlock = contentBlocks.find(block => block.unique_tag === uniqueTag);
+        if (contentBlock) {
+            return processHTMLContent(contentBlock.block_content);
+        }
+        
+        // Then check page images
+        const pageImage = pageImages.find(img => img.unique_tag === uniqueTag);
+        if (pageImage && pageImage.image) {
+            return pageImage.image.file; // Return the image file path
+        }
+        
+        return '';
     };
 
     // Helper function to get content block object by unique tag
@@ -71,9 +84,21 @@ const useStaticContent = (pageSlug) => {
         };
     };
 
-    // Helper function to check if content exists for a tag
+    // Helper function to get page image object by unique tag
+    const getImageByTag = (uniqueTag) => {
+        const pageImage = pageImages.find(img => img.unique_tag === uniqueTag);
+        return pageImage || null;
+    };
+
+    // Helper function to check if content exists for a tag (checks both content blocks and page images)
     const hasContent = (uniqueTag) => {
-        return contentBlocks.some(block => block.unique_tag === uniqueTag && block.is_active);
+        // Check content blocks
+        const hasContentBlock = contentBlocks.some(block => block.unique_tag === uniqueTag && block.is_active);
+        if (hasContentBlock) return true;
+        
+        // Check page images
+        const hasPageImage = pageImages.some(img => img.unique_tag === uniqueTag && img.image);
+        return hasPageImage;
     };
 
     // Helper function to get all content blocks by type
@@ -99,6 +124,7 @@ const useStaticContent = (pageSlug) => {
                 if (data.status === 200) {
                     setPageData(data.page);
                     setContentBlocks(data.content_blocks || []);
+                    setPageImages(data.page_images || []);
                 }
             }
         } catch (error) {
@@ -146,12 +172,14 @@ const useStaticContent = (pageSlug) => {
         // Data
         pageData,
         contentBlocks,
+        pageImages,
         loading,
         error,
         
         // Helper functions
         getContentByTag,
         getBlockByTag,
+        getImageByTag,
         hasContent,
         getContentByType,
         refreshContent,
