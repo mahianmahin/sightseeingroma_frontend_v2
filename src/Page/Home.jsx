@@ -13,7 +13,7 @@ import useStaticContent from '../hooks/useStaticContent';
 const Home = () => {
     // Use the custom hook for editor check
     const { isEditor, error } = useEditorCheck();
-    const {getContentByTag, hasContent, loading, refreshContent} = useStaticContent('home-page');
+    const {getContentByTag, getImageByTag, hasContent, loading, refreshContent} = useStaticContent('home-page');
 
     return (
         <>
@@ -22,20 +22,20 @@ const Home = () => {
             <div>
                 <div className="">
 
-                    <Hero isEditor={isEditor} loading={loading} hasContent={hasContent} getContentByTag={getContentByTag} refreshContent={refreshContent}></Hero>
+                    <Hero isEditor={isEditor} loading={loading} hasContent={hasContent} getContentByTag={getContentByTag} getImageByTag={getImageByTag} refreshContent={refreshContent}></Hero>
 
                     <div className="block md:hidden">
                         <TicketTypeSearch />
                         <HeroBottom></HeroBottom>
                     </div>
 
-                    <Work></Work>
+                    <Work isEditor={isEditor} getImageByTag={getImageByTag} refreshContent={refreshContent}></Work>
 
                     <Services isEditor={isEditor} loading={loading} hasContent={hasContent} getContentByTag={getContentByTag} refreshContent={refreshContent}></Services>
 
-                    <Banner isEditor={isEditor} loading={loading} hasContent={hasContent} getContentByTag={getContentByTag} refreshContent={refreshContent}></Banner>
+                    <Banner isEditor={isEditor} loading={loading} hasContent={hasContent} getContentByTag={getContentByTag} getImageByTag={getImageByTag} refreshContent={refreshContent}></Banner>
 
-                    <Contact isEditor={isEditor} loading={loading} hasContent={hasContent} getContentByTag={getContentByTag} refreshContent={refreshContent}></Contact>
+                    <Contact isEditor={isEditor} loading={loading} hasContent={hasContent} getContentByTag={getContentByTag} getImageByTag={getImageByTag} refreshContent={refreshContent}></Contact>
 
                 </div>
             </div>

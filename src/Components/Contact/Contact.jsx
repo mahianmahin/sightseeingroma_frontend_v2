@@ -2,9 +2,10 @@ import { FaPhoneAlt } from "react-icons/fa";
 import { FaLocationDot } from "react-icons/fa6";
 import { IoIosMailUnread } from "react-icons/io";
 import { useState, useEffect } from "react";
-import { baseUrl } from "../../utilities/Utilities";
+import { baseUrl, baseUrlHashless } from "../../utilities/Utilities";
 import GetInTouch from '../../assets/new/Get-in-Touch.jpg';
 import EditWrapper from "../Edit_Wrapper/EditWrapper";
+import EditImageWrapper from "../Edit_Wrapper/EditImageWrapper";
 import renderContent from "../../utilities/renderContent.jsx";
 
 const Contact = (props) => {
@@ -15,6 +16,10 @@ const Contact = (props) => {
         mapLink: "https://maps.app.goo.gl/5tippW2iGzJ7h8TY7"
     });
     const [loading, setLoading] = useState(true);
+
+    // Get contact image from static content or fallback to imported image
+    const contactImageData = props.getImageByTag ? props.getImageByTag('get-in-touch') : null;
+    const contactImageUrl = contactImageData?.image?.file ? `${baseUrlHashless}${contactImageData.image.file}` : GetInTouch;
 
     useEffect(() => {
         const fetchContactData = async () => {
@@ -89,9 +94,12 @@ const Contact = (props) => {
             </div>
 
             {/* Image Section */}
-            <div className="w-full md:w-1/2">
-                <img src={GetInTouch} alt="Get in Touch" className="w-full h-auto rounded-lg object-cover" />
-            </div>
+            <EditImageWrapper isEditor={props.isEditor} uniqueTag="get-in-touch" refreshContent={props.refreshContent} className="w-full md:w-1/2">
+            {console.log(contactImageData)}
+                <div className="w-full md:w-1/2">
+                    <img src={contactImageUrl} alt={contactImageData?.image?.alt_text} className="w-full h-auto rounded-lg object-cover" />
+                </div>
+            </EditImageWrapper>
         </div>
     );
 };

@@ -168,6 +168,40 @@ const useStaticContent = (pageSlug) => {
         }
     };
 
+    // Function to update page image via API
+    const updatePageImage = async (uniqueTag, imageId) => {
+        try {
+            const accessToken = localStorage.getItem('access');
+            if (!accessToken) {
+                throw new Error('Authentication required');
+            }
+
+            const response = await fetch(`${baseUrl}page-image/${uniqueTag}/update/`, {
+                method: 'PATCH',
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    image_id: imageId
+                })
+            });
+
+            const data = await response.json();
+
+            if (response.ok && data.status === 200) {
+                // Refresh content after successful update
+                await refreshContent();
+                return { success: true, data: data.data };
+            } else {
+                throw new Error(data.message || 'Failed to update page image');
+            }
+        } catch (error) {
+            console.error('Error updating page image:', error);
+            return { success: false, error: error.message };
+        }
+    };
+
     return {
         // Data
         pageData,
@@ -183,7 +217,8 @@ const useStaticContent = (pageSlug) => {
         hasContent,
         getContentByType,
         refreshContent,
-        updateContent
+        updateContent,
+        updatePageImage
     };
 };
 

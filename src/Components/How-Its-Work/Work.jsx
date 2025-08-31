@@ -1,13 +1,23 @@
 import { FaCreditCard, FaQrcode, FaMapMarkerAlt, FaCheckCircle } from "react-icons/fa";
 import { TiTickOutline } from "react-icons/ti";
 import processImage from "../../assets/process_image.png";
+import EditImageWrapper from "../Edit_Wrapper/EditImageWrapper";
+import { baseUrlHashless } from "../../utilities/Utilities";
 
-const Work = () => {
+const Work = (props) => {
+    // Get process image from static content or fallback to imported image
+    const processImageData = props.getImageByTag ? props.getImageByTag('process') : null;
+    const processImageUrl = processImageData?.image?.file ? `${baseUrlHashless}${processImageData.image.file}` : processImage;
     return (
-        <div
-            className="bg-cover bg-center text-white py-10 lg:py-20"
-            style={{ backgroundImage: `url(${processImage})` }}
+        <EditImageWrapper
+            isEditor={props.isEditor}
+            uniqueTag="process"
+            refreshContent={props.refreshContent}
         >
+            <div
+                className="bg-cover bg-center text-white py-10 lg:py-20"
+                style={{ backgroundImage: `url(${processImageUrl})` }}
+            >
             {/* Container */}
             <div className="flex flex-col lg:flex-row h-full items-center lg:items-start justify-center lg:justify-end px-6 lg:px-20">
                 {/* Timeline */}
@@ -75,7 +85,8 @@ const Work = () => {
                     </div>
                 </div>
             </div>
-        </div>
+            </div>
+        </EditImageWrapper>
     );
 };
 

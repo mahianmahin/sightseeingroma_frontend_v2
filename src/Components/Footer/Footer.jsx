@@ -2,10 +2,11 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import logo from "../../assets/Logo.png";
-import scrollToTop, { baseUrl } from '../../utilities/Utilities';
+import scrollToTop, { baseUrl, baseUrlHashless } from '../../utilities/Utilities';
 import paymentMethods from '../../assets/payment_banners.png';
 import useStaticContent from '../../hooks/useStaticContent';
 import EditWrapper from '../Edit_Wrapper/EditWrapper';
+import EditImageWrapper from '../Edit_Wrapper/EditImageWrapper';
 import useEditorCheck from '../../hooks/useEditorCheck';
 import renderContent from '../../utilities/renderContent.jsx';
 
@@ -100,7 +101,14 @@ const Footer = () => {
     };
 
     const { isEditor } = useEditorCheck();
-    const { getContentByTag, hasContent, refreshContent } = useStaticContent('footer');
+    const { getContentByTag, getImageByTag, hasContent, refreshContent } = useStaticContent('footer');
+
+    // Get footer images from static content or fallback to imported images
+    const logoImageData = getImageByTag ? getImageByTag('footer-logo') : null;
+    const logoImageUrl = logoImageData?.image?.file ? `${baseUrlHashless}${logoImageData.image.file}` : logo;
+    
+    const paymentImageData = getImageByTag ? getImageByTag('footer-payment-methods') : null;
+    const paymentImageUrl = paymentImageData?.image?.file ? `${baseUrlHashless}${paymentImageData.image.file}` : paymentMethods;
 
     return (
         <div className="bg-black font-color-1 py-10 px-2 md:px-4">
@@ -109,7 +117,19 @@ const Footer = () => {
                 {/* Logo and Description */}
                 <div className="space-y-4  md:text-left">
 
-                    <Link to={'/'}><img src={logo} className=" w-1/2  mx-auto md:mx-0" alt="Sightseeing Roma Logo" /></Link>
+                    <EditImageWrapper
+                        isEditor={isEditor}
+                        uniqueTag="footer-logo"
+                        refreshContent={refreshContent}
+                    >
+                        <Link to={'/'}>
+                            <img 
+                                src={logoImageUrl} 
+                                className=" w-1/2  mx-auto md:mx-0" 
+                                alt={logoImageData?.image?.alt_text || "Sightseeing Roma Logo"} 
+                            />
+                        </Link>
+                    </EditImageWrapper>
 
                     <EditWrapper isEditor={isEditor} contentTag={"footer-text"} refreshContent={refreshContent}>
                       {renderContent('footer-text', hasContent, getContentByTag, 'Your trusted partner for exploring Rome')}
@@ -203,9 +223,19 @@ const Footer = () => {
                         {renderContent('footer-payment-methods-title', hasContent, getContentByTag, 'Payment Methods')}
                     </EditWrapper>
                     
-                    <div className="flex space-x-4">
-                        <img src={paymentMethods} alt="Payment Methods" className="h-6" />
-                    </div>
+                    <EditImageWrapper
+                        isEditor={isEditor}
+                        uniqueTag="footer-payment-methods"
+                        refreshContent={refreshContent}
+                    >
+                        <div className="flex space-x-4">
+                            <img 
+                                src={paymentImageUrl} 
+                                alt={paymentImageData?.image?.alt_text || "Payment Methods"} 
+                                className="h-6" 
+                            />
+                        </div>
+                    </EditImageWrapper>
                 </div>
             </div>
 
