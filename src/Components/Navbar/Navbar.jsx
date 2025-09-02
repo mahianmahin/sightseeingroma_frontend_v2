@@ -10,6 +10,10 @@ import { HiOutlineLogout } from "react-icons/hi";
 import { FaUser } from "react-icons/fa";
 import { FiMenu } from "react-icons/fi";
 import logo from "../../assets/Logo.png";
+import EditImageWrapper from "../Edit_Wrapper/EditImageWrapper";
+import useStaticContent from "../../hooks/useStaticContent";
+import useEditorCheck from "../../hooks/useEditorCheck";
+import { baseUrlHashless } from "../../utilities/Utilities";
 
 import { useState, useEffect, useRef } from "react";
 import useAuthenticate from "../../hooks/seAuthenticate";
@@ -23,6 +27,14 @@ const Navbar = () => {
 
     // Hook to check if user is authenticated
     useAuthenticate(setIsLoggedIn);
+
+    // Static content and editor hooks
+    const { isEditor } = useEditorCheck();
+    const { getImageByTag, refreshContent } = useStaticContent('navbar');
+
+    // Get navbar logo from static content or fallback to imported logo
+    const navbarLogoData = getImageByTag ? getImageByTag('navbar-logo') : null;
+    const navbarLogoUrl = navbarLogoData?.image?.file ? `${baseUrlHashless}${navbarLogoData.image.file}` : logo;
 
     // Logout function
     async function logout() {
@@ -78,7 +90,13 @@ const Navbar = () => {
                             <Link to={"/"}>
                                 
                                 <div className="w-full flex justify-center items-center">
-                                    <img src={logo} alt="Logo" className="w-24 h-auto sm:w-28 md:w-32 lg:w-36 xl:w-40 min-w-16 max-w-xs"/>
+                                    <EditImageWrapper
+                                        isEditor={isEditor}
+                                        uniqueTag="navbar-logo"
+                                        refreshContent={refreshContent}
+                                    >
+                                        <img src={navbarLogoUrl} alt="Logo" className="w-24 h-auto sm:w-28 md:w-32 lg:w-36 xl:w-40 min-w-16 max-w-xs"/>
+                                    </EditImageWrapper>
                                 </div>
 
                                 
@@ -141,11 +159,17 @@ const Navbar = () => {
                 <div className="container mx-auto w-full">
                     <div className="md:hidden hidden lg:block">
                         <Link to={"/"}>
-                            <img
-                                src={logo}
-                                alt="Logo"
-                                className="w-16 md:w-36 pl-0 md:pl-5"
-                            />
+                            <EditImageWrapper
+                                isEditor={isEditor}
+                                uniqueTag="navbar-logo"
+                                refreshContent={refreshContent}
+                            >
+                                <img
+                                    src={navbarLogoUrl}
+                                    alt="Logo"
+                                    className="w-16 md:w-36 pl-0 md:pl-5"
+                                />
+                            </EditImageWrapper>
                         </Link>
                     </div>
 
