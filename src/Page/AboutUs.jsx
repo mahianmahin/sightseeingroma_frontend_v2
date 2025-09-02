@@ -1,11 +1,12 @@
 import Banner2 from "../Components/Banner2/Banner2";
 import EditWrapper from "../Components/Edit_Wrapper/EditWrapper";
+import EditImageWrapper from "../Components/Edit_Wrapper/EditImageWrapper";
 import AboutUsImage from "../assets/new/About-Us.jpg";
 import useEditorCheck from "../hooks/useEditorCheck";
 import useStaticContent from "../hooks/useStaticContent";
 import renderContent from "../utilities/renderContent";
 import { useState, useEffect } from "react";
-import { baseUrl } from "../utilities/Utilities";
+import { baseUrl, baseUrlHashless } from "../utilities/Utilities";
 
 const AboutUs = () => {
     const [contactData, setContactData] = useState({
@@ -41,7 +42,11 @@ const AboutUs = () => {
     }, []);
 
     const { isEditor } = useEditorCheck();
-    const { getContentByTag, hasContent, refreshContent } = useStaticContent('about-us');
+    const { getContentByTag, getImageByTag, hasContent, refreshContent } = useStaticContent('about-us');
+
+    // Get banner image from static content or fallback to imported image
+    const bannerImageData = getImageByTag ? getImageByTag('about-us-banner-image') : null;
+    const bannerImageUrl = bannerImageData?.image?.file ? `${baseUrlHashless}${bannerImageData.image.file}` : AboutUsImage;
 
     // Function to replace template variables in content
     const replaceTemplateVariables = (content) => {
@@ -64,15 +69,21 @@ const AboutUs = () => {
     return (
         <div className="container mx-auto">
             {/* Banner */}
-            <Banner2 bannerImgmd={AboutUsImage} bannerImgsm={AboutUsImage} opacity={0.5}>
-                <EditWrapper isEditor={isEditor} contentTag={"about-us-title"} refreshContent={refreshContent}>
-                    {renderContent('about-us-title', hasContent, getContentByTag, 'About Us')}
-                </EditWrapper>
+            <EditImageWrapper
+                isEditor={isEditor}
+                uniqueTag="about-us-banner-image"
+                refreshContent={refreshContent}
+            >
+                <Banner2 bannerImgmd={bannerImageUrl} bannerImgsm={bannerImageUrl} opacity={0.5}>
+                    <EditWrapper isEditor={isEditor} contentTag={"about-us-title"} refreshContent={refreshContent}>
+                        {renderContent('about-us-title', hasContent, getContentByTag, 'About Us')}
+                    </EditWrapper>
 
-                <EditWrapper isEditor={isEditor} contentTag={"about-us-subtitle"} refreshContent={refreshContent}>
-                    {renderContent('about-us-subtitle', hasContent, getContentByTag)}
-                </EditWrapper>
-            </Banner2>
+                    <EditWrapper isEditor={isEditor} contentTag={"about-us-subtitle"} refreshContent={refreshContent}>
+                        {renderContent('about-us-subtitle', hasContent, getContentByTag)}
+                    </EditWrapper>
+                </Banner2>
+            </EditImageWrapper>
 
             {/* Content Section */}
             <div className="my-14 grid grid-cols-1 lg:grid-cols-1 gap-12 items-center  md:pl-14  px-5">

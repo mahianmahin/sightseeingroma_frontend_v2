@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { baseMediaUrl, baseUrl, baseUrlHashless } from '../utilities/Utilities';
 import PurchasedTicketImage from "../assets/new/Purchased-Tickets-Section.jpg";
 import EditWrapper from '../Components/Edit_Wrapper/EditWrapper';
+import EditImageWrapper from '../Components/Edit_Wrapper/EditImageWrapper';
 import useEditorCheck from '../hooks/useEditorCheck';
 import useStaticContent from '../hooks/useStaticContent';
 import renderContent from '../utilities/renderContent.jsx';
@@ -52,22 +53,32 @@ const Your_Purchased_Tickets = () => {
 
 
     const { isEditor } = useEditorCheck();
-    const { getContentByTag, hasContent, refreshContent } = useStaticContent('purchase-history');
+    const { getContentByTag, getImageByTag, hasContent, refreshContent } = useStaticContent('purchase-history');
+
+    // Get banner image from static content or fallback to imported image
+    const bannerImageData = getImageByTag ? getImageByTag('purchased-tickets-banner-image') : null;
+    const bannerImageUrl = bannerImageData?.image?.file ? `${baseUrlHashless}${bannerImageData.image.file}` : PurchasedTicketImage;
 
     return (
         <div className="min-h-screen bg-[#F2F2F7]">
-            <Banner2 bannerImgmd={PurchasedTicketImage} bannerImgsm={PurchasedTicketImage}>
-                
-                <EditWrapper isEditor={isEditor} contentTag={"purchase-history-title"} refreshContent={refreshContent}>
-                    {renderContent('purchase-history-title', hasContent, getContentByTag, 'Your Purchased Tickets')}
-                </EditWrapper>
+            <EditImageWrapper
+                isEditor={isEditor}
+                uniqueTag="purchased-tickets-banner-image"
+                refreshContent={refreshContent}
+            >
+                <Banner2 bannerImgmd={bannerImageUrl} bannerImgsm={bannerImageUrl}>
+                    
+                    <EditWrapper isEditor={isEditor} contentTag={"purchase-history-title"} refreshContent={refreshContent}>
+                        {renderContent('purchase-history-title', hasContent, getContentByTag, 'Your Purchased Tickets')}
+                    </EditWrapper>
 
-                <EditWrapper isEditor={isEditor} contentTag={"purchase-history-subtitle"} refreshContent={refreshContent}>
-                    {renderContent('purchase-history-subtitle', hasContent, getContentByTag, 'View and manage your ticket purchases')}
-                </EditWrapper>
+                    <EditWrapper isEditor={isEditor} contentTag={"purchase-history-subtitle"} refreshContent={refreshContent}>
+                        {renderContent('purchase-history-subtitle', hasContent, getContentByTag, 'View and manage your ticket purchases')}
+                    </EditWrapper>
 
-                
-            </Banner2>
+                    
+                </Banner2>
+            </EditImageWrapper>
 
             <div className="container mx-auto px-4 py-8 md:py-12">
                 {/* Stats Section */}

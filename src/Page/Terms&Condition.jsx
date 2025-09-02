@@ -1,11 +1,12 @@
 import Banner2 from './../Components/Banner2/Banner2';
 import TermsConditionImage from "../assets/new/Terms-&-Conditions.jpg";
 import { useState, useEffect } from "react";
-import { baseUrl } from "../utilities/Utilities";
+import { baseUrl, baseUrlHashless } from "../utilities/Utilities";
 import useEditorCheck from '../hooks/useEditorCheck';
 import useStaticContent from '../hooks/useStaticContent';
 import renderContent from '../utilities/renderContent.jsx';
 import EditWrapper from '../Components/Edit_Wrapper/EditWrapper';
+import EditImageWrapper from '../Components/Edit_Wrapper/EditImageWrapper';
 import { render } from 'react-dom';
 
 const TermsCondition = () => {
@@ -42,7 +43,11 @@ const TermsCondition = () => {
     }, []);
 
     const { isEditor } = useEditorCheck();
-    const { getContentByTag, hasContent, refreshContent } = useStaticContent('terms-conditions');
+    const { getContentByTag, getImageByTag, hasContent, refreshContent } = useStaticContent('terms-conditions');
+
+    // Get banner image from static content or fallback to imported image
+    const bannerImageData = getImageByTag ? getImageByTag('terms-conditions-banner-image') : null;
+    const bannerImageUrl = bannerImageData?.image?.file ? `${baseUrlHashless}${bannerImageData.image.file}` : TermsConditionImage;
 
     // Function to replace template variables in content
     const replaceTemplateVariables = (content) => {
@@ -65,15 +70,21 @@ const TermsCondition = () => {
     return (
         <div className="container mx-auto">
             {/* Banner Section */}
-            <Banner2 bannerImgmd={TermsConditionImage} bannerImgsm={TermsConditionImage} >
-                <EditWrapper isEditor={isEditor} contentTag={"terms-conditions-title"} refreshContent={refreshContent}>
-                    {renderContent('terms-conditions-title', hasContent, getContentByTag, 'Terms & Conditions')}
-                </EditWrapper>
+            <EditImageWrapper
+                isEditor={isEditor}
+                uniqueTag="terms-conditions-banner-image"
+                refreshContent={refreshContent}
+            >
+                <Banner2 bannerImgmd={bannerImageUrl} bannerImgsm={bannerImageUrl} >
+                    <EditWrapper isEditor={isEditor} contentTag={"terms-conditions-title"} refreshContent={refreshContent}>
+                        {renderContent('terms-conditions-title', hasContent, getContentByTag, 'Terms & Conditions')}
+                    </EditWrapper>
 
-                <EditWrapper isEditor={isEditor} contentTag={"terms-conditions-subtitle"} refreshContent={refreshContent}>
-                    {renderContent('terms-conditions-subtitle', hasContent, getContentByTag)}
-                </EditWrapper>
-            </Banner2>
+                    <EditWrapper isEditor={isEditor} contentTag={"terms-conditions-subtitle"} refreshContent={refreshContent}>
+                        {renderContent('terms-conditions-subtitle', hasContent, getContentByTag)}
+                    </EditWrapper>
+                </Banner2>
+            </EditImageWrapper>
 
             {/* Terms & Conditions Content */}
             <EditWrapper isEditor={isEditor} contentTag={"terms-conditions-page-content"} refreshContent={refreshContent}>

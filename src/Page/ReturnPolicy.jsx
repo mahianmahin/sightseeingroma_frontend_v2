@@ -1,11 +1,12 @@
 import Banner2 from './../Components/Banner2/Banner2';
 import ReturnImage from "../assets/new/Return-Policy.jpg";
 import { useState, useEffect } from "react";
-import { baseUrl } from "../utilities/Utilities";
+import { baseUrl, baseUrlHashless } from "../utilities/Utilities";
 import renderContent from '../utilities/renderContent';
 import useStaticContent from '../hooks/useStaticContent';
 import useEditorCheck from '../hooks/useEditorCheck';
 import EditWrapper from '../Components/Edit_Wrapper/EditWrapper';
+import EditImageWrapper from '../Components/Edit_Wrapper/EditImageWrapper';
 
 const ReturnPolicy = () => {
     const [contactData, setContactData] = useState({
@@ -41,7 +42,11 @@ const ReturnPolicy = () => {
     }, []);
 
     const { isEditor } = useEditorCheck();
-    const { getContentByTag, hasContent, refreshContent } = useStaticContent('return-policy');
+    const { getContentByTag, getImageByTag, hasContent, refreshContent } = useStaticContent('return-policy');
+
+    // Get banner image from static content or fallback to imported image
+    const bannerImageData = getImageByTag ? getImageByTag('return-policy-banner-image') : null;
+    const bannerImageUrl = bannerImageData?.image?.file ? `${baseUrlHashless}${bannerImageData.image.file}` : ReturnImage;
 
     // Function to replace template variables in content
     const replaceTemplateVariables = (content) => {
@@ -64,15 +69,21 @@ const ReturnPolicy = () => {
     return (
         <div className="container mx-auto ">
             {/* Banner Section */}
-            <Banner2 bannerImgmd={ReturnImage} bannerImgsm={ReturnImage} opacity={0.5} >
-                <EditWrapper isEditor={isEditor} contentTag={"return-policy-title"} refreshContent={refreshContent}>
-                    {renderContent('return-policy-title', hasContent, getContentByTag, 'Return Policy')}
-                </EditWrapper>
+            <EditImageWrapper
+                isEditor={isEditor}
+                uniqueTag="return-policy-banner-image"
+                refreshContent={refreshContent}
+            >
+                <Banner2 bannerImgmd={bannerImageUrl} bannerImgsm={bannerImageUrl} opacity={0.5} >
+                    <EditWrapper isEditor={isEditor} contentTag={"return-policy-title"} refreshContent={refreshContent}>
+                        {renderContent('return-policy-title', hasContent, getContentByTag, 'Return Policy')}
+                    </EditWrapper>
 
-                <EditWrapper isEditor={isEditor} contentTag={"return-policy-subtitle"} refreshContent={refreshContent}>
-                    {renderContent('return-policy-subtitle', hasContent, getContentByTag)}
-                </EditWrapper>
-            </Banner2>
+                    <EditWrapper isEditor={isEditor} contentTag={"return-policy-subtitle"} refreshContent={refreshContent}>
+                        {renderContent('return-policy-subtitle', hasContent, getContentByTag)}
+                    </EditWrapper>
+                </Banner2>
+            </EditImageWrapper>
             
             {/* Content Section */}
             <div className="my-8 space-y-6 py-3 md:py-5 px-5 md:px-8 md:pr-40">
