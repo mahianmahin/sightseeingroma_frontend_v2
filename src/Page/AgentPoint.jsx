@@ -5,11 +5,12 @@ import useEditorCheck from '../hooks/useEditorCheck';
 import useStaticContent from '../hooks/useStaticContent';
 import EditWrapper from '../Components/Edit_Wrapper/EditWrapper';
 import EditImageWrapper from '../Components/Edit_Wrapper/EditImageWrapper';
+import EditPanelSheet from '../Components/EditPanel/EditPanelSheet';
 import renderContent from '../utilities/renderContent.jsx';
 import { baseUrlHashless } from '../utilities/Utilities';
 
 const AgentPoint = () => {
-    const { isEditor } = useEditorCheck();
+    const { isEditor, error } = useEditorCheck();
     const { getContentByTag, getImageByTag, hasContent, refreshContent } = useStaticContent('agent-point');
     
     // Get banner image from static content or fallback to imported image
@@ -18,8 +19,8 @@ const AgentPoint = () => {
     
     return ( <>
         <HelmetWrapper title="Agent Point—Book Tickets & Get Travel Advice | Sightseeing Roma" description="Visit our Agent Points in Rome to easily book bus tour tickets, receive local travel advice, and access exclusive deals with Sightseeing Roma." />
-        <div className="container mx-auto ">
-            {/* Banner Section */}
+        <EditPanelSheet isEditor={isEditor} error={error} page="Agent Point" refreshContent={refreshContent} />
+        <div className="container mx-auto ">{/* Banner Section */}
             <EditImageWrapper
                 isEditor={isEditor}
                 uniqueTag="agent-point-banner-image"

@@ -7,6 +7,7 @@ import { baseMediaUrl, baseUrl, baseUrlHashless } from '../utilities/Utilities';
 import PurchasedTicketImage from "../assets/new/Purchased-Tickets-Section.jpg";
 import EditWrapper from '../Components/Edit_Wrapper/EditWrapper';
 import EditImageWrapper from '../Components/Edit_Wrapper/EditImageWrapper';
+import EditPanelSheet from '../Components/EditPanel/EditPanelSheet';
 import useEditorCheck from '../hooks/useEditorCheck';
 import useStaticContent from '../hooks/useStaticContent';
 import renderContent from '../utilities/renderContent.jsx';
@@ -52,7 +53,7 @@ const Your_Purchased_Tickets = () => {
     }, [navigate]);
 
 
-    const { isEditor } = useEditorCheck();
+    const { isEditor, error: editorError } = useEditorCheck();
     const { getContentByTag, getImageByTag, hasContent, refreshContent } = useStaticContent('purchase-history');
 
     // Get banner image from static content or fallback to imported image
@@ -61,6 +62,7 @@ const Your_Purchased_Tickets = () => {
 
     return (
         <div className="min-h-screen bg-[#F2F2F7]">
+            <EditPanelSheet isEditor={isEditor} error={editorError} page="purchase-history" refreshContent={refreshContent} />
             <EditImageWrapper
                 isEditor={isEditor}
                 uniqueTag="purchased-tickets-banner-image"

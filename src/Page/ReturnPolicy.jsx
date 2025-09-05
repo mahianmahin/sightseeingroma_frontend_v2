@@ -7,6 +7,7 @@ import useStaticContent from '../hooks/useStaticContent';
 import useEditorCheck from '../hooks/useEditorCheck';
 import EditWrapper from '../Components/Edit_Wrapper/EditWrapper';
 import EditImageWrapper from '../Components/Edit_Wrapper/EditImageWrapper';
+import EditPanelSheet from '../Components/EditPanel/EditPanelSheet';
 
 const ReturnPolicy = () => {
     const [contactData, setContactData] = useState({
@@ -41,7 +42,7 @@ const ReturnPolicy = () => {
         fetchContactData();
     }, []);
 
-    const { isEditor } = useEditorCheck();
+    const { isEditor, error } = useEditorCheck();
     const { getContentByTag, getImageByTag, hasContent, refreshContent } = useStaticContent('return-policy');
 
     // Get banner image from static content or fallback to imported image
@@ -68,6 +69,7 @@ const ReturnPolicy = () => {
 
     return (
         <div className="container mx-auto ">
+            <EditPanelSheet isEditor={isEditor} error={error} page="return-policy" refreshContent={refreshContent} />
             {/* Banner Section */}
             <EditImageWrapper
                 isEditor={isEditor}

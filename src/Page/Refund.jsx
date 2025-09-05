@@ -6,6 +6,7 @@ import useEditorCheck from '../hooks/useEditorCheck';
 import useStaticContent from '../hooks/useStaticContent';
 import EditWrapper from '../Components/Edit_Wrapper/EditWrapper';
 import EditImageWrapper from '../Components/Edit_Wrapper/EditImageWrapper';
+import EditPanelSheet from '../Components/EditPanel/EditPanelSheet';
 import renderContent from '../utilities/renderContent';
 
 const Refund = () => {
@@ -41,7 +42,7 @@ const Refund = () => {
         fetchContactData();
     }, []);
 
-    const { isEditor } = useEditorCheck();
+    const { isEditor, error } = useEditorCheck();
     const { getContentByTag, getImageByTag, hasContent, refreshContent } = useStaticContent('refund-policy');
 
     // Get banner image from static content or fallback to imported image
@@ -68,6 +69,7 @@ const Refund = () => {
 
     return (
         <div className="container mx-auto ">
+            <EditPanelSheet isEditor={isEditor} error={error} page="refund-policy" refreshContent={refreshContent} />
             {/* Banner Section */}
             <EditImageWrapper
                 isEditor={isEditor}

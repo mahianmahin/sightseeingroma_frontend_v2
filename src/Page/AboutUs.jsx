@@ -1,6 +1,7 @@
 import Banner2 from "../Components/Banner2/Banner2";
 import EditWrapper from "../Components/Edit_Wrapper/EditWrapper";
 import EditImageWrapper from "../Components/Edit_Wrapper/EditImageWrapper";
+import EditPanelSheet from "../Components/EditPanel/EditPanelSheet";
 import AboutUsImage from "../assets/new/About-Us.jpg";
 import useEditorCheck from "../hooks/useEditorCheck";
 import useStaticContent from "../hooks/useStaticContent";
@@ -41,7 +42,7 @@ const AboutUs = () => {
         fetchContactData();
     }, []);
 
-    const { isEditor } = useEditorCheck();
+    const { isEditor, error } = useEditorCheck();
     const { getContentByTag, getImageByTag, hasContent, refreshContent } = useStaticContent('about-us');
 
     // Get banner image from static content or fallback to imported image
@@ -68,6 +69,7 @@ const AboutUs = () => {
 
     return (
         <div className="container mx-auto">
+            <EditPanelSheet isEditor={isEditor} error={error} page="about-us" refreshContent={refreshContent} />
             {/* Banner */}
             <EditImageWrapper
                 isEditor={isEditor}

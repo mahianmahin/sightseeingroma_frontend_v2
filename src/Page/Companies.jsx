@@ -12,6 +12,7 @@ import { useParams } from "react-router-dom";
 import useStaticContent from "../hooks/useStaticContent";
 import EditWrapper from "../Components/Edit_Wrapper/EditWrapper";
 import EditImageWrapper from "../Components/Edit_Wrapper/EditImageWrapper";
+import EditPanelSheet from "../Components/EditPanel/EditPanelSheet";
 import useEditorCheck from "../hooks/useEditorCheck";
 import renderContent from "../utilities/renderContent";
 
@@ -40,8 +41,8 @@ const Companies = () => {
         scrollToTop();
     }, [companyName]);
 
-    const { isEditor } = useEditorCheck();
-    const { getContentByTag, getImageByTag, hasContent, refreshContent, loading, error } = useStaticContent(companySlug);
+    const { isEditor, error } = useEditorCheck();
+    const { getContentByTag, getImageByTag, hasContent, refreshContent, loading, error: contentError } = useStaticContent(companySlug);
 
     // Mapping of company slugs to their banner image unique tags and fallback images
     const companyImageConfig = {
@@ -112,6 +113,7 @@ const Companies = () => {
     return (
         <>
             <HelmetWrapper title="Explore Rome with Big Bus | Book Tickets at Sightseeing Roma" description="Explore Rome with Big Bus hop-on hop-off tours. Choose from 24h, 48h, or 72h tickets, Travel in style, enjoy panoramic views, and discover top landmarks." />
+            <EditPanelSheet isEditor={isEditor} error={error} page={companySlug} refreshContent={refreshContent} />
             <div className="container mx-auto">
                 {/* Full-width responsive image */}
                 <EditImageWrapper isEditor={isEditor} uniqueTag={currentImageConfig.uniqueTag} refreshContent={handleImageRefresh}>

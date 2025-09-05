@@ -7,6 +7,7 @@ import useStaticContent from '../hooks/useStaticContent';
 import renderContent from '../utilities/renderContent.jsx';
 import EditWrapper from '../Components/Edit_Wrapper/EditWrapper';
 import EditImageWrapper from '../Components/Edit_Wrapper/EditImageWrapper';
+import EditPanelSheet from '../Components/EditPanel/EditPanelSheet';
 import { render } from 'react-dom';
 
 const TermsCondition = () => {
@@ -42,7 +43,7 @@ const TermsCondition = () => {
         fetchContactData();
     }, []);
 
-    const { isEditor } = useEditorCheck();
+    const { isEditor, error } = useEditorCheck();
     const { getContentByTag, getImageByTag, hasContent, refreshContent } = useStaticContent('terms-conditions');
 
     // Get banner image from static content or fallback to imported image
@@ -69,6 +70,7 @@ const TermsCondition = () => {
 
     return (
         <div className="container mx-auto">
+            <EditPanelSheet isEditor={isEditor} error={error} page="terms-conditions" refreshContent={refreshContent} />
             {/* Banner Section */}
             <EditImageWrapper
                 isEditor={isEditor}
