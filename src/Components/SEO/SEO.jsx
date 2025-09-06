@@ -62,7 +62,7 @@ const SEO = ({ staticContentData, defaultTitle = "Sightseeing Roma", defaultDesc
             {keywords && <meta name="keywords" content={keywords} />}
             
             {/* Canonical URL */}
-            <link rel="canonical" href={canonicalUrl} />
+            {/* <link rel="canonical" href={canonicalUrl} /> */}
             
             {/* Open Graph Meta Tags */}
             <meta property="og:title" content={title} />

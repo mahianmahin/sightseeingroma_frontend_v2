@@ -20,7 +20,7 @@ const Home = () => {
     return (
         <>
             <SEO staticContentData={staticContentData} />
-            <EditPanelSheet isEditor={isEditor} error={error} page="home" refreshContent={refreshContent} />
+            <EditPanelSheet isEditor={isEditor} error={error} page="home-page" refreshContent={refreshContent} metaInfo={staticContentData?.pageData} />
             <div>
                 <div className="">
 
