@@ -15,6 +15,7 @@ import EditImageWrapper from "../Components/Edit_Wrapper/EditImageWrapper";
 import EditPanelSheet from "../Components/EditPanel/EditPanelSheet";
 import useEditorCheck from "../hooks/useEditorCheck";
 import renderContent from "../utilities/renderContent";
+import SEO from '../Components/SEO/SEO';
 
 const Companies = () => {
     const [busPackages, setBusPackages] = useState([]);
@@ -113,7 +114,8 @@ const Companies = () => {
     return (
         <>
             <HelmetWrapper title="Explore Rome with Big Bus | Book Tickets at Sightseeing Roma" description="Explore Rome with Big Bus hop-on hop-off tours. Choose from 24h, 48h, or 72h tickets, Travel in style, enjoy panoramic views, and discover top landmarks." />
-            <EditPanelSheet isEditor={isEditor} error={error} page={companySlug} refreshContent={refreshContent} />
+            <SEO staticContentData={staticContentData} />
+            <EditPanelSheet isEditor={isEditor} error={error} page={companySlug} refreshContent={refreshContent} metaInfo={staticContentData?.pageData} />
             <div className="container mx-auto">
                 {/* Full-width responsive image */}
                 <EditImageWrapper isEditor={isEditor} uniqueTag={currentImageConfig.uniqueTag} refreshContent={handleImageRefresh}>

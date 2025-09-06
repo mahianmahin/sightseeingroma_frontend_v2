@@ -8,6 +8,7 @@ import useStaticContent from "../hooks/useStaticContent";
 import renderContent from "../utilities/renderContent";
 import { useState, useEffect } from "react";
 import { baseUrl, baseUrlHashless } from "../utilities/Utilities";
+import SEO from '../Components/SEO/SEO';
 
 const AboutUs = () => {
     const [contactData, setContactData] = useState({
@@ -15,7 +16,6 @@ const AboutUs = () => {
         email: "hello@sightseeingroma.com",
         address: "Via Antonio Fogazzaro, 5, cap–00137, Roma, Italy"
     });
-    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchContactData = async () => {
@@ -34,8 +34,6 @@ const AboutUs = () => {
             } catch (error) {
                 console.error("Error fetching contact data:", error);
                 // Keep fallback values if API fails
-            } finally {
-                setLoading(false);
             }
         };
 
@@ -43,7 +41,8 @@ const AboutUs = () => {
     }, []);
 
     const { isEditor, error } = useEditorCheck();
-    const { getContentByTag, getImageByTag, hasContent, refreshContent } = useStaticContent('about-us');
+    const staticContentData = useStaticContent('about-us');
+    const { getContentByTag, getImageByTag, hasContent, loading, refreshContent } = staticContentData;
 
     // Get banner image from static content or fallback to imported image
     const bannerImageData = getImageByTag ? getImageByTag('about-us-banner-image') : null;
@@ -68,57 +67,60 @@ const AboutUs = () => {
     };
 
     return (
-        <div className="container mx-auto">
-            <EditPanelSheet isEditor={isEditor} error={error} page="about-us" refreshContent={refreshContent} />
-            {/* Banner */}
-            <EditImageWrapper
-                isEditor={isEditor}
-                uniqueTag="about-us-banner-image"
-                refreshContent={refreshContent}
-            >
-                <Banner2 bannerImgmd={bannerImageUrl} bannerImgsm={bannerImageUrl} opacity={0.5}>
-                    <EditWrapper isEditor={isEditor} contentTag={"about-us-title"} refreshContent={refreshContent}>
-                        {renderContent('about-us-title', hasContent, getContentByTag, 'About Us')}
+        <>
+            <SEO staticContentData={staticContentData} />
+            <div className="container mx-auto">
+                <EditPanelSheet isEditor={isEditor} error={error} page="about-us" refreshContent={refreshContent} metaInfo={staticContentData?.pageData} />
+                {/* Banner */}
+                <EditImageWrapper
+                    isEditor={isEditor}
+                    uniqueTag="about-us-banner-image"
+                    refreshContent={refreshContent}
+                >
+                    <Banner2 bannerImgmd={bannerImageUrl} bannerImgsm={bannerImageUrl} opacity={0.5}>
+                        <EditWrapper isEditor={isEditor} contentTag={"about-us-title"} refreshContent={refreshContent}>
+                            {renderContent('about-us-title', hasContent, getContentByTag, 'About Us')}
+                        </EditWrapper>
+
+                        <EditWrapper isEditor={isEditor} contentTag={"about-us-subtitle"} refreshContent={refreshContent}>
+                            {renderContent('about-us-subtitle', hasContent, getContentByTag)}
+                        </EditWrapper>
+                    </Banner2>
+                </EditImageWrapper>
+
+                {/* Content Section */}
+                <div className="my-14 grid grid-cols-1 lg:grid-cols-1 gap-12 items-center  md:pl-14  px-5">
+                    
+                    <EditWrapper isEditor={isEditor} contentTag={"about-us-page-content"} refreshContent={refreshContent}>
+                        {loading ? (
+                            <div className="space-y-4">
+                                <div className="h-8 bg-gray-200 rounded animate-pulse w-3/4"></div>
+                                <div className="h-4 bg-gray-200 rounded animate-pulse w-full"></div>
+                                <div className="h-4 bg-gray-200 rounded animate-pulse w-5/6"></div>
+                                <div className="h-6 bg-gray-200 rounded animate-pulse w-1/2 mt-8"></div>
+                                <div className="h-4 bg-gray-200 rounded animate-pulse w-full"></div>
+                                <div className="h-4 bg-gray-200 rounded animate-pulse w-4/5"></div>
+                            </div>
+                        ) : (
+                            <div dangerouslySetInnerHTML={{ 
+                                __html: replaceTemplateVariables(
+                                    getRawContent('about-us-page-content', '')
+                                ) 
+                            }} />
+                        )}
                     </EditWrapper>
 
-                    <EditWrapper isEditor={isEditor} contentTag={"about-us-subtitle"} refreshContent={refreshContent}>
-                        {renderContent('about-us-subtitle', hasContent, getContentByTag)}
-                    </EditWrapper>
-                </Banner2>
-            </EditImageWrapper>
-
-            {/* Content Section */}
-            <div className="my-14 grid grid-cols-1 lg:grid-cols-1 gap-12 items-center  md:pl-14  px-5">
-                
-                <EditWrapper isEditor={isEditor} contentTag={"about-us-page-content"} refreshContent={refreshContent}>
-                    {loading ? (
-                        <div className="space-y-4">
-                            <div className="h-8 bg-gray-200 rounded animate-pulse w-3/4"></div>
-                            <div className="h-4 bg-gray-200 rounded animate-pulse w-full"></div>
-                            <div className="h-4 bg-gray-200 rounded animate-pulse w-5/6"></div>
-                            <div className="h-6 bg-gray-200 rounded animate-pulse w-1/2 mt-8"></div>
-                            <div className="h-4 bg-gray-200 rounded animate-pulse w-full"></div>
-                            <div className="h-4 bg-gray-200 rounded animate-pulse w-4/5"></div>
-                        </div>
-                    ) : (
-                        <div dangerouslySetInnerHTML={{ 
-                            __html: replaceTemplateVariables(
-                                getRawContent('about-us-page-content', '')
-                            ) 
-                        }} />
-                    )}
-                </EditWrapper>
-
-                {/* Image Section */}
-                {/* <div className="relative">
-                    <img
-                        src="/Banner/Frame.png"
-                        alt="Sightseeing Bus"
-                        className="rounded-lg hidden md:block w-full h-auto"
-                    />
-                </div> */}
+                    {/* Image Section */}
+                    {/* <div className="relative">
+                        <img
+                            src="/Banner/Frame.png"
+                            alt="Sightseeing Bus"
+                            className="rounded-lg hidden md:block w-full h-auto"
+                        />
+                    </div> */}
+                </div>
             </div>
-        </div>
+        </>
     );
 };
 

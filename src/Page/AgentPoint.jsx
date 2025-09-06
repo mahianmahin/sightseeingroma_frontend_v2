@@ -8,18 +8,20 @@ import EditImageWrapper from '../Components/Edit_Wrapper/EditImageWrapper';
 import EditPanelSheet from '../Components/EditPanel/EditPanelSheet';
 import renderContent from '../utilities/renderContent.jsx';
 import { baseUrlHashless } from '../utilities/Utilities';
+import SEO from '../Components/SEO/SEO';
 
 const AgentPoint = () => {
     const { isEditor, error } = useEditorCheck();
-    const { getContentByTag, getImageByTag, hasContent, refreshContent } = useStaticContent('agent-point');
-    
+    const staticContentData = useStaticContent('agent-point');
+    const { getContentByTag, getImageByTag, hasContent, loading, refreshContent } = staticContentData;
+
     // Get banner image from static content or fallback to imported image
     const bannerImageData = getImageByTag ? getImageByTag('agent-point-banner-image') : null;
     const bannerImageUrl = bannerImageData?.image?.file ? `${baseUrlHashless}${bannerImageData.image.file}` : AgentPointImage;
     
     return ( <>
-        <HelmetWrapper title="Agent Point—Book Tickets & Get Travel Advice | Sightseeing Roma" description="Visit our Agent Points in Rome to easily book bus tour tickets, receive local travel advice, and access exclusive deals with Sightseeing Roma." />
-        <EditPanelSheet isEditor={isEditor} error={error} page="Agent Point" refreshContent={refreshContent} />
+        <SEO staticContentData={staticContentData} />
+        <EditPanelSheet isEditor={isEditor} error={error} page="agent-point" refreshContent={refreshContent} metaInfo={staticContentData?.pageData} />
         <div className="container mx-auto ">{/* Banner Section */}
             <EditImageWrapper
                 isEditor={isEditor}

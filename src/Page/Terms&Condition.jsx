@@ -9,6 +9,7 @@ import EditWrapper from '../Components/Edit_Wrapper/EditWrapper';
 import EditImageWrapper from '../Components/Edit_Wrapper/EditImageWrapper';
 import EditPanelSheet from '../Components/EditPanel/EditPanelSheet';
 import { render } from 'react-dom';
+import SEO from '../Components/SEO/SEO';
 
 const TermsCondition = () => {
     const [contactData, setContactData] = useState({
@@ -16,7 +17,6 @@ const TermsCondition = () => {
         email: "hello@sightseeingroma.com",
         address: "Via Antonio Fogazzaro,5, cap-00137, Roma, Italy"
     });
-    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchContactData = async () => {
@@ -35,8 +35,6 @@ const TermsCondition = () => {
             } catch (error) {
                 console.error("Error fetching contact data:", error);
                 // Keep fallback values if API fails
-            } finally {
-                setLoading(false);
             }
         };
 
@@ -44,7 +42,8 @@ const TermsCondition = () => {
     }, []);
 
     const { isEditor, error } = useEditorCheck();
-    const { getContentByTag, getImageByTag, hasContent, refreshContent } = useStaticContent('terms-conditions');
+    const staticContentData = useStaticContent('terms-conditions');
+    const { getContentByTag, getImageByTag, hasContent, loading, refreshContent } = staticContentData;
 
     // Get banner image from static content or fallback to imported image
     const bannerImageData = getImageByTag ? getImageByTag('terms-conditions-banner-image') : null;
@@ -69,46 +68,49 @@ const TermsCondition = () => {
     };
 
     return (
-        <div className="container mx-auto">
-            <EditPanelSheet isEditor={isEditor} error={error} page="terms-conditions" refreshContent={refreshContent} />
-            {/* Banner Section */}
-            <EditImageWrapper
-                isEditor={isEditor}
-                uniqueTag="terms-conditions-banner-image"
-                refreshContent={refreshContent}
-            >
-                <Banner2 bannerImgmd={bannerImageUrl} bannerImgsm={bannerImageUrl} >
-                    <EditWrapper isEditor={isEditor} contentTag={"terms-conditions-title"} refreshContent={refreshContent}>
-                        {renderContent('terms-conditions-title', hasContent, getContentByTag, 'Terms & Conditions')}
-                    </EditWrapper>
+        <>
+            <SEO staticContentData={staticContentData} />
+            <EditPanelSheet isEditor={isEditor} error={error} page="terms-conditions" refreshContent={refreshContent} metaInfo={staticContentData?.pageData} />
+            <div className="container mx-auto">
+                {/* Banner Section */}
+                <EditImageWrapper
+                    isEditor={isEditor}
+                    uniqueTag="terms-conditions-banner-image"
+                    refreshContent={refreshContent}
+                >
+                    <Banner2 bannerImgmd={bannerImageUrl} bannerImgsm={bannerImageUrl} >
+                        <EditWrapper isEditor={isEditor} contentTag={"terms-conditions-title"} refreshContent={refreshContent}>
+                            {renderContent('terms-conditions-title', hasContent, getContentByTag, 'Terms & Conditions')}
+                        </EditWrapper>
 
-                    <EditWrapper isEditor={isEditor} contentTag={"terms-conditions-subtitle"} refreshContent={refreshContent}>
-                        {renderContent('terms-conditions-subtitle', hasContent, getContentByTag)}
-                    </EditWrapper>
-                </Banner2>
-            </EditImageWrapper>
+                        <EditWrapper isEditor={isEditor} contentTag={"terms-conditions-subtitle"} refreshContent={refreshContent}>
+                            {renderContent('terms-conditions-subtitle', hasContent, getContentByTag)}
+                        </EditWrapper>
+                    </Banner2>
+                </EditImageWrapper>
 
-            {/* Terms & Conditions Content */}
-            <EditWrapper isEditor={isEditor} contentTag={"terms-conditions-page-content"} refreshContent={refreshContent}>
-                {loading ? (
-                    <div className="px-5 md:px-8 md:pr-48 py-12">
-                        <div className="space-y-4">
-                            <div className="h-8 bg-gray-200 rounded animate-pulse w-3/4"></div>
-                            <div className="h-4 bg-gray-200 rounded animate-pulse w-full"></div>
-                            <div className="h-4 bg-gray-200 rounded animate-pulse w-5/6"></div>
-                            <div className="h-6 bg-gray-200 rounded animate-pulse w-1/2 mt-8"></div>
-                            <div className="h-4 bg-gray-200 rounded animate-pulse w-full"></div>
+                {/* Terms & Conditions Content */}
+                <EditWrapper isEditor={isEditor} contentTag={"terms-conditions-page-content"} refreshContent={refreshContent}>
+                    {loading ? (
+                        <div className="px-5 md:px-8 md:pr-48 py-12">
+                            <div className="space-y-4">
+                                <div className="h-8 bg-gray-200 rounded animate-pulse w-3/4"></div>
+                                <div className="h-4 bg-gray-200 rounded animate-pulse w-full"></div>
+                                <div className="h-4 bg-gray-200 rounded animate-pulse w-5/6"></div>
+                                <div className="h-6 bg-gray-200 rounded animate-pulse w-1/2 mt-8"></div>
+                                <div className="h-4 bg-gray-200 rounded animate-pulse w-full"></div>
+                            </div>
                         </div>
-                    </div>
-                ) : (
-                    <div dangerouslySetInnerHTML={{ 
-                        __html: replaceTemplateVariables(
-                            getRawContent('terms-conditions-page-content', '')
-                        ) 
-                    }} />
-                )}
-            </EditWrapper>
-        </div>
+                    ) : (
+                        <div dangerouslySetInnerHTML={{ 
+                            __html: replaceTemplateVariables(
+                                getRawContent('terms-conditions-page-content', '')
+                            ) 
+                        }} />
+                    )}
+                </EditWrapper>
+            </div>
+        </>
     );
 };
 

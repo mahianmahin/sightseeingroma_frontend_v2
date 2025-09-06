@@ -8,6 +8,7 @@ import EditWrapper from '../Components/Edit_Wrapper/EditWrapper';
 import EditImageWrapper from '../Components/Edit_Wrapper/EditImageWrapper';
 import EditPanelSheet from '../Components/EditPanel/EditPanelSheet';
 import renderContent from '../utilities/renderContent';
+import SEO from '../Components/SEO/SEO';
 
 const Refund = () => {
     const [contactData, setContactData] = useState({
@@ -15,7 +16,6 @@ const Refund = () => {
         email: "hello@sightseeingroma.com",
         address: "Via Antonio Fogazzaro, 5, cap–00137, Roma, Italy"
     });
-    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchContactData = async () => {
@@ -34,8 +34,6 @@ const Refund = () => {
             } catch (error) {
                 console.error("Error fetching contact data:", error);
                 // Keep fallback values if API fails
-            } finally {
-                setLoading(false);
             }
         };
 
@@ -43,7 +41,8 @@ const Refund = () => {
     }, []);
 
     const { isEditor, error } = useEditorCheck();
-    const { getContentByTag, getImageByTag, hasContent, refreshContent } = useStaticContent('refund-policy');
+    const staticContentData = useStaticContent('refund-policy');
+    const { getContentByTag, getImageByTag, hasContent, loading, refreshContent } = staticContentData;
 
     // Get banner image from static content or fallback to imported image
     const bannerImageData = getImageByTag ? getImageByTag('refund-policy-banner-image') : null;
@@ -68,47 +67,50 @@ const Refund = () => {
     };
 
     return (
-        <div className="container mx-auto ">
-            <EditPanelSheet isEditor={isEditor} error={error} page="refund-policy" refreshContent={refreshContent} />
-            {/* Banner Section */}
-            <EditImageWrapper
-                isEditor={isEditor}
-                uniqueTag="refund-policy-banner-image"
-                refreshContent={refreshContent}
-            >
-                <Banner2 bannerImgmd={bannerImageUrl} bannerImgsm={bannerImageUrl} opacity={0.5}>
-                    <EditWrapper isEditor={isEditor} contentTag={"refund-policy-title"} refreshContent={refreshContent}>
-                        {renderContent('refund-policy-title', hasContent, getContentByTag, 'Refund Policy')}
-                    </EditWrapper>
+        <>
+            <SEO staticContentData={staticContentData} />
+            <EditPanelSheet isEditor={isEditor} error={error} page="refund-policy" refreshContent={refreshContent} metaInfo={staticContentData?.pageData} />
+            <div className="container mx-auto ">
+                {/* Banner Section */}
+                <EditImageWrapper
+                    isEditor={isEditor}
+                    uniqueTag="refund-policy-banner-image"
+                    refreshContent={refreshContent}
+                >
+                    <Banner2 bannerImgmd={bannerImageUrl} bannerImgsm={bannerImageUrl} opacity={0.5}>
+                        <EditWrapper isEditor={isEditor} contentTag={"refund-policy-title"} refreshContent={refreshContent}>
+                            {renderContent('refund-policy-title', hasContent, getContentByTag, 'Refund Policy')}
+                        </EditWrapper>
 
-                    <EditWrapper isEditor={isEditor} contentTag={"refund-policy-subtitle"} refreshContent={refreshContent}>
-                        {renderContent('refund-policy-subtitle', hasContent, getContentByTag)}
+                        <EditWrapper isEditor={isEditor} contentTag={"refund-policy-subtitle"} refreshContent={refreshContent}>
+                            {renderContent('refund-policy-subtitle', hasContent, getContentByTag)}
+                        </EditWrapper>
+                    </Banner2>
+                </EditImageWrapper>
+                
+                {/* Content Section */}
+                <div className="my-8 space-y-6 px-5 md:px-8 md:pr-40 py-3 md:py-5">
+                    <EditWrapper isEditor={isEditor} contentTag={"refund-policy-page-content"} refreshContent={refreshContent}>
+                        {loading ? (
+                            <div className="space-y-4">
+                                <div className="h-8 bg-gray-200 rounded animate-pulse w-3/4"></div>
+                                <div className="h-4 bg-gray-200 rounded animate-pulse w-full"></div>
+                                <div className="h-4 bg-gray-200 rounded animate-pulse w-5/6"></div>
+                                <div className="h-6 bg-gray-200 rounded animate-pulse w-1/2 mt-8"></div>
+                                <div className="h-4 bg-gray-200 rounded animate-pulse w-full"></div>
+                                <div className="h-4 bg-gray-200 rounded animate-pulse w-4/5"></div>
+                            </div>
+                        ) : (
+                            <div dangerouslySetInnerHTML={{ 
+                                __html: replaceTemplateVariables(
+                                    getRawContent('refund-policy-page-content', '')
+                                ) 
+                            }} />
+                        )}
                     </EditWrapper>
-                </Banner2>
-            </EditImageWrapper>
-            
-            {/* Content Section */}
-            <div className="my-8 space-y-6 px-5 md:px-8 md:pr-40 py-3 md:py-5">
-                <EditWrapper isEditor={isEditor} contentTag={"refund-policy-page-content"} refreshContent={refreshContent}>
-                    {loading ? (
-                        <div className="space-y-4">
-                            <div className="h-8 bg-gray-200 rounded animate-pulse w-3/4"></div>
-                            <div className="h-4 bg-gray-200 rounded animate-pulse w-full"></div>
-                            <div className="h-4 bg-gray-200 rounded animate-pulse w-5/6"></div>
-                            <div className="h-6 bg-gray-200 rounded animate-pulse w-1/2 mt-8"></div>
-                            <div className="h-4 bg-gray-200 rounded animate-pulse w-full"></div>
-                            <div className="h-4 bg-gray-200 rounded animate-pulse w-4/5"></div>
-                        </div>
-                    ) : (
-                        <div dangerouslySetInnerHTML={{ 
-                            __html: replaceTemplateVariables(
-                                getRawContent('refund-policy-page-content', '')
-                            ) 
-                        }} />
-                    )}
-                </EditWrapper>
+                </div>
             </div>
-        </div>
+        </>
     );
 };
 

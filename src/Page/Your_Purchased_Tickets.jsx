@@ -11,6 +11,7 @@ import EditPanelSheet from '../Components/EditPanel/EditPanelSheet';
 import useEditorCheck from '../hooks/useEditorCheck';
 import useStaticContent from '../hooks/useStaticContent';
 import renderContent from '../utilities/renderContent.jsx';
+import SEO from '../Components/SEO/SEO';
 
 
 const Your_Purchased_Tickets = () => {
@@ -53,16 +54,18 @@ const Your_Purchased_Tickets = () => {
     }, [navigate]);
 
 
-    const { isEditor, error: editorError } = useEditorCheck();
-    const { getContentByTag, getImageByTag, hasContent, refreshContent } = useStaticContent('purchase-history');
+    const { isEditor } = useEditorCheck();
+    const staticContentData = useStaticContent('purchase-history');
+    const { getContentByTag, getImageByTag, hasContent, refreshContent } = staticContentData;
 
     // Get banner image from static content or fallback to imported image
     const bannerImageData = getImageByTag ? getImageByTag('purchased-tickets-banner-image') : null;
     const bannerImageUrl = bannerImageData?.image?.file ? `${baseUrlHashless}${bannerImageData.image.file}` : PurchasedTicketImage;
 
     return (
-        <div className="min-h-screen bg-[#F2F2F7]">
-            <EditPanelSheet isEditor={isEditor} error={editorError} page="purchase-history" refreshContent={refreshContent} />
+        <>
+            <SEO staticContentData={staticContentData} />
+            <EditPanelSheet isEditor={isEditor} error={error} page="purchase-history" refreshContent={refreshContent} metaInfo={staticContentData?.pageData} />
             <EditImageWrapper
                 isEditor={isEditor}
                 uniqueTag="purchased-tickets-banner-image"
@@ -350,7 +353,7 @@ const Your_Purchased_Tickets = () => {
                     </div>
                 )}
             </div>
-        </div>
+        </>
     );
 };
 

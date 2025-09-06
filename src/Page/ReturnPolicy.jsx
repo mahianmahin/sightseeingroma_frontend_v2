@@ -8,6 +8,7 @@ import useEditorCheck from '../hooks/useEditorCheck';
 import EditWrapper from '../Components/Edit_Wrapper/EditWrapper';
 import EditImageWrapper from '../Components/Edit_Wrapper/EditImageWrapper';
 import EditPanelSheet from '../Components/EditPanel/EditPanelSheet';
+import SEO from '../Components/SEO/SEO';
 
 const ReturnPolicy = () => {
     const [contactData, setContactData] = useState({
@@ -43,7 +44,8 @@ const ReturnPolicy = () => {
     }, []);
 
     const { isEditor, error } = useEditorCheck();
-    const { getContentByTag, getImageByTag, hasContent, refreshContent } = useStaticContent('return-policy');
+    const staticContentData = useStaticContent('return-policy');
+    const { getContentByTag, getImageByTag, hasContent, refreshContent } = staticContentData;
 
     // Get banner image from static content or fallback to imported image
     const bannerImageData = getImageByTag ? getImageByTag('return-policy-banner-image') : null;
@@ -68,47 +70,50 @@ const ReturnPolicy = () => {
     };
 
     return (
-        <div className="container mx-auto ">
-            <EditPanelSheet isEditor={isEditor} error={error} page="return-policy" refreshContent={refreshContent} />
-            {/* Banner Section */}
-            <EditImageWrapper
-                isEditor={isEditor}
-                uniqueTag="return-policy-banner-image"
-                refreshContent={refreshContent}
-            >
-                <Banner2 bannerImgmd={bannerImageUrl} bannerImgsm={bannerImageUrl} opacity={0.5} >
-                    <EditWrapper isEditor={isEditor} contentTag={"return-policy-title"} refreshContent={refreshContent}>
-                        {renderContent('return-policy-title', hasContent, getContentByTag, 'Return Policy')}
-                    </EditWrapper>
+        <>
+            <SEO staticContentData={staticContentData} />
+            <EditPanelSheet isEditor={isEditor} error={error} page="return-policy" refreshContent={refreshContent} metaInfo={staticContentData?.pageData} />
+            <div className="container mx-auto ">
+                {/* Banner Section */}
+                <EditImageWrapper
+                    isEditor={isEditor}
+                    uniqueTag="return-policy-banner-image"
+                    refreshContent={refreshContent}
+                >
+                    <Banner2 bannerImgmd={bannerImageUrl} bannerImgsm={bannerImageUrl} opacity={0.5} >
+                        <EditWrapper isEditor={isEditor} contentTag={"return-policy-title"} refreshContent={refreshContent}>
+                            {renderContent('return-policy-title', hasContent, getContentByTag, 'Return Policy')}
+                        </EditWrapper>
 
-                    <EditWrapper isEditor={isEditor} contentTag={"return-policy-subtitle"} refreshContent={refreshContent}>
-                        {renderContent('return-policy-subtitle', hasContent, getContentByTag)}
+                        <EditWrapper isEditor={isEditor} contentTag={"return-policy-subtitle"} refreshContent={refreshContent}>
+                            {renderContent('return-policy-subtitle', hasContent, getContentByTag)}
+                        </EditWrapper>
+                    </Banner2>
+                </EditImageWrapper>
+                
+                {/* Content Section */}
+                <div className="my-8 space-y-6 py-3 md:py-5 px-5 md:px-8 md:pr-40">
+                    <EditWrapper isEditor={isEditor} contentTag={"return-policy-page-content"} refreshContent={refreshContent}>
+                        {loading ? (
+                            <div className="space-y-4">
+                                <div className="h-8 bg-gray-200 rounded animate-pulse w-3/4"></div>
+                                <div className="h-4 bg-gray-200 rounded animate-pulse w-full"></div>
+                                <div className="h-4 bg-gray-200 rounded animate-pulse w-5/6"></div>
+                                <div className="h-6 bg-gray-200 rounded animate-pulse w-1/2 mt-8"></div>
+                                <div className="h-4 bg-gray-200 rounded animate-pulse w-full"></div>
+                                <div className="h-4 bg-gray-200 rounded animate-pulse w-4/5"></div>
+                            </div>
+                        ) : (
+                            <div dangerouslySetInnerHTML={{ 
+                                __html: replaceTemplateVariables(
+                                    getRawContent('return-policy-page-content', '')
+                                ) 
+                            }} />
+                        )}
                     </EditWrapper>
-                </Banner2>
-            </EditImageWrapper>
-            
-            {/* Content Section */}
-            <div className="my-8 space-y-6 py-3 md:py-5 px-5 md:px-8 md:pr-40">
-                <EditWrapper isEditor={isEditor} contentTag={"return-policy-page-content"} refreshContent={refreshContent}>
-                    {loading ? (
-                        <div className="space-y-4">
-                            <div className="h-8 bg-gray-200 rounded animate-pulse w-3/4"></div>
-                            <div className="h-4 bg-gray-200 rounded animate-pulse w-full"></div>
-                            <div className="h-4 bg-gray-200 rounded animate-pulse w-5/6"></div>
-                            <div className="h-6 bg-gray-200 rounded animate-pulse w-1/2 mt-8"></div>
-                            <div className="h-4 bg-gray-200 rounded animate-pulse w-full"></div>
-                            <div className="h-4 bg-gray-200 rounded animate-pulse w-4/5"></div>
-                        </div>
-                    ) : (
-                        <div dangerouslySetInnerHTML={{ 
-                            __html: replaceTemplateVariables(
-                                getRawContent('return-policy-page-content', '')
-                            ) 
-                        }} />
-                    )}
-                </EditWrapper>
+                </div>
             </div>
-        </div>
+        </>
     );
 };
 
