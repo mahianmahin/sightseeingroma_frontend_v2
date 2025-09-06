@@ -9,15 +9,17 @@ import HelmetWrapper from "../utilities/HelmetWrapper";
 import useEditorCheck from '../hooks/useEditorCheck';
 import EditPanelSheet from '../Components/EditPanel/EditPanelSheet';
 import useStaticContent from '../hooks/useStaticContent';
+import SEO from '../Components/SEO/SEO';
 
 const Home = () => {
     // Use the custom hook for editor check
     const { isEditor, error } = useEditorCheck();
-    const {getContentByTag, getImageByTag, hasContent, loading, refreshContent} = useStaticContent('home-page');
+    const staticContentData = useStaticContent('home-page');
+    const {getContentByTag, getImageByTag, hasContent, loading, refreshContent} = staticContentData;
 
     return (
         <>
-            <HelmetWrapper title="Sightseeing Roma | Hop-On Hop-Off Panoramic Open Bus Tour Ticket" description="Compare and book hop-on hop-off panoramic open bus tour tickets from top operators. Explore Rome's top sights at your own pace with flexible passes." />
+            <SEO staticContentData={staticContentData} />
             <EditPanelSheet isEditor={isEditor} error={error} page="home" refreshContent={refreshContent} />
             <div>
                 <div className="">
