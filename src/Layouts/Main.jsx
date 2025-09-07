@@ -4,6 +4,7 @@ import Footer from "../Components/Footer/Footer";
 import Navbar from "../Components/Navbar/Navbar";
 import { Toaster } from 'react-hot-toast';
 import { useState } from "react";
+import GlobalSEO from "../Components/GlobalSEO";
 
 const Main = () => {
 
@@ -16,6 +17,7 @@ const Main = () => {
 
     return (
         <div>
+            <GlobalSEO />
             <Helmet>
                 <title>Sightseeing Roma</title>
                 <meta name="description" content="Discover Rome with Sightseeing Roma - Your trusted partner for Rome tours and tickets" />

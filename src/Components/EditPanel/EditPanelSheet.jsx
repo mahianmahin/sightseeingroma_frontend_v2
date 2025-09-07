@@ -25,6 +25,7 @@ const EditPanelSheet = ({ isEditor, error, page, refreshContent, metaInfo }) => 
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState("");
   const [saveSuccess, setSaveSuccess] = useState(false);
+  const [showGlobalSheet, setShowGlobalSheet] = useState(false);
 
   // Sync form fields with metaInfo changes
   useEffect(() => {
@@ -102,6 +103,13 @@ const EditPanelSheet = ({ isEditor, error, page, refreshContent, metaInfo }) => 
           <div className="bg-gray-50 p-4 rounded-lg">
             <h3 className="font-medium text-gray-900 mb-2">Current Page</h3>
             <p className="text-sm text-gray-600 capitalize">{page}</p>
+          </div>
+
+          {/* Global Button at top of sheet */}
+          <div className="w-full mt-2">
+            <Button variant="outline" onClick={() => setShowGlobalSheet(true)} className="w-full">
+              Global Settings
+            </Button>
           </div>
 
           {/* Editor Status */}
@@ -216,6 +224,17 @@ const EditPanelSheet = ({ isEditor, error, page, refreshContent, metaInfo }) => 
           </SheetClose>
         </SheetFooter>
       </SheetContent>
+
+      {/* Add Global Sheet */}
+      {showGlobalSheet && (
+        <Sheet open={showGlobalSheet} onOpenChange={setShowGlobalSheet}>
+          <SheetContent className="w-[600px]">
+            <SheetHeader>
+              <SheetTitle>Global Settings</SheetTitle>
+            </SheetHeader>
+          </SheetContent>
+        </Sheet>
+      )}
     </Sheet>
   );
 };

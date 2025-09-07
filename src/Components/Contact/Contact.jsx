@@ -95,7 +95,6 @@ const Contact = (props) => {
 
             {/* Image Section */}
             <EditImageWrapper isEditor={props.isEditor} uniqueTag="get-in-touch" refreshContent={props.refreshContent} className="w-full md:w-1/2">
-            {console.log(contactImageData)}
                 <div className="w-full md:w-1/2">
                     <img src={contactImageUrl} alt={contactImageData?.image?.alt_text} className="w-full h-auto rounded-lg object-cover" />
                 </div>
