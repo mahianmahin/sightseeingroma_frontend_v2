@@ -5,8 +5,6 @@ const ImageCarousel = ({ images }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedImage, setSelectedImage] = useState(null);
 
-  console.log(images);
-
   // Return null or placeholder if no images
   if (!images || images.length === 0) {
     return (

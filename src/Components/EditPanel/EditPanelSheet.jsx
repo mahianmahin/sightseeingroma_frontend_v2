@@ -208,60 +208,6 @@ const EditPanelSheet = ({ isEditor, error, page, refreshContent, metaInfo }) => 
               Reload Page
             </Button>
           </div>
-
-          {/* Instructions */}
-          <div className="bg-blue-50 p-4 rounded-lg">
-            <h3 className="font-medium text-blue-900 mb-2">How to Edit</h3>
-            <ul className="text-sm text-blue-800 space-y-1">
-              <li>• Click on any editable content area</li>
-              <li>• Look for edit buttons on images</li>
-              <li>• Changes are saved automatically</li>
-              <li>• Use refresh to see updated content</li>
-            </ul>
-          </div>
-
-          {/* Page-specific Information */}
-          <div className="bg-yellow-50 p-4 rounded-lg">
-            <h3 className="font-medium text-yellow-900 mb-2">Page Features</h3>
-            <div className="text-sm text-yellow-800 space-y-1">
-              {page === 'home' && (
-                <>
-                  <li>• Hero section with banner image</li>
-                  <li>• Process steps with icons</li>
-                  <li>• Services section</li>
-                  <li>• Contact information</li>
-                </>
-              )}
-              {page === 'agent-point' && (
-                <>
-                  <li>• Agent location information</li>
-                  <li>• Interactive map embed</li>
-                  <li>• Contact details</li>
-                </>
-              )}
-              {page === 'about-us' && (
-                <>
-                  <li>• Company information</li>
-                  <li>• Contact details with variables</li>
-                  <li>• Template variables: {'{email}'}, {'{phone}'}, {'{address}'}</li>
-                </>
-              )}
-              {(page === 'terms-conditions' || page === 'return-policy' || page === 'refund-policy') && (
-                <>
-                  <li>• Legal content sections</li>
-                  <li>• Template variables available</li>
-                  <li>• Contact information integration</li>
-                </>
-              )}
-              {page === 'purchase-history' && (
-                <>
-                  <li>• User ticket history</li>
-                  <li>• Ticket status management</li>
-                  <li>• Download functionality</li>
-                </>
-              )}
-            </div>
-          </div>
         </div>
 
         <SheetFooter>

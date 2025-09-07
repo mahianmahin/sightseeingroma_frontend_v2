@@ -54,16 +54,6 @@ const MediaLibraryModal = ({
     };
   }, [previewUrl]);
 
-  // Debug effect to track form state changes
-  useEffect(() => {
-    console.log('Upload form state changed:', uploadForm);
-  }, [uploadForm]);
-
-  // Debug effect to track preview URL changes
-  useEffect(() => {
-    console.log('Preview URL state changed:', previewUrl);
-  }, [previewUrl]);
-
   // Auto-remove messages after 5 seconds
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -339,14 +329,8 @@ const MediaLibraryModal = ({
 
   const handleFileSelect = (e) => {
     const selectedFile = e.target.files?.[0];
-    console.log('File selected:', selectedFile); // Debug log
     
     if (selectedFile) {
-      console.log('File details:', {
-        name: selectedFile.name,
-        type: selectedFile.type,
-        size: selectedFile.size
-      });
       
       // Validate file size first
       if (!validateFileSize(selectedFile)) {
@@ -365,7 +349,6 @@ const MediaLibraryModal = ({
       let newPreviewUrl = null;
       if (selectedFile.type.startsWith('image/')) {
         newPreviewUrl = URL.createObjectURL(selectedFile);
-        console.log('Preview URL created:', newPreviewUrl); // Debug log
       }
       
       // Determine media type based on file type
@@ -376,14 +359,6 @@ const MediaLibraryModal = ({
         mediaType = 'video';
       }
       
-      // Update form state
-      console.log('About to update form state with:', {
-        file: selectedFile,
-        name: selectedFile.name.replace(/\.[^/.]+$/, ""),
-        media_type: mediaType,
-        alt_text: ''
-      });
-      
       setUploadForm({
         file: selectedFile,
         name: selectedFile.name.replace(/\.[^/.]+$/, ""),
@@ -391,11 +366,8 @@ const MediaLibraryModal = ({
         alt_text: ''
       });
       
-      console.log('About to set preview URL:', newPreviewUrl);
       setPreviewUrl(newPreviewUrl);
-      console.log('Form updated, preview URL set:', newPreviewUrl);
     } else {
-      console.log('No file selected');
     }
   };
 
@@ -550,8 +522,6 @@ const MediaLibraryModal = ({
                             src={previewUrl}
                             alt="Preview"
                             className="w-full h-full object-cover"
-                            onError={() => console.log('Preview image failed to load')}
-                            onLoad={() => console.log('Preview image loaded successfully')}
                           />
                         </div>
                       ) : (

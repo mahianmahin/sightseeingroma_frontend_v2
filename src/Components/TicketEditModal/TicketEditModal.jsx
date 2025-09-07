@@ -20,6 +20,8 @@ const TicketEditModal = ({
     off_price: 0,
     meta_title: '',
     meta_description: '',
+    meta_keywords: '',
+    schema_json: '',
     is_featured: false
   });
   const [isDescriptionModalOpen, setIsDescriptionModalOpen] = useState(false);
@@ -37,6 +39,8 @@ const TicketEditModal = ({
         off_price: ticketData.off_price || 0,
         meta_title: ticketData.meta_title || '',
         meta_description: ticketData.meta_description || '',
+        meta_keywords: ticketData.meta_keywords || '',
+        schema_json: ticketData.schema_json ? JSON.stringify(ticketData.schema_json, null, 2) : '',
         is_featured: ticketData.is_featured || false
       });
     }
@@ -147,13 +151,28 @@ const TicketEditModal = ({
         return;
       }
 
+      // Parse schema_json before sending
+      let parsedSchema = null;
+      try {
+        parsedSchema = editedData.schema_json ? JSON.parse(editedData.schema_json) : null;
+      } catch (err) {
+        toast.error('Schema JSON is invalid');
+        setIsSaving(false);
+        return;
+      }
+
+      const payload = {
+        ...editedData,
+        schema_json: parsedSchema
+      };
+
       const response = await fetch(`${baseUrl}update-bus-package/${ticketData.package_tag}/`, {
         method: 'PATCH',
         headers: {
           'Authorization': `Bearer ${accessToken}`,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(editedData)
+        body: JSON.stringify(payload)
       });
 
       if (response.ok) {
@@ -408,7 +427,6 @@ const TicketEditModal = ({
                     placeholder="SEO meta title"
                   />
                 </div>
-
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Meta Description
@@ -419,6 +437,30 @@ const TicketEditModal = ({
                     rows={3}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     placeholder="SEO meta description"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Meta Keywords
+                  </label>
+                  <input
+                    type="text"
+                    value={editedData.meta_keywords}
+                    onChange={(e) => handleInputChange('meta_keywords', e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="SEO meta keywords"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Schema JSON
+                  </label>
+                  <textarea
+                    value={editedData.schema_json}
+                    onChange={(e) => handleInputChange('schema_json', e.target.value)}
+                    rows={4}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md font-mono focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="Schema JSON (must be valid JSON)"
                   />
                 </div>
               </div>

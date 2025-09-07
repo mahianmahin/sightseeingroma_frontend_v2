@@ -43,7 +43,10 @@ const Companies = () => {
     }, [companyName]);
 
     const { isEditor, error } = useEditorCheck();
-    const { getContentByTag, getImageByTag, hasContent, refreshContent, loading, error: contentError } = useStaticContent(companySlug);
+
+
+    const staticContentData = useStaticContent(companySlug);
+    const { getContentByTag, getImageByTag, hasContent, refreshContent, loading, error: contentError } = staticContentData;
 
     // Mapping of company slugs to their banner image unique tags and fallback images
     const companyImageConfig = {

@@ -141,7 +141,7 @@ const ManageBookingMd = () => {
   return (
     <>
     {/* Meta information */}
-    <HelmetWrapper title={data?.meta_title} description={data?.meta_description} />
+    <HelmetWrapper title={data?.meta_title} description={data?.meta_description} keywords={data?.meta_keywords} schema={data?.schema_json} />
     
     
     <div className="container mx-auto pt-24"> {/* Changed from pt-16 to pt-24 */}
