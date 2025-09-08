@@ -1,6 +1,34 @@
 import React, { useEffect, useState } from "react";
 import { baseUrlHashless } from "../../utilities/Utilities";
 import { Button } from "@/components/ui/button";
+import Editor from '@monaco-editor/react';
+
+// Simple HTML formatter
+const formatHTML = (html) => {
+  let formatted = '';
+  let indent = 0;
+  const tab = '  ';
+  const tokens = html.replace(/>\s*</g, '><').split(/(<[^>]*>)/);
+  tokens.forEach(token => {
+    if (token.trim()) {
+      if (token.startsWith('</')) {
+        indent = Math.max(0, indent - 1);
+        formatted += tab.repeat(indent) + token + '\n';
+      } else if (token.startsWith('<') && !token.includes('</') && !token.endsWith('/>')) {
+        formatted += tab.repeat(indent) + token + '\n';
+        indent += 1;
+      } else if (token.startsWith('<')) {
+        formatted += tab.repeat(indent) + token + '\n';
+      } else {
+        const trimmed = token.trim();
+        if (trimmed) {
+          formatted += tab.repeat(indent) + trimmed + '\n';
+        }
+      }
+    }
+  });
+  return formatted.trim();
+};
 
 const API_URL = `${baseUrlHashless}/website-settings/global-head-code/`;
 
@@ -57,6 +85,26 @@ const GlobalHeadCodeEditor = ({ onClose }) => {
     setSaving(false);
   };
 
+  useEffect(() => {
+    if (error) {
+      const timer = setTimeout(() => setError(""), 3500);
+      return () => clearTimeout(timer);
+    }
+  }, [error]);
+
+  useEffect(() => {
+    if (success) {
+      const timer = setTimeout(() => setSuccess(false), 3500);
+      return () => clearTimeout(timer);
+    }
+  }, [success]);
+
+  useEffect(() => {
+    if (loading) return;
+    setHeadCode(formatHTML(headCode));
+    // eslint-disable-next-line
+  }, [loading]);
+
   return (
     <div className="bg-white p-4 rounded-lg border">
       <h3 className="font-medium text-gray-900 mb-2">Edit Global Head Code</h3>
@@ -64,7 +112,37 @@ const GlobalHeadCodeEditor = ({ onClose }) => {
         {loading ? (
           <div className="text-gray-500">Loading...</div>
         ) : (
-            <textarea className="w-full border rounded px-3 py-2 text-sm font-mono" value={headCode} onChange={e => setHeadCode(e.target.value)} placeholder="Paste any valid <head> code here (meta, script, style, etc.)" rows={8} disabled={saving} />
+          <Editor
+            height="250px"
+            defaultLanguage="html"
+            value={headCode}
+            onChange={value => setHeadCode(value || '')}
+            theme="vs-dark"
+            options={{
+              minimap: { enabled: false },
+              fontSize: 14,
+              lineHeight: 21,
+              fontFamily: 'Monaco, Menlo, "Courier New", monospace',
+              wordWrap: 'on',
+              automaticLayout: true,
+              tabSize: 2,
+              insertSpaces: true,
+              formatOnPaste: true,
+              formatOnType: true,
+              lineNumbers: 'on',
+              glyphMargin: false,
+              folding: true,
+              lineDecorationsWidth: 10,
+              lineNumbersMinChars: 3,
+              renderLineHighlight: 'all',
+              selectionHighlight: true,
+              bracketPairColorization: { enabled: true },
+              autoIndent: 'full',
+              contextmenu: true,
+              copyWithSyntaxHighlighting: true
+            }}
+            loading={<div className="flex items-center justify-center h-full bg-gray-900 text-white"><div className="text-sm">Loading editor...</div></div>}
+          />
         )}
         {error && <div className="text-red-600 text-sm">{error}</div>}
         {success && <div className="text-green-600 text-sm">Global head code updated!</div>}

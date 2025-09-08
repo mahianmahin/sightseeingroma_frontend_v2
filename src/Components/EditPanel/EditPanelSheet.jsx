@@ -229,7 +229,7 @@ const EditPanelSheet = ({ isEditor, error, page, refreshContent, metaInfo }) => 
       {/* Add Global Sheet */}
       {showGlobalSheet && (
         <Sheet open={showGlobalSheet} onOpenChange={setShowGlobalSheet}>
-          <SheetContent className="w-[600px] max-h-screen overflow-y-auto">
+          <SheetContent className="w-[900px] max-h-screen overflow-y-auto">
             <SheetHeader>
               <SheetTitle className="flex items-center gap-2">
                 <Globe className="h-5 w-5" />

@@ -140,7 +140,9 @@ const Regi = () => {
           />
           <div className="absolute top-0 left-0 w-full h-full bg-black bg-opacity-30" />
           <div className="absolute top-6 left-6">
-            <img src="https://sightseeingroma.pythonanywhere.com/media/logo/Logo.png" alt="Logo" className="h-16" />
+            <Link to="/">
+              <img src="https://sightseeingroma.pythonanywhere.com/media/logo/Logo.png" alt="Logo" className="h-16" />
+            </Link>
           </div>
           <div className="absolute bottom-10 left-6 text-white">
             <h2 className="text-3xl font-bold mb-2">Welcome to Sightseeing Roma</h2>
@@ -152,7 +154,9 @@ const Regi = () => {
         <div className="md:w-1/2 p-8 lg:p-12">
           {/* Mobile Logo */}
           <div className="md:hidden flex justify-center mb-8">
-            <img src="https://sightseeingroma.pythonanywhere.com/media/logo/Logo.png" alt="Logo" className="h-16" />
+            <Link to="/">
+              <img src="https://sightseeingroma.pythonanywhere.com/media/logo/Logo.png" alt="Logo" className="h-16" />
+            </Link>
           </div>
 
           <div className="text-center md:text-left mb-8">
