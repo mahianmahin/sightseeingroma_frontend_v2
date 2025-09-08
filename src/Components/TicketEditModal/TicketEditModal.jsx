@@ -28,6 +28,7 @@ const TicketEditModal = ({
   const [isSaving, setIsSaving] = useState(false);
   const [isMediaLibraryOpen, setIsMediaLibraryOpen] = useState(false);
   const [selectedImageField, setSelectedImageField] = useState(null);
+  const [imageDimensions, setImageDimensions] = useState({});
 
   useEffect(() => {
     if (ticketData && isOpen) {
@@ -298,11 +299,23 @@ const TicketEditModal = ({
                         src={`${baseUrlHashless}${imageData.image}`} 
                         alt={imageData.alt_text || `Image ${index + 1}`} 
                         className="w-full h-48 object-cover rounded-lg border border-gray-200" 
+                        onLoad={e => {
+                          setImageDimensions(dim => ({
+                            ...dim,
+                            [index]: {
+                              width: e.target.naturalWidth,
+                              height: e.target.naturalHeight
+                            }
+                          }));
+                        }}
                       />
                       <div className="absolute inset-0 bg-black bg-opacity-80 opacity-0 group-hover:opacity-100 transition-opacity duration-200 rounded-lg flex items-end justify-end p-4">
                         <div className="text-right">
                           <p className="text-white text-sm mb-2 font-bold">{imageData.text}</p>
                           <p className="text-white text-sm mb-2">Alt Text: {imageData.alt_text}</p>
+                          {imageDimensions[index] && (
+                            <p className="text-white text-xs mb-2">Size: {imageDimensions[index].width} x {imageDimensions[index].height}</p>
+                          )}
                           <div className="flex gap-2">
                             <button 
                               onClick={() => handleReplaceImage(imageData)}

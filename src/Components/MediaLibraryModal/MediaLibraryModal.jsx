@@ -44,6 +44,7 @@ const MediaLibraryModal = ({
   const [maxUploadSize, setMaxUploadSize] = useState(5); // Default 5MB
   const [uploadSizeUnit, setUploadSizeUnit] = useState('MB'); // MB or KB
   const [messages, setMessages] = useState([]); // Array of {id, type, text, timestamp}
+  const [imageDimensions, setImageDimensions] = useState({});
 
   // Cleanup preview URL when component unmounts or file changes
   useEffect(() => {
@@ -698,11 +699,24 @@ const MediaLibraryModal = ({
                     {/* Media Preview */}
                     <div className="aspect-square bg-gray-100 flex items-center justify-center relative">
                       {item.media_type === 'image' ? (
-                        <img
-                          src={`${baseUrlHashless}${item.file}`}
-                          alt={item.alt_text || item.name}
-                          className="w-full h-full object-cover"
-                        />
+                        <>
+                          <img
+                            src={`${baseUrlHashless}${item.file}`}
+                            alt={item.alt_text || item.name}
+                            className="w-full h-full object-cover"
+                            onLoad={e => {
+                              setImageDimensions(prev => ({
+                                ...prev,
+                                [item.id]: { width: e.target.naturalWidth, height: e.target.naturalHeight }
+                              }));
+                            }}
+                          />
+                          {imageDimensions[item.id] && (
+                            <div className="absolute bottom-1 left-1 bg-black bg-opacity-60 text-white text-xs px-2 py-1 rounded">
+                              {imageDimensions[item.id].width} x {imageDimensions[item.id].height} px
+                            </div>
+                          )}
+                        </>
                       ) : (
                         <div className="flex flex-col items-center text-gray-500">
                           {getMediaIcon(item.media_type)}
