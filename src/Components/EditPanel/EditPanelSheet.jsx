@@ -10,8 +10,9 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { Edit, Settings, Eye, EyeOff, Save, RefreshCw } from "lucide-react";
+import { Edit, Settings, Eye, EyeOff, Save, RefreshCw, Globe } from "lucide-react";
 import { baseUrl } from "../../utilities/Utilities";
+import GlobalHeadCodeEditor from "./GlobalHeadCodeEditor";
 
 const EditPanelSheet = ({ isEditor, error, page, refreshContent, metaInfo }) => {
   // Don't render anything if not an editor
@@ -228,10 +229,24 @@ const EditPanelSheet = ({ isEditor, error, page, refreshContent, metaInfo }) => 
       {/* Add Global Sheet */}
       {showGlobalSheet && (
         <Sheet open={showGlobalSheet} onOpenChange={setShowGlobalSheet}>
-          <SheetContent className="w-[600px]">
+          <SheetContent className="w-[600px] max-h-screen overflow-y-auto">
             <SheetHeader>
-              <SheetTitle>Global Settings</SheetTitle>
+              <SheetTitle className="flex items-center gap-2">
+                <Globe className="h-5 w-5" />
+                Global Settings
+              </SheetTitle>
+              <SheetDescription>
+                Edit global head code for the website (analytics, meta, etc.)
+              </SheetDescription>
             </SheetHeader>
+            <div className="py-6 space-y-6">
+              <GlobalHeadCodeEditor onClose={() => setShowGlobalSheet(false)} />
+            </div>
+            <SheetFooter>
+              <SheetClose asChild>
+                <Button variant="outline">Close Panel</Button>
+              </SheetClose>
+            </SheetFooter>
           </SheetContent>
         </Sheet>
       )}

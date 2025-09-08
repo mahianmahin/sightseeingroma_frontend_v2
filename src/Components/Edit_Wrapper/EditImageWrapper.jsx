@@ -64,7 +64,7 @@ export default function EditImageWrapper({
                     <button 
                         onClick={handleChangeImageClick}
                         disabled={isUpdating}
-                        className="absolute font-bold -bottom-6 left-1/2 transform -translate-x-1/2 bg-blue-500 text-white text-xs px-4 py-2 rounded-full hover:bg-blue-600 transition-colors duration-200 z-50 shadow-lg border-2 border-white disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="absolute font-bold -bottom-6 left-1/2 transform -translate-x-1/2 bg-blue-500 text-white text-xs px-4 py-2 rounded-full hover:bg-blue-600 transition-colors duration-200 z-10 shadow-lg border-2 border-white disabled:opacity-50 disabled:cursor-not-allowed"
                         style={{ zIndex: 9999 }}
                     >
                         {isUpdating ? 'Updating...' : 'CHANGE IMAGE'}

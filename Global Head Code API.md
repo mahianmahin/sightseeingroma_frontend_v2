@@ -40,7 +40,7 @@ GET /website-settings/global-head-code/
 
 **Request:**
 ```http
-PUT /website-settings/global-head-code/
+PATCH /website-settings/global-head-code/
 Content-Type: application/json
 Authorization: Bearer <your_jwt_token>
 
