@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { 
   FaTimes, 
@@ -45,6 +45,7 @@ const MediaLibraryModal = ({
   const [uploadSizeUnit, setUploadSizeUnit] = useState('MB'); // MB or KB
   const [messages, setMessages] = useState([]); // Array of {id, type, text, timestamp}
   const [imageDimensions, setImageDimensions] = useState({});
+  const fileInputRef = useRef(null);
 
   // Cleanup preview URL when component unmounts or file changes
   useEffect(() => {
@@ -96,7 +97,7 @@ const MediaLibraryModal = ({
         setPreviewUrl(null);
       }
     }
-  }, [isOpen]); // Removed previewUrl dependency
+  }, [isOpen]);
 
   const fetchMediaLibrary = async () => {
     try {
@@ -122,18 +123,15 @@ const MediaLibraryModal = ({
       if (data.data && data.data.max_image_upload_size_mb !== undefined) {
         const sizeValue = data.data.max_image_upload_size_mb;
         
-        // If integer, treat as MB; if fractional (< 1), treat as KB
-        if (Number.isInteger(sizeValue) && sizeValue >= 1) {
+        // If >= 1, treat as MB (e.g., 1.0, 1.2, 4.5 = 1MB, 1.2MB, 4.5MB)
+        // If < 1, convert to KB (e.g., 0.8, 0.5 = 800KB, 500KB)
+        if (sizeValue >= 1) {
           setMaxUploadSize(sizeValue);
           setUploadSizeUnit('MB');
-        } else if (sizeValue < 1) {
-          // Convert fractional MB to KB (e.g., 0.5 MB = 500 KB)
+        } else {
+          // Convert fractional MB to KB (e.g., 0.8 MB = 800 KB, 0.5 MB = 500 KB)
           setMaxUploadSize(sizeValue * 1000);
           setUploadSizeUnit('KB');
-        } else {
-          // Fractional but >= 1, treat as MB
-          setMaxUploadSize(sizeValue);
-          setUploadSizeUnit('MB');
         }
       }
     } catch (error) {
@@ -151,17 +149,27 @@ const MediaLibraryModal = ({
 
     try {
       setUploading(true);
+      console.log('MediaLibrary: Starting upload process');
+      
       const accessToken = localStorage.getItem('access');
+      console.log('MediaLibrary: Access token available:', !!accessToken);
+      
       if (!accessToken) {
-        addMessage('error', 'Authentication required');
+        addMessage('error', 'Authentication required - Please log in');
+        console.error('MediaLibrary: No access token found in localStorage');
         return;
       }
 
+      console.log('MediaLibrary: Preparing FormData with file:', uploadForm.file.name, 'size:', uploadForm.file.size);
+      
       const formData = new FormData();
       formData.append('name', uploadForm.name || uploadForm.file.name);
       if (uploadForm.alt_text) formData.append('alt_text', uploadForm.alt_text);
       formData.append('file', uploadForm.file);
       formData.append('media_type', uploadForm.media_type);
+
+      console.log('MediaLibrary: Making request to:', `${baseUrl}media-library/create/`);
+      console.log('MediaLibrary: Request headers Authorization:', `Bearer ${accessToken.substring(0, 10)}...`);
 
       const response = await fetch(`${baseUrl}media-library/create/`, {
         method: 'POST',
@@ -171,10 +179,17 @@ const MediaLibraryModal = ({
         body: formData
       });
 
+      console.log('MediaLibrary: Response status:', response.status);
+      console.log('MediaLibrary: Response ok:', response.ok);
+
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || 'Upload failed');
+        console.error('MediaLibrary: Upload failed with error data:', errorData);
+        throw new Error(errorData.message || errorData.detail || `Upload failed with status ${response.status}`);
       }
+
+      const responseData = await response.json();
+      console.log('MediaLibrary: Upload successful, response:', responseData);
 
       addMessage('success', 'Media uploaded successfully!');
       setUploadForm({ name: '', alt_text: '', file: null, media_type: 'image' });
@@ -184,7 +199,8 @@ const MediaLibraryModal = ({
       }
       fetchMediaLibrary();
     } catch (error) {
-      console.error('Error uploading media:', error);
+      console.error('MediaLibrary: Error uploading media:', error);
+      console.error('MediaLibrary: Error stack:', error.stack);
       addMessage('error', error.message || 'Failed to upload media');
     } finally {
       setUploading(false);
@@ -310,35 +326,47 @@ const MediaLibraryModal = ({
     const fileSizeInBytes = file.size;
     let maxSizeInBytes;
     
+    console.log('MediaLibrary: Validating file size:', fileSizeInBytes, 'bytes');
+    console.log('MediaLibrary: Max upload size:', maxUploadSize, uploadSizeUnit);
+    
     if (uploadSizeUnit === 'MB') {
       maxSizeInBytes = maxUploadSize * 1024 * 1024; // Convert MB to bytes
     } else {
       maxSizeInBytes = maxUploadSize * 1024; // Convert KB to bytes
     }
     
+    console.log('MediaLibrary: Max size in bytes:', maxSizeInBytes);
+    
     if (fileSizeInBytes > maxSizeInBytes) {
       const fileSizeDisplay = uploadSizeUnit === 'MB' 
         ? `${(fileSizeInBytes / (1024 * 1024)).toFixed(2)} MB`
         : `${(fileSizeInBytes / 1024).toFixed(2)} KB`;
       
+      console.log('MediaLibrary: File size validation failed:', fileSizeDisplay, 'exceeds', maxUploadSize, uploadSizeUnit);
       addMessage('error', `File size (${fileSizeDisplay}) exceeds the maximum limit of ${maxUploadSize} ${uploadSizeUnit}`);
       return false;
     }
     
+    console.log('MediaLibrary: File size validation passed');
     return true;
   };
 
-  const handleFileSelect = (e) => {
+  const handleFileSelect = useCallback((e) => {
+    console.log('MediaLibrary: handleFileSelect called', e, e.target, e.target.files);
     const selectedFile = e.target.files?.[0];
+    console.log('MediaLibrary: File selected:', selectedFile?.name, 'size:', selectedFile?.size, 'type:', selectedFile?.type);
     
     if (selectedFile) {
       
       // Validate file size first
       if (!validateFileSize(selectedFile)) {
+        console.log('MediaLibrary: File size validation failed');
         // Clear the input
         e.target.value = '';
         return;
       }
+      
+      console.log('MediaLibrary: File size validation passed');
       
       // Cleanup previous preview URL
       if (previewUrl) {
@@ -350,6 +378,7 @@ const MediaLibraryModal = ({
       let newPreviewUrl = null;
       if (selectedFile.type.startsWith('image/')) {
         newPreviewUrl = URL.createObjectURL(selectedFile);
+        console.log('MediaLibrary: Created preview URL for image');
       }
       
       // Determine media type based on file type
@@ -360,6 +389,8 @@ const MediaLibraryModal = ({
         mediaType = 'video';
       }
       
+      console.log('MediaLibrary: Detected media type:', mediaType);
+      
       setUploadForm({
         file: selectedFile,
         name: selectedFile.name.replace(/\.[^/.]+$/, ""),
@@ -368,9 +399,13 @@ const MediaLibraryModal = ({
       });
       
       setPreviewUrl(newPreviewUrl);
+      console.log('MediaLibrary: Upload form updated with file data');
     } else {
+      console.log('MediaLibrary: No file selected');
     }
-  };
+  }, [previewUrl, maxUploadSize, uploadSizeUnit]);
+
+
 
   const resetUploadForm = () => {
     if (previewUrl) {
@@ -378,6 +413,10 @@ const MediaLibraryModal = ({
       setPreviewUrl(null);
     }
     setUploadForm({ name: '', alt_text: '', file: null, media_type: 'image' });
+    // Reset the file input
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
   };
 
   const getMediaIcon = (mediaType) => {
@@ -424,8 +463,8 @@ const MediaLibraryModal = ({
   if (!isOpen) return null;
 
   return createPortal(
-    <div className="fixed inset-0 bg-black/50 z-[999999] flex items-center justify-center p-4">
-      <div className="bg-white rounded-lg shadow-xl w-full max-w-6xl h-[90vh] flex flex-col">
+    <div className="fixed inset-0 bg-black/50 z-[999999]">
+      <div className="bg-white w-full h-full flex flex-col">
         
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-200">
@@ -581,12 +620,37 @@ const MediaLibraryModal = ({
                     <label className="block text-sm font-medium text-gray-700 mb-1">
                       Choose File
                     </label>
-                    <input
-                      type="file"
-                      onChange={handleFileSelect}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-                      accept="*/*"
-                    />
+                    <div className="space-y-2">
+                      {/* Simple file input */}
+                      <input
+                        ref={fileInputRef}
+                        type="file"
+                        onChange={(e) => {
+                          console.log('MediaLibrary: React onChange triggered', e.target.files);
+                          handleFileSelect(e);
+                        }}
+                        onClick={(e) => {
+                          console.log('MediaLibrary: File input clicked', e.target);
+                        }}
+                        className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 border border-gray-300 rounded-md cursor-pointer"
+                        accept="*/*"
+                        id="file-upload-input"
+                      />
+                      {/* Alternative button for browsers that have issues */}
+                      <button
+                        type="button"
+                        className="w-full px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-300 rounded-md transition-colors duration-200 text-sm"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          console.log('MediaLibrary: Alternative browse button clicked');
+                          if (fileInputRef.current) {
+                            fileInputRef.current.click();
+                          }
+                        }}
+                      >
+                        📁 Click here to browse files (Alternative)
+                      </button>
+                    </div>
                     <p className="text-xs text-gray-500 mt-1">
                       Max: {maxUploadSize} {uploadSizeUnit}
                     </p>

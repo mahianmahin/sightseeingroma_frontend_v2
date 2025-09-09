@@ -1,5 +1,6 @@
 import { useState } from "react";
 import MediaLibraryModal from "../MediaLibraryModal/MediaLibraryModal";
+import ImageUploadModal from "../ImageUploadModal/ImageUploadModal";
 import useStaticContent from "../../hooks/useStaticContent";
 import toast from 'react-hot-toast';
 
@@ -11,7 +12,9 @@ export default function EditImageWrapper({
     className = "" 
 }) {
     const [isMediaLibraryOpen, setIsMediaLibraryOpen] = useState(false);
+    const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
     const [isUpdating, setIsUpdating] = useState(false);
+    const [showActionMenu, setShowActionMenu] = useState(false);
     const { updatePageImage } = useStaticContent();
 
     function handleChangeImageClick() {
@@ -19,7 +22,17 @@ export default function EditImageWrapper({
             toast.error('Unique tag is required for updating image');
             return;
         }
+        setShowActionMenu(true);
+    }
+
+    function handleSelectFromLibrary() {
+        setShowActionMenu(false);
         setIsMediaLibraryOpen(true);
+    }
+
+    function handleUploadNew() {
+        setShowActionMenu(false);
+        setIsUploadModalOpen(true);
     }
 
     async function handleImageSelect(selectedMedia) {
@@ -56,6 +69,12 @@ export default function EditImageWrapper({
         }
     }
 
+    async function handleImageUploaded(uploadedImage) {
+        // After successful upload, automatically use the uploaded image
+        await handleImageSelect(uploadedImage);
+        setIsUploadModalOpen(false);
+    }
+
     return (
         <>
             {isEditor ? (
@@ -69,11 +88,38 @@ export default function EditImageWrapper({
                     >
                         {isUpdating ? 'Updating...' : 'CHANGE IMAGE'}
                     </button>
+
+                    {/* Action Menu */}
+                    {showActionMenu && (
+                        <div className="absolute -bottom-20 left-1/2 transform -translate-x-1/2 bg-white border border-gray-200 rounded-lg shadow-lg z-[10000] min-w-[200px]">
+                            <div className="p-2">
+                                <button
+                                    onClick={handleSelectFromLibrary}
+                                    className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md transition-colors duration-200"
+                                >
+                                    📚 Select from Library
+                                </button>
+                                <button
+                                    onClick={handleUploadNew}
+                                    className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md transition-colors duration-200"
+                                >
+                                    📤 Upload New Image
+                                </button>
+                                <button
+                                    onClick={() => setShowActionMenu(false)}
+                                    className="w-full text-left px-3 py-2 text-sm text-gray-500 hover:bg-gray-100 rounded-md transition-colors duration-200"
+                                >
+                                    ❌ Cancel
+                                </button>
+                            </div>
+                        </div>
+                    )}
                 </div>
             ) : (
                 children
             )}
 
+            {/* Media Library Modal */}
             <MediaLibraryModal
                 isOpen={isMediaLibraryOpen}
                 onClose={() => setIsMediaLibraryOpen(false)}
@@ -81,10 +127,26 @@ export default function EditImageWrapper({
                 allowSelection={true}
                 selectionMode="single"
                 title="Select Image"
-                allowUpload={true}
+                allowUpload={false}
                 allowEdit={true}
                 allowDelete={true}
             />
+
+            {/* Image Upload Modal */}
+            <ImageUploadModal
+                isOpen={isUploadModalOpen}
+                onClose={() => setIsUploadModalOpen(false)}
+                onImageUploaded={handleImageUploaded}
+                title="Upload New Image"
+            />
+
+            {/* Click outside to close action menu */}
+            {showActionMenu && (
+                <div 
+                    className="fixed inset-0 z-[9999]" 
+                    onClick={() => setShowActionMenu(false)}
+                />
+            )}
         </>
     );
 }
