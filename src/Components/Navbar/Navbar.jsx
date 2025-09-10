@@ -1,23 +1,19 @@
+import { useState, useEffect, useRef } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { LuHome } from "react-icons/lu";
-import { PiTicketBold } from "react-icons/pi";
 import { MdOutlineLocationOn } from "react-icons/md";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { IoDocumentTextOutline } from "react-icons/io5";
-import { RiMoneyEuroCircleLine } from "react-icons/ri";
 import { BsInfoCircle } from "react-icons/bs";
 import { TbLogin2, TbLogout2 } from "react-icons/tb";
 import { HiOutlineLogout } from "react-icons/hi";
-import { FaUser } from "react-icons/fa";
-import { FiMenu } from "react-icons/fi";
+import { FaUser, FaHistory } from "react-icons/fa";
+import { FiMenu, FiX } from "react-icons/fi";
 import logo from "../../assets/Logo.png";
 import EditImageWrapper from "../Edit_Wrapper/EditImageWrapper";
 import useStaticContent from "../../hooks/useStaticContent";
 import useEditorCheck from "../../hooks/useEditorCheck";
-import { baseUrlHashless } from "../../utilities/Utilities";
-
-import { useState, useEffect, useRef } from "react";
 import useAuthenticate from "../../hooks/seAuthenticate";
 import { trackUserActivity, ACTIVITY_TYPES } from '../../utilities/activityTracker';
+import { baseUrlHashless } from "../../utilities/Utilities";
 
 const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -73,7 +69,7 @@ const Navbar = () => {
 
     return (
         <div className="">
-            <div className="navbar bg-2 absolute text-white z-50">
+            <div className="navbar bg-2 absolute text-white z-50 backdrop-blur-sm shadow-lg border-b border-white/10">
                 {/* Navbar for small screens */}
                 <div className="navbar-start lg:hidden">
                     <div className="dropdown" ref={dropdownRef}>
@@ -82,9 +78,9 @@ const Navbar = () => {
                                 tabIndex={0}
                                 role="button"
                                 onClick={() => setIsOpen(!isOpen)} // Toggle Dropdown
-                                className="btn btn-ghost lg:hidden"
+                                className="btn btn-ghost lg:hidden hover:bg-white/10 transition-colors duration-200"
                             >
-                                <FiMenu size={20} />
+                                {isOpen ? <FiX size={20} /> : <FiMenu size={20} />}
                             </div>
 
                             <Link to={"/"}>
@@ -106,48 +102,62 @@ const Navbar = () => {
                         {isOpen && (
                             <ul
                                 tabIndex={0}
-                                className="menu menu-sm dropdown-content space-y-4 bg-white text-black text-lg rounded-box z-[1] mt-3 w-52 p-2 shadow"
+                                className="menu menu-sm dropdown-content space-y-2 bg-white text-black text-lg rounded-xl z-[1] mt-3 w-64 p-4 shadow-xl border border-gray-100"
                             >
+                                {/* Home link for both logged in and out */}
                                 <li onClick={() => handleMenuClick("/")}>
-                                    <a className="text-base font-semibold pt-3">
-                                        <LuHome /> Home
+                                    <a className="text-base font-semibold pt-3 hover:bg-gray-50 rounded-lg px-3 py-2 transition-colors duration-200">
+                                        <LuHome className="text-blue-600" /> Home
                                     </a>
                                 </li>
 
-                                <Link to={"/yourticket"}>
-                                    <li>
-                                        <a className="text-base font-semibold">
-                                            <PiTicketBold /> Purchase History
-                                        </a>
-                                    </li>
-                                </Link>
-                                <li onClick={() => {isLoggedIn ? handleMenuClick("/agentPoints") : handleMenuClick("/login")}}> 
-                                    <a className="text-base font-semibold">
-                                        <MdOutlineLocationOn /> Agent Points
-                                    </a>
-                                </li>
-                                <hr />
-                                {/* <li onClick={() => handleMenuClick("/offer")}>
-                                    <a className="text-base font-semibold">
-                                        <IoDocumentTextOutline /> Offer
-                                    </a>
-                                </li>
-                                <li onClick={() => handleMenuClick("/yourticket")}>
-                                    <a className="text-base font-semibold">
-                                        <RiMoneyEuroCircleLine /> Payments
-                                    </a>
-                                </li> */}
+                                {/* Conditional menu items based on login status */}
+                                {isLoggedIn ? (
+                                    <>
+                                        <li onClick={() => handleMenuClick("/yourticket")}>
+                                            <a className="text-base font-semibold hover:bg-gray-50 rounded-lg px-3 py-2 transition-colors duration-200">
+                                                <FaHistory className="text-green-600" /> Purchase History
+                                            </a>
+                                        </li>
+                                        <li onClick={() => handleMenuClick("/agentPoints")}>
+                                            <a className="text-base font-semibold hover:bg-gray-50 rounded-lg px-3 py-2 transition-colors duration-200">
+                                                <MdOutlineLocationOn className="text-orange-600" /> Agent Points
+                                            </a>
+                                        </li>
+                                        <li onClick={() => handleMenuClick("/profile")}>
+                                            <a className="text-base font-semibold hover:bg-gray-50 rounded-lg px-3 py-2 transition-colors duration-200">
+                                                <FaUser className="text-purple-600" /> Profile
+                                            </a>
+                                        </li>
+                                    </>
+                                ) : (
+                                    <>
+                                        <li onClick={() => handleMenuClick("/aboutus")}>
+                                            <a className="text-base font-semibold hover:bg-gray-50 rounded-lg px-3 py-2 transition-colors duration-200">
+                                                <BsInfoCircle className="text-blue-600" /> About Us
+                                            </a>
+                                        </li>
+                                        <li onClick={() => handleMenuClick("/agentPoints")}>
+                                            <a className="text-base font-semibold hover:bg-gray-50 rounded-lg px-3 py-2 transition-colors duration-200">
+                                                <MdOutlineLocationOn className="text-orange-600" /> Agent Points
+                                            </a>
+                                        </li>
+                                    </>
+                                )}
+
+                                <hr className="my-2" />
                               
+                                {/* Authentication button */}
                                 {isLoggedIn ? (
                                     <li onClick={logout}>
-                                        <a className="text-base font-semibold">
-                                            <TbLogout2 /> Log Out
+                                        <a className="text-base font-semibold hover:bg-red-50 text-red-600 rounded-lg px-3 py-2 transition-colors duration-200">
+                                            <TbLogout2 className="text-red-600" /> Log Out
                                         </a>
                                     </li>
                                 ) : (
                                     <li onClick={() => handleMenuClick("/login")}>
-                                        <a className="text-base font-semibold">
-                                            <TbLogin2 /> Log In
+                                        <a className="text-base font-semibold bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-lg px-3 py-2 transition-colors duration-200">
+                                            <TbLogin2 className="text-blue-600" /> Log In
                                         </a>
                                     </li>
                                 )}
@@ -175,70 +185,92 @@ const Navbar = () => {
 
                     {/* Navbar for large screens */}
                     <div className="navbar-end flex items-center lg:flex lg:w-full">
-                        <ul className="menu menu-horizontal px-1 font-medium text-lg text-white hidden lg:flex">
+                        <ul className="menu menu-horizontal px-1 font-medium text-lg text-white hidden lg:flex items-center space-x-2">
+                            {/* Home link for both logged in and out */}
                             <li onClick={() => handleMenuClick("/")}>
-                                <a>
-                                    <LuHome /> Home
+                                <a className="hover:bg-white/10 rounded-lg px-4 py-2 transition-all duration-200 flex items-center gap-2">
+                                    <LuHome className="text-lg" /> Home
                                 </a>
                             </li>
-                            <li onClick={() => {isLoggedIn ? handleMenuClick("/yourticket") : handleMenuClick("/login")}}>
-                                <a>
-                                    <PiTicketBold /> Purchase History
-                                </a>
-                            </li>
-                            <li onClick={() => handleMenuClick("/agentPoints")}>
-                                <a>
-                                    <MdOutlineLocationOn /> Agent Points
-                                </a>
-                            </li>
-                            {isLoggedIn && (
-                                <li onClick={() => handleMenuClick("/profile")}>
-                                    <a>
-                                        <FaUser /> Profile
-                                    </a>
-                                </li>
+
+                            {/* Conditional menu items based on login status */}
+                            {isLoggedIn ? (
+                                <>
+                                    <li onClick={() => handleMenuClick("/yourticket")}>
+                                        <a className="hover:bg-white/10 rounded-lg px-4 py-2 transition-all duration-200 flex items-center gap-2">
+                                            <FaHistory className="text-lg" /> Purchase History
+                                        </a>
+                                    </li>
+                                    <li onClick={() => handleMenuClick("/agentPoints")}>
+                                        <a className="hover:bg-white/10 rounded-lg px-4 py-2 transition-all duration-200 flex items-center gap-2">
+                                            <MdOutlineLocationOn className="text-lg" /> Agent Points
+                                        </a>
+                                    </li>
+                                    <li onClick={() => handleMenuClick("/profile")}>
+                                        <a className="hover:bg-white/10 rounded-lg px-4 py-2 transition-all duration-200 flex items-center gap-2">
+                                            <FaUser className="text-lg" /> Profile
+                                        </a>
+                                    </li>
+                                </>
+                            ) : (
+                                <>
+                                    <li onClick={() => handleMenuClick("/aboutus")}>
+                                        <a className="hover:bg-white/10 rounded-lg px-4 py-2 transition-all duration-200 flex items-center gap-2">
+                                            <BsInfoCircle className="text-lg" /> About Us
+                                        </a>
+                                    </li>
+                                    <li onClick={() => handleMenuClick("/agentPoints")}>
+                                        <a className="hover:bg-white/10 rounded-lg px-4 py-2 transition-all duration-200 flex items-center gap-2">
+                                            <MdOutlineLocationOn className="text-lg" /> Agent Points
+                                        </a>
+                                    </li>
+                                </>
                             )}
 
+                            {/* Authentication button */}
                             {isLoggedIn ? (
-                                <button
-                                    onClick={logout}
-                                    className="btn btn-ghost text-2xl font-medium"
-                                >
-                                    <HiOutlineLogout size={20} />
-                                </button>
-                            ) : (
-                                <div className="px-4">
-                                    <button className="bg-1 px-2 md:px-4 py-2 h-10 md:h-12 w-20 md:w-28 rounded-md color-1 text-lg font-medium">
-                                        <Link to={"/login"}>Login</Link>
+                                <li>
+                                    <button
+                                        onClick={logout}
+                                        className="btn btn-ghost text-white hover:bg-red-500/20 hover:text-red-200 rounded-lg px-4 py-2 transition-all duration-200 flex items-center gap-2"
+                                    >
+                                        <HiOutlineLogout size={20} />
+                                        Logout
                                     </button>
-                                </div>
+                                </li>
+                            ) : (
+                                <li className="ml-4">
+                                    <button className="font-bold bg-1 hover:bg-yellow-600 rounded-lg px-4 py-3 transition-colors duration-200">
+                                        <Link to={"/login"} className="flex items-center gap-2 hover:text-inherit">
+                                            <TbLogin2 className="text-xl" />
+                                            Login
+                                        </Link>
+                                    </button>
+                                </li>
                             )}
                         </ul>
                     </div>
                 </div>
 
-                <div className="flex items-center space-x-1">
-                    {isLoggedIn && (
-                        <div className="block md:block lg:hidden">
-                            <Link to={"/profile"}>
-                                <FaUser />
-                            </Link>
-                        </div>
-                    )}
-
-                    {/* Conditional rendering for Login/Logout button */}
+                <div className="flex items-center space-x-3 lg:hidden">
                     {isLoggedIn ? (
-                        <div className="block md:block lg:hidden">
+                        <>
+                            <Link to={"/profile"} className="text-white hover:text-gray-300 transition-colors duration-200">
+                                <FaUser size={18} />
+                            </Link>
                             <button
                                 onClick={logout}
-                                className="btn btn-ghost text-2xl font-medium"
+                                className="text-white hover:text-red-300 transition-colors duration-200 p-1"
                             >
                                 <HiOutlineLogout size={20} />
                             </button>
-                        </div>
+                        </>
                     ) : (
-                        <button className="bg-1 block md:block lg:hidden px-2 py-2 h-10 w-16 rounded-md color-1 text-md font-medium">
-                            <Link to={"/login"}>Login</Link>
+                        <button className="font-bold bg-1 hover:bg-yellow-600 rounded-lg px-4 py-3 transition-colors duration-200">
+                            <Link to={"/login"} className="flex items-center gap-1 hover:text-inherit">
+                                <TbLogin2 size={16} />
+                                Login
+                            </Link>
                         </button>
                     )}
                 </div>
