@@ -2,8 +2,8 @@ export default function Description2({ description }) {
     return (
         <div className="p-2 bg-3 flex flex-col-reverse lg:flex-row gap-8 pt-5">
             {/* Description Section */}
-            <div className="flex-1 p-6">
-                <div className="space-y-6">
+            {description ? <div className="flex-1 p-6" dangerouslySetInnerHTML={{ __html: description }} /> : <span>Loading...</span>}
+                {/* <div className="space-y-6">
                     <div className="bg-gradient-to-r from-red-50 to-white p-6 rounded-lg text-lg">
                         <p className="text-gray-800 leading-relaxed">
                             Experience the Eternal City in just one day with the
@@ -54,8 +54,7 @@ export default function Description2({ description }) {
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
+                </div> */}
         </div>
     );
 }
