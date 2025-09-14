@@ -95,6 +95,8 @@ const Services = (props) => {
           <EditWrapper isEditor={props.isEditor} contentTag={"service-cards"} refreshContent={props.refreshContent}>
             {renderContent('service-cards', props.hasContent, props.getContentByTag)}
           </EditWrapper>
+
+          <div class="grid grid-cols-3 md:grid-cols-3 gap-4 max-w-3xl mx-auto" />
         
         </div>
 
