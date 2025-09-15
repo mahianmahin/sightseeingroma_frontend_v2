@@ -78,18 +78,20 @@ const Services = (props) => {
     <div className="bg-[#F2F2F7] py-8 md:py-16">
       <div className="container mx-auto px-4 md:px-8">
         {/* Hero Section */}
-        <div className="text-center mb-12 md:mb-16">
+        <div className="text-center mb-8 md:mb-16">
           {/* <div className="inline-flex items-center justify-center w-16 h-16 bg-[#930B31] rounded-full mb-6">
             <FaBus className="text-white text-2xl" />
           </div> */}
 
-          <EditWrapper isEditor={props.isEditor} contentTag={"services-title"} refreshContent={props.refreshContent}>
+          {/* services title */}
+          {/* <EditWrapper isEditor={props.isEditor} contentTag={"services-title"} refreshContent={props.refreshContent}>
             {renderContent('services-title', props.hasContent, props.getContentByTag, 'Our Bus Services')}
-          </EditWrapper>
+          </EditWrapper> */}
           
-          <EditWrapper isEditor={props.isEditor} contentTag={"services-subtitle"} refreshContent={props.refreshContent}>
+          {/* servies subtitle */}
+          {/* <EditWrapper isEditor={props.isEditor} contentTag={"services-subtitle"} refreshContent={props.refreshContent}>
             {renderContent('services-subtitle', props.hasContent, props.getContentByTag, 'Reserve your seat from available bus rides. From comfort to budget, explore ticket options for every traveler.')}
-          </EditWrapper>
+          </EditWrapper> */}
           
           {/* Stats Section */}
           <EditWrapper isEditor={props.isEditor} contentTag={"service-cards"} refreshContent={props.refreshContent}>
@@ -195,12 +197,9 @@ const Services = (props) => {
                 <FaBus className="text-gray-400 text-2xl" />
               </div>
               <h3 className="text-xl font-semibold text-gray-800 mb-2">
-                No Buses Available
+                Loading Services...
               </h3>
-              <p className="text-gray-500 max-w-md mx-auto">
-                We don't have any buses available for this category at the moment. 
-                Please check back later or try a different service.
-              </p>
+              <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-[#930B31] my-4"></div>
             </div>
           )}
         </div>

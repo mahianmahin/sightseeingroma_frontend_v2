@@ -39,6 +39,17 @@ const AgentPoint = () => {
                 </Banner2>
             </EditImageWrapper>
 
+            {/* Google Map Embed */}
+            <div className="py-4 mb-5 md:mb-10 px-0 md:px-10">
+                
+                <div className="">
+                    <EditWrapper isEditor={isEditor} contentTag={"agent-point-iframe-code"} refreshContent={refreshContent}>
+                        {renderContent('agent-point-iframe-code', hasContent, getContentByTag, '<p>Loading map...</p>')}
+                    </EditWrapper>
+                </div>
+
+            </div>
+            
             {/* Content Section */}
             <div className="my-8 py-3 space-y-6 px-6 md:px-10">
                 
@@ -48,16 +59,6 @@ const AgentPoint = () => {
 
             </div>
 
-            {/* Google Map Embed */}
-                <div className="py-4 mb-5 md:mb-10 px-0 md:px-10">
-                   
-                    <div className="">
-                        <EditWrapper isEditor={isEditor} contentTag={"agent-point-iframe-code"} refreshContent={refreshContent}>
-                            {renderContent('agent-point-iframe-code', hasContent, getContentByTag, '<p>Loading map...</p>')}
-                        </EditWrapper>
-                    </div>
-
-                </div>
         </div>
         </>);
 };

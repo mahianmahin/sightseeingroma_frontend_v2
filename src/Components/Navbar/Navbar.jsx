@@ -266,7 +266,7 @@ const Navbar = () => {
                             </button>
                         </>
                     ) : (
-                        <button className="font-bold bg-1 hover:bg-yellow-600 rounded-lg px-4 py-3 transition-colors duration-200">
+                        <button className="font-bold bg-1 hover:bg-yellow-600 rounded-lg px-3 py-2 transition-colors duration-200">
                             <Link to={"/login"} className="flex items-center gap-1 hover:text-inherit">
                                 <TbLogin2 size={16} />
                                 Login
