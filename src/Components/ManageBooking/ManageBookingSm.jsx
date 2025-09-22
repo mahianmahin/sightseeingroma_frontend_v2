@@ -350,8 +350,8 @@ const ManageBookingSm = () => {
           return (
             <div className="px-4 md:px-8">
               <div className="py-7 md:py-10">
-                <EditWrapper isEditor={isEditor} contentTag={"ticket-details-similar"} refreshContent={refreshContent}>
-                  {renderContent("ticket-details-similar", hasContent, getContentByTag, '<h1 class="text-2xl font-bold mb-4">Explore Similar Packages</h1>')}
+                <EditWrapper isEditor={isEditor} contentTag={"ticket-details-explore-similar"} refreshContent={refreshContent}>
+                  {renderContent("ticket-details-explore-similar", hasContent, getContentByTag, '<h1 class="text-2xl font-bold mb-4">Explore Similar Packages</h1>')}
                 </EditWrapper>
               </div>
 

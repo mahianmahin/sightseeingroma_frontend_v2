@@ -3,10 +3,13 @@
 // export const baseUrlHashless = "http://127.0.0.1:8000";
 // export const baseMediaUrl = "http://127.0.0.1:8000/media/";
 
-export const baseUrl = "https://sightseeingroma.pythonanywhere.com/";
-export const baseUrlHashless = "https://sightseeingroma.pythonanywhere.com";
-export const baseMediaUrl = "https://sightseeingroma.pythonanywhere.com/media/";
+// export const baseUrl = "https://sightseeingroma.pythonanywhere.com/";
+// export const baseUrlHashless = "https://sightseeingroma.pythonanywhere.com";
+// export const baseMediaUrl = "https://sightseeingroma.pythonanywhere.com/media/";
 
+export const baseUrl = "https://api.sightseeingroma.com/";
+export const baseUrlHashless = "https://api.sightseeingroma.com";
+export const baseMediaUrl = "https://api.sightseeingroma.com/media/";
 
 function scrollToTop() {
     window.scrollTo({
