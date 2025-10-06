@@ -64,12 +64,13 @@ const ManageBookingMd = () => {
           throw new Error('Received content is not JSON');
         }
       })
-      .then(result => setData(result.data))
+      .then(result => { setData(result.data); })
       .catch(error => {
         console.error('Error fetching data:', error);
         setMessage('Failed to load data. Please try again later.');
         setShowMessage(true);
       });
+
 
     // Fetch all packages for similar packages
     const fetchAllPackages = async () => {
@@ -200,9 +201,9 @@ const ManageBookingMd = () => {
           <div className="flex justify-between items-center mb-6 border rounded-lg py-5 px-4">
             <div>
               <h4 className="text-lg font-bold">Adult - € {adultPrice}</h4>
-              
-              <EditWrapper isEditor={isEditor} contentTag={"ticket-details-adult-description"} refreshContent={refreshContent}>
-                {renderContent('ticket-details-adult-description', hasContent, getContentByTag)}
+
+              <EditWrapper isEditor={isEditor} contentTag={`ticket-details-adult-description-${data?.company}`} refreshContent={refreshContent}>
+                {renderContent(`ticket-details-adult-description-${data?.company}`, hasContent, getContentByTag)}
               </EditWrapper>
             
             </div>
@@ -230,8 +231,8 @@ const ManageBookingMd = () => {
             <div>
               <h4 className="text-lg font-bold">Youth - € {youthPrice}</h4>
 
-              <EditWrapper isEditor={isEditor} contentTag={"ticket-details-youth-description"} refreshContent={refreshContent}>
-                {renderContent('ticket-details-youth-description', hasContent, getContentByTag)}
+              <EditWrapper isEditor={isEditor} contentTag={`ticket-details-youth-description-${data?.company}`} refreshContent={refreshContent}>
+                {renderContent(`ticket-details-youth-description-${data?.company}`, hasContent, getContentByTag)}
               </EditWrapper>
             
             </div>

@@ -153,7 +153,7 @@ const Footer = () => {
                                 <li className="text-red-500">{error}</li>
                             ) : (
                                 folders.map((folder) => (
-                                    <Link onClick={() => {scrollToTop();}} key={folder.id} to={`/bus/${folder.company_slug}/${folder.name.toLowerCase()}`}>
+                                    <Link onClick={() => {scrollToTop();}} key={folder.id} to={`/bus/${folder?.company_slug}/${folder?.name.toLowerCase()}`}>
                                         <li>{folder.name}</li>
                                     </Link>
                                 ))
