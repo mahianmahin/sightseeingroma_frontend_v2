@@ -91,17 +91,58 @@ const Success = () => {
                         onClick={async () => {
                             if (!url) return;
                             try {
-                                const response = await fetch(`${baseUrlHashless}${url}`);
-                                const blob = await response.blob();
-                                const link = document.createElement('a');
-                                link.href = window.URL.createObjectURL(blob);
-                                link.download = 'ticket_qr_code.png';
-                                document.body.appendChild(link);
-                                link.click();
-                                document.body.removeChild(link);
-                                window.URL.revokeObjectURL(link.href);
+                                // Method 1: Try using canvas to convert image to blob
+                                const img = new Image();
+                                img.crossOrigin = 'anonymous';
+                                
+                                img.onload = function() {
+                                    try {
+                                        const canvas = document.createElement('canvas');
+                                        const ctx = canvas.getContext('2d');
+                                        canvas.width = img.width;
+                                        canvas.height = img.height;
+                                        ctx.drawImage(img, 0, 0);
+                                        
+                                        canvas.toBlob(function(blob) {
+                                            const link = document.createElement('a');
+                                            link.href = window.URL.createObjectURL(blob);
+                                            link.download = 'ticket_qr_code.png';
+                                            document.body.appendChild(link);
+                                            link.click();
+                                            document.body.removeChild(link);
+                                            window.URL.revokeObjectURL(link.href);
+                                        }, 'image/png');
+                                    } catch (canvasError) {
+                                        console.error('Canvas method failed:', canvasError);
+                                        // Fallback: Direct link download
+                                        const link = document.createElement('a');
+                                        link.href = `${baseUrlHashless}${url}`;
+                                        link.download = 'ticket_qr_code.png';
+                                        link.target = '_blank';
+                                        document.body.appendChild(link);
+                                        link.click();
+                                        document.body.removeChild(link);
+                                    }
+                                };
+                                
+                                img.onerror = function() {
+                                    console.error('Image load failed, using direct download');
+                                    // Fallback: Direct link download
+                                    const link = document.createElement('a');
+                                    link.href = `${baseUrlHashless}${url}`;
+                                    link.download = 'ticket_qr_code.png';
+                                    link.target = '_blank';
+                                    document.body.appendChild(link);
+                                    link.click();
+                                    document.body.removeChild(link);
+                                };
+                                
+                                img.src = `${baseUrlHashless}${url}`;
+                                
                             } catch (e) {
-                                alert('Failed to download QR code.');
+                                console.error('Download failed:', e);
+                                // Final fallback: Open in new tab
+                                window.open(`${baseUrlHashless}${url}`, '_blank');
                             }
                         }}
                     >
