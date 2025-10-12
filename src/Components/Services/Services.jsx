@@ -15,6 +15,7 @@ const Services = (props) => {
   
   // Filter states
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
+  const [showMobileFilters, setShowMobileFilters] = useState(false);
   const [filters, setFilters] = useState({
     duration: '',
     priceRange: '',
@@ -68,10 +69,15 @@ const Services = (props) => {
     // Apply price range filter
     if (filters.priceRange) {
       const price = parseFloat(bus.adult_price) || 0;
-      const [min, max] = filters.priceRange.split('-').map(p => parseFloat(p.replace('+', '')) || Infinity);
-      if (max === undefined) {
+      const parts = filters.priceRange.split('-');
+      const min = parseFloat(parts[0].replace('+', ''));
+      const max = parts.length > 1 ? parseFloat(parts[1].replace('+', '')) : null;
+      
+      if (max === null) {
+        // For ranges like "60+" where there's no upper limit
         if (price < min) return false;
       } else {
+        // For ranges like "0-20", "20-40", etc.
         if (price < min || price > max) return false;
       }
     }
@@ -126,6 +132,8 @@ const Services = (props) => {
       }
     });
     setActiveFilters(active);
+    // Close mobile filters after applying
+    setShowMobileFilters(false);
   };
 
   // Clear all filters
@@ -140,6 +148,8 @@ const Services = (props) => {
       groupSize: []
     });
     setActiveFilters([]);
+    // Close mobile filters after clearing
+    setShowMobileFilters(false);
   };
 
   // Remove individual filter
@@ -249,9 +259,52 @@ const Services = (props) => {
           {/* Active Service Info */}
         </div>
 
+        {/* Mobile Filter Button - Only visible on small screens when filters are hidden */}
+        <div className="block lg:hidden mb-8">
+          {!showMobileFilters && (
+            <button
+              onClick={() => setShowMobileFilters(true)}
+              className="w-full bg-[#930B31] text-white font-semibold py-4 px-6 rounded-2xl shadow-lg hover:bg-red-800 transition-all duration-300 transform hover:scale-[1.02] flex items-center justify-center gap-3"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.207A1 1 0 013 6.5V4z"></path>
+              </svg>
+              Use Filters
+            </button>
+          )}
+        </div>
+
         {/* Advanced Filtering Component */}
-        <div className="bg-white rounded-2xl shadow-lg p-6 md:p-8 mb-8">
+        <div className={`bg-white rounded-2xl shadow-lg p-6 md:p-8 mb-8 ${
+          showMobileFilters ? 'block' : 'hidden lg:block'
+        }`}>
+          {/* Mobile Close Button */}
+          <div className="block lg:hidden mb-4">
+            <button
+              onClick={() => setShowMobileFilters(false)}
+              className="w-full bg-gray-100 text-gray-700 font-semibold py-3 px-4 rounded-xl hover:bg-gray-200 transition-all duration-300 flex items-center justify-center gap-2"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
+              </svg>
+              Close Filters
+            </button>
+          </div>
+
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+            
+            {/* Filter Header */}
+            {/* <div className="flex items-center gap-3">
+              <div className="flex items-center justify-center w-10 h-10 bg-[#930B31] rounded-full">
+                <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.207A1 1 0 013 6.5V4z"></path>
+                </svg>
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-gray-900">Filter Options</h3>
+                <p className="text-sm text-gray-600">Refine your search to find the perfect ticket</p>
+              </div>
+            </div> */}
 
             {/* Filter Controls Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 flex-1 lg:max-w-4xl">
@@ -316,7 +369,6 @@ const Services = (props) => {
                   <option value="price-low">Price: Low to High</option>
                   <option value="price-high">Price: High to Low</option>
                   <option value="duration">Duration</option>
-                  <option value="popularity">Popularity</option>
                 </select>
               </div>
             </div>
@@ -384,13 +436,28 @@ const Services = (props) => {
             </div>
           ) : (
             <div className="text-center py-16">
-              <div className="inline-flex items-center justify-center w-16 h-16 bg-gray-100 rounded-full mb-4">
-                <FaBus className="text-gray-400 text-2xl" />
+              <div className="inline-flex items-center justify-center w-16 h-16 bg-red-50 rounded-full mb-6">
+                <svg className="w-8 h-8 text-[#930B31]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                </svg>
               </div>
               <h3 className="text-xl font-semibold text-gray-800 mb-2">
-                Loading Services...
+                No Tickets Found
               </h3>
-              <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-[#930B31] my-4"></div>
+              <p className="text-gray-600 mb-6 max-w-md mx-auto">
+                {activeFilters.length > 0 
+                  ? "No tickets match your current filter criteria. Try adjusting your filters or browse all available tickets."
+                  : "No tickets are currently available in this category. Please check back later or explore other categories."
+                }
+              </p>
+              {activeFilters.length > 0 && (
+                <button
+                  onClick={clearFilters}
+                  className="bg-[#930B31] text-white px-6 py-3 rounded-lg hover:bg-red-800 transition-all duration-300 font-semibold"
+                >
+                  Clear All Filters
+                </button>
+              )}
             </div>
           )}
         </div>
