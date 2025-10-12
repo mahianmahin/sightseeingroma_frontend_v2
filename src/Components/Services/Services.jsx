@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { FaBus, FaMapMarkedAlt, FaTicketAlt, FaRoute } from "react-icons/fa";
+import { FaBus, FaMapMarkedAlt, FaTicketAlt, FaRoute, FaFilter, FaChevronDown, FaTimes } from "react-icons/fa";
 import { baseUrl } from "../../utilities/Utilities";
 import Card from "./Card";
 import EditWrapper from "../Edit_Wrapper/EditWrapper";
@@ -11,7 +11,20 @@ const Services = (props) => {
   const [folders, setFolders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [tabLoading, setTabLoading] = useState(false);
-  const [error, setError] = useState(null);  
+  const [error, setError] = useState(null);
+  
+  // Filter states
+  const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
+  const [filters, setFilters] = useState({
+    duration: '',
+    priceRange: '',
+    availability: '',
+    sortBy: '',
+    features: [],
+    languages: [],
+    groupSize: []
+  });
+  const [activeFilters, setActiveFilters] = useState([]);  
 
   useEffect(() => {
     const fetchData = async () => {
@@ -40,10 +53,107 @@ const Services = (props) => {
     return () => clearTimeout(timeout);
   }, [activeTab]);
 
-  // Filter bus data based on the active folder
-  const filteredData = busData.filter(
-    (bus) => folders[activeTab] && bus.folder === folders[activeTab].id
-  );
+  // Filter bus data based on the active folder and applied filters
+  const filteredData = busData.filter((bus) => {
+    // First filter by active folder
+    const folderMatch = folders[activeTab] && bus.folder === folders[activeTab].id;
+    if (!folderMatch) return false;
+
+    // Apply duration filter
+    if (filters.duration) {
+      const duration = bus.duration?.toLowerCase();
+      if (!duration?.includes(filters.duration.replace('-', ' '))) return false;
+    }
+
+    // Apply price range filter
+    if (filters.priceRange) {
+      const price = parseFloat(bus.adult_price) || 0;
+      const [min, max] = filters.priceRange.split('-').map(p => parseFloat(p.replace('+', '')) || Infinity);
+      if (max === undefined) {
+        if (price < min) return false;
+      } else {
+        if (price < min || price > max) return false;
+      }
+    }
+
+    // Apply availability filter
+    if (filters.availability) {
+      if (filters.availability === 'available' && bus.status !== 'active') return false;
+      if (filters.availability === 'featured' && !bus.is_featured) return false;
+    }
+
+    return true;
+  }).sort((a, b) => {
+    // Apply sorting
+    switch (filters.sortBy) {
+      case 'price-low':
+        return (parseFloat(a.adult_price) || 0) - (parseFloat(b.adult_price) || 0);
+      case 'price-high':
+        return (parseFloat(b.adult_price) || 0) - (parseFloat(a.adult_price) || 0);
+      case 'duration':
+        return (a.duration || '').localeCompare(b.duration || '');
+      default:
+        return 0;
+    }
+  });
+
+  // Handle filter changes
+  const handleFilterChange = (filterType, value) => {
+    setFilters(prev => ({
+      ...prev,
+      [filterType]: value
+    }));
+  };
+
+  // Handle checkbox filters
+  const handleCheckboxFilter = (filterType, value, checked) => {
+    setFilters(prev => ({
+      ...prev,
+      [filterType]: checked 
+        ? [...prev[filterType], value]
+        : prev[filterType].filter(item => item !== value)
+    }));
+  };
+
+  // Apply filters
+  const applyFilters = () => {
+    const active = [];
+    Object.entries(filters).forEach(([key, value]) => {
+      if (Array.isArray(value) && value.length > 0) {
+        active.push(...value.map(v => ({ type: key, value: v })));
+      } else if (value) {
+        active.push({ type: key, value });
+      }
+    });
+    setActiveFilters(active);
+  };
+
+  // Clear all filters
+  const clearFilters = () => {
+    setFilters({
+      duration: '',
+      priceRange: '',
+      availability: '',
+      sortBy: '',
+      features: [],
+      languages: [],
+      groupSize: []
+    });
+    setActiveFilters([]);
+  };
+
+  // Remove individual filter
+  const removeFilter = (filterToRemove) => {
+    const { type, value } = filterToRemove;
+    if (Array.isArray(filters[type])) {
+      handleCheckboxFilter(type, value, false);
+    } else {
+      handleFilterChange(type, '');
+    }
+    setActiveFilters(prev => prev.filter(filter => 
+      !(filter.type === type && filter.value === value)
+    ));
+  };
 
   if (props.loading) {
     return (
@@ -137,17 +247,98 @@ const Services = (props) => {
           </div>
 
           {/* Active Service Info */}
-          {folders[activeTab] && (
-            <div className="text-center mb-6">
-              <div className="inline-flex items-center gap-2 bg-[#FAD502E0] px-4 py-2 rounded-full">
-                <FaTicketAlt className="text-[#930B31]" />
-                <span className="font-medium text-gray-800">
-                  {filteredData.length} Packages Available Here
-                </span>
+        </div>
+
+        {/* Advanced Filtering Component */}
+        <div className="bg-white rounded-2xl shadow-lg p-6 md:p-8 mb-8">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+
+            {/* Filter Controls Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 flex-1 lg:max-w-4xl">
+              
+              {/* Duration Filter */}
+              <div className="relative">
+                <label className="block text-sm font-medium text-gray-700 mb-2">Duration</label>
+                <select 
+                  value={filters.duration}
+                  onChange={(e) => handleFilterChange('duration', e.target.value)}
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-[#930B31] focus:border-[#930B31] transition-colors"
+                >
+                  <option value="">All Durations</option>
+                  <option value="1 day">1 Day</option>
+                  <option value="24 hours">24 Hours</option>
+                  <option value="48 hours">48 Hours</option>
+                  <option value="72 hours">72 Hours</option>
+                  <option value="half day">Half Day</option>
+                  <option value="one run">One Run</option>
+                </select>
+              </div>
+
+              {/* Price Range Filter */}
+              <div className="relative">
+                <label className="block text-sm font-medium text-gray-700 mb-2">Price Range</label>
+                <select 
+                  value={filters.priceRange}
+                  onChange={(e) => handleFilterChange('priceRange', e.target.value)}
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-[#930B31] focus:border-[#930B31] transition-colors"
+                >
+                  <option value="">Any Price</option>
+                  <option value="0-20">€0 - €20</option>
+                  <option value="20-40">€20 - €40</option>
+                  <option value="40-60">€40 - €60</option>
+                  <option value="60+">€60+</option>
+                </select>
+              </div>
+
+              {/* Availability Filter */}
+              <div className="relative">
+                <label className="block text-sm font-medium text-gray-700 mb-2">Availability</label>
+                <select 
+                  value={filters.availability}
+                  onChange={(e) => handleFilterChange('availability', e.target.value)}
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-[#930B31] focus:border-[#930B31] transition-colors"
+                >
+                  <option value="">All Tickets</option>
+                  <option value="available">Available Now</option>
+                  <option value="featured">Featured</option>
+                </select>
+              </div>
+
+              {/* Sort By */}
+              <div className="relative">
+                <label className="block text-sm font-medium text-gray-700 mb-2">Sort By</label>
+                <select 
+                  value={filters.sortBy}
+                  onChange={(e) => handleFilterChange('sortBy', e.target.value)}
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-[#930B31] focus:border-[#930B31] transition-colors"
+                >
+                  <option value="">Default</option>
+                  <option value="price-low">Price: Low to High</option>
+                  <option value="price-high">Price: High to Low</option>
+                  <option value="duration">Duration</option>
+                  <option value="popularity">Popularity</option>
+                </select>
               </div>
             </div>
-          )}
+
+            {/* Filter Actions */}
+            <div className="flex items-center gap-3 lg:gap-2">
+              <button 
+                onClick={applyFilters}
+                className="px-6 py-2.5 bg-[#930B31] text-white font-semibold rounded-lg hover:bg-red-800 transition-all duration-300 transform hover:scale-105 shadow-md hover:shadow-lg"
+              >
+                Apply
+              </button>
+              <button 
+                onClick={clearFilters}
+                className="px-6 py-2.5 bg-gray-100 text-gray-700 font-semibold rounded-lg hover:bg-gray-200 transition-all duration-300"
+              >
+                Clear
+              </button>
+            </div>
+          </div>
         </div>
+
 
         {/* Cards Grid */}
         <div className="container mx-auto px-2 md:px-4">
