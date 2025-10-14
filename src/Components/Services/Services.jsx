@@ -54,11 +54,20 @@ const Services = (props) => {
     return () => clearTimeout(timeout);
   }, [activeTab]);
 
+  // Check if any filters are active
+  const hasActiveFilters = filters.duration || filters.priceRange || filters.availability || filters.sortBy || 
+                          filters.features.length > 0 || filters.languages.length > 0 || filters.groupSize.length > 0;
+
   // Filter bus data based on the active folder and applied filters
   const filteredData = busData.filter((bus) => {
-    // First filter by active folder
-    const folderMatch = folders[activeTab] && bus.folder === folders[activeTab].id;
-    if (!folderMatch) return false;
+    // If filters are active, search across all companies; otherwise filter by active folder
+    if (hasActiveFilters) {
+      // When filters are active, don't filter by folder - show all matching packages
+    } else {
+      // When no filters are active, filter by selected company/folder
+      const folderMatch = folders[activeTab] && bus.folder === folders[activeTab].id;
+      if (!folderMatch) return false;
+    }
 
     // Apply duration filter
     if (filters.duration) {
@@ -150,6 +159,7 @@ const Services = (props) => {
     setActiveFilters([]);
     // Close mobile filters after clearing
     setShowMobileFilters(false);
+    // This will automatically revert to showing only the selected company's packages
   };
 
   // Remove individual filter
@@ -235,24 +245,43 @@ const Services = (props) => {
           </div>
 
           {/* Enhanced Tabs */}
-          <div className="flex flex-wrap justify-center gap-3 md:gap-4 mb-8">
+          <div className={`flex flex-wrap justify-center gap-3 md:gap-4 mb-8 transition-opacity duration-300 ${
+            hasActiveFilters ? 'opacity-50' : 'opacity-100'
+          }`}>
             {folders.map((folder, index) => (
               <button
                 key={folder.id}
                 onClick={() => setActiveTab(index)}
-                className={`group relative px-6 py-3 md:px-8 md:py-4 rounded-xl font-semibold text-sm md:text-base transition-all duration-300 transform hover:scale-105 ${
-                  activeTab === index
+                disabled={hasActiveFilters}
+                className={`group relative px-6 py-3 md:px-8 md:py-4 rounded-xl font-semibold text-sm md:text-base transition-all duration-300 transform ${
+                  !hasActiveFilters ? 'hover:scale-105' : 'cursor-not-allowed'
+                } ${
+                  activeTab === index && !hasActiveFilters
                     ? "bg-[#930B31] text-white shadow-lg shadow-red-900/25"
+                    : hasActiveFilters
+                    ? "bg-gray-200 text-gray-400"
                     : "bg-gray-100 text-gray-700 hover:bg-gray-200 hover:text-[#930B31]"
                 }`}
               >
                 <span className="relative z-10">{folder.name}</span>
-                {activeTab === index && (
+                {activeTab === index && !hasActiveFilters && (
                   <div className="absolute inset-0 bg-gradient-to-r from-[#930B31] to-red-700 rounded-xl opacity-90"></div>
                 )}
               </button>
             ))}
           </div>
+          
+          {/* Filter Status Indicator */}
+          {hasActiveFilters && (
+            <div className="text-center mb-6">
+              <div className="inline-flex items-center gap-2 bg-blue-50 text-blue-700 px-4 py-2 rounded-lg text-sm font-medium">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                Showing results from all bus companies based on your filters
+              </div>
+            </div>
+          )}
 
           {/* Active Service Info */}
         </div>
