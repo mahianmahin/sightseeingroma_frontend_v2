@@ -198,11 +198,7 @@ const Services = (props) => {
     <div className="bg-[#F2F2F7] py-8 md:py-16">
       <div className="container mx-auto px-4 md:px-8">
         {/* Hero Section */}
-        <div className="text-center mb-8 md:mb-16">
-          {/* <div className="inline-flex items-center justify-center w-16 h-16 bg-[#930B31] rounded-full mb-6">
-            <FaBus className="text-white text-2xl" />
-          </div> */}
-
+        {/* <div className="text-center mb-8 md:mb-16"> */}
           {/* services title */}
           {/* <EditWrapper isEditor={props.isEditor} contentTag={"services-title"} refreshContent={props.refreshContent}>
             {renderContent('services-title', props.hasContent, props.getContentByTag, 'Our Bus Services')}
@@ -214,13 +210,15 @@ const Services = (props) => {
           </EditWrapper> */}
           
           {/* Stats Section */}
-          <EditWrapper isEditor={props.isEditor} contentTag={"service-cards"} refreshContent={props.refreshContent}>
+          {/* <EditWrapper isEditor={props.isEditor} contentTag={"service-cards"} refreshContent={props.refreshContent}>
             {renderContent('service-cards', props.hasContent, props.getContentByTag)}
-          </EditWrapper>
+          </EditWrapper> */}
 
-          <div class="grid grid-cols-3 md:grid-cols-3 gap-4 max-w-3xl mx-auto" />
+          {/* <div class="grid grid-cols-3 md:grid-cols-3 gap-4 max-w-3xl mx-auto" /> */}
         
-        </div>
+        {/* </div> */}
+
+        
 
         {/* Service Selection */}
         <div className="bg-white rounded-2xl shadow-lg p-6 md:p-8 mb-8">
@@ -260,21 +258,21 @@ const Services = (props) => {
         </div>
 
         {/* Mobile Filter Button - Only visible on small screens when filters are hidden */}
-        <div className="block lg:hidden mb-8">
+        <div className="flex justify-end lg:hidden mb-4">
           {!showMobileFilters && (
-            <button
-              onClick={() => setShowMobileFilters(true)}
-              className="w-full bg-[#930B31] text-white font-semibold py-4 px-6 rounded-2xl shadow-lg hover:bg-red-800 transition-all duration-300 transform hover:scale-[1.02] flex items-center justify-center gap-3"
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.207A1 1 0 013 6.5V4z"></path>
-              </svg>
-              Use Filters
-            </button>
-          )}
-        </div>
+            // <button onClick={() => setShowMobileFilters(true)} className="w-20 bg-[#930B31] text-white font-semibold py-2 px-4 rounded-xl shadow-lg hover:bg-red-800 transition-all duration-300 transform hover:scale-[1.02] flex items-center justify-center gap-3">
+            //   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            //     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.207A1 1 0 013 6.5V4z"></path>
+            //   </svg>
+            //   Filter
+            // </button>
+            <div className="mr-2 cursor-pointer" onClick={() => setShowMobileFilters(true)}>
+              <span className="text-[#930B31] underline">USE FILTERS</span>
+            </div>
+            )}
+          </div>
 
-        {/* Advanced Filtering Component */}
+          {/* Advanced Filtering Component */}
         <div className={`bg-white rounded-2xl shadow-lg p-6 md:p-8 mb-8 ${
           showMobileFilters ? 'block' : 'hidden lg:block'
         }`}>
@@ -292,19 +290,6 @@ const Services = (props) => {
           </div>
 
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
-            
-            {/* Filter Header */}
-            {/* <div className="flex items-center gap-3">
-              <div className="flex items-center justify-center w-10 h-10 bg-[#930B31] rounded-full">
-                <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.207A1 1 0 013 6.5V4z"></path>
-                </svg>
-              </div>
-              <div>
-                <h3 className="text-lg font-bold text-gray-900">Filter Options</h3>
-                <p className="text-sm text-gray-600">Refine your search to find the perfect ticket</p>
-              </div>
-            </div> */}
 
             {/* Filter Controls Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 flex-1 lg:max-w-4xl">
