@@ -321,7 +321,7 @@ const Services = (props) => {
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
 
             {/* Filter Controls Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 flex-1 lg:max-w-4xl">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 flex-1 lg:max-w-4xl">
               
               {/* Duration Filter */}
               <div className="relative">
@@ -358,7 +358,7 @@ const Services = (props) => {
               </div>
 
               {/* Availability Filter */}
-              <div className="relative">
+              {/* <div className="relative">
                 <label className="block text-sm font-medium text-gray-700 mb-2">Availability</label>
                 <select 
                   value={filters.availability}
@@ -369,7 +369,7 @@ const Services = (props) => {
                   <option value="available">Available Now</option>
                   <option value="featured">Featured</option>
                 </select>
-              </div>
+              </div> */}
 
               {/* Sort By */}
               <div className="relative">
