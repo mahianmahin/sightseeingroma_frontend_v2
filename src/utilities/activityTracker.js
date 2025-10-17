@@ -62,14 +62,14 @@ export const trackUserActivity = async (
         };
 
         // Send activity data to backend
-        await fetch(`${baseUrl}track-activity/`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                ...(token && { 'Authorization': `Bearer ${token}` })
-            },
-            body: JSON.stringify(activityData)
-        });
+        // await fetch(`${baseUrl}track-activity/`, {
+        //     method: 'POST',
+        //     headers: {
+        //         'Content-Type': 'application/json',
+        //         ...(token && { 'Authorization': `Bearer ${token}` })
+        //     },
+        //     body: JSON.stringify(activityData)
+        // });
 
     } catch (error) {
         console.error('Error tracking activity:', error);
