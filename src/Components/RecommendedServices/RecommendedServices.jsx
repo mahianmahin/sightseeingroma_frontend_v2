@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { baseUrl, baseUrlHashless } from '../../utilities/Utilities.jsx';
 
 const RecommendedServices = ({ recommendedPosition = 2 }) => {
   const [serviceCards, setServiceCards] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     let mounted = true;
@@ -24,7 +26,8 @@ const RecommendedServices = ({ recommendedPosition = 2 }) => {
             image: c.image,
             features: c.card_features ? c.card_features.split(',').map(f => f.trim()) : [],
             badge: c.card_badge,
-            isRecommended: !!c.card_recommended
+            isRecommended: !!c.card_recommended,
+            companySlug: c.company_slug
           }));
 
   // Positioning: `recommendedPosition` (1-based) controls where the recommended card should appear.
@@ -51,6 +54,10 @@ const RecommendedServices = ({ recommendedPosition = 2 }) => {
     fetchCards();
     return () => { mounted = false };
   }, []);
+
+  const handleCardClick = (companySlug) => {
+    navigate(`/company-packages/${companySlug}`);
+  };
 
   if (loading) {
     return (
@@ -92,7 +99,8 @@ const RecommendedServices = ({ recommendedPosition = 2 }) => {
           {serviceCards.map((card) => (
             <div
               key={card.id}
-              className={`group relative overflow-hidden rounded-2xl shadow-lg transition-all duration-500 transform hover:scale-105 hover:shadow-2xl ${
+              onClick={() => handleCardClick(card.companySlug)}
+              className={`group relative overflow-hidden rounded-2xl shadow-lg transition-all duration-500 transform hover:scale-105 hover:shadow-2xl cursor-pointer ${
                 card.isRecommended 
                   ? 'ring-4 ring-yellow-400 scale-105 mb-1 ring-opacity-75 shadow-yellow-400/25' 
                   : 'hover:shadow-xl'
@@ -156,7 +164,7 @@ const RecommendedServices = ({ recommendedPosition = 2 }) => {
                 {/* CTA Button */}
                 <div className="mt-4 hidden xl:block opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-4 group-hover:translate-y-0">
                   <button className="w-full bg-[#930B31] hover:bg-red-700 text-white font-semibold py-3 px-4 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg">
-                    Explore Tours
+                    View All Tickets
                   </button>
                 </div>
               </div>

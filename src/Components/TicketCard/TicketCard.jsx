@@ -103,6 +103,10 @@ const TicketCard = ({ title, subtitle, image, duration, offPrice, ticketCount, p
 
                 {/* Enhanced Pricing Section */}
                 <div onClick={handleBuyNow} className="mb-3 md:mb-4">
+                    <p className="text-[9px] md:text-xs text-gray-500">
+                        <span className="font-medium">Starting from</span>
+                    </p>
+
                     <div className="flex items-center justify-between mb-1 md:mb-2">
                         <div className="flex items-baseline gap-1 md:gap-2">
                             {offPrice && (
@@ -111,18 +115,15 @@ const TicketCard = ({ title, subtitle, image, duration, offPrice, ticketCount, p
                                 </span>
                             )}
                             <span className="text-sm md:text-2xl font-bold text-[#930B31]">
-                                €{price}
+                                €{price2}
                             </span>
                         </div>
                         {offPrice && (
-                            <span className="bg-green-100 text-green-800 text-[9px] md:text-xs font-bold px-1.5 py-0.5 md:px-2 md:py-1 rounded-full">
+                            <span className="bg-yellow-300 text-red-800 text-[9px] md:text-xs font-bold px-1.5 py-0.5 md:px-2 md:py-1 rounded-full">
                                 SAVE {Math.round(((offPrice - price) / offPrice) * 100)}%
                             </span>
                         )}
                     </div>
-                    <p className="text-[9px] md:text-xs text-gray-500">
-                        <span className="font-medium">Starting from</span> • Per person
-                    </p>
                 </div>
 
                 {/* Enhanced Button */}

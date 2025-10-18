@@ -27,6 +27,7 @@ import Profile from '../Page/Profile'
 import RequireAuth from '../Components/RequireAuth'
 import Analytics from '../Page/Analytics'
 import Companies from '../Page/Companies'
+import CompanyThroughCard from '../Page/CompanyThroughCard'
 
 export const router = createBrowserRouter([
   {
@@ -40,6 +41,10 @@ export const router = createBrowserRouter([
       {
         path: '/bus/:companySlug/:companyName',
         element: <Companies />
+      },
+      {
+        path: '/company-packages/:companySlug',
+        element: <CompanyThroughCard />
       },
       // Legacy redirects for SEO compatibility
       {

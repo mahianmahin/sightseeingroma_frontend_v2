@@ -5,7 +5,7 @@ import { baseUrl } from "../../utilities/Utilities";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 
-const Card = ({ title, subtitle, image, duration, offPrice, ticketCount, price, id, company, id1, thumbnail_small, thumbnail_large, thumbnail_small_alt, thumbnail_large_alt }) => {
+const Card = ({ title, subtitle, image, duration, offPrice, ticketCount, price, price2, id, company, id1, thumbnail_small, thumbnail_large, thumbnail_small_alt, thumbnail_large_alt }) => {
     const navigate = useNavigate();
     const [isLargeScreen, setIsLargeScreen] = useState(false);
 
@@ -111,6 +111,10 @@ const Card = ({ title, subtitle, image, duration, offPrice, ticketCount, price, 
 
                     {/* Price Section */}
                     <div className="mb-3 md:mb-4">
+                        <p className="text-[9px] md:text-xs text-gray-500">
+                            <span className="font-medium">Starting from</span>
+                        </p>
+
                         <div className="flex items-baseline gap-1 md:gap-2 mb-1">
                             {offPrice && (
                                 <span className="text-[10px] md:text-sm text-gray-400 line-through font-medium">
@@ -118,15 +122,13 @@ const Card = ({ title, subtitle, image, duration, offPrice, ticketCount, price, 
                                 </span>
                             )}
                             <span className="text-sm md:text-xl font-bold text-[#930B31]">
-                                €{price}
+                                €{price2}
                             </span>
                         </div>
-                        <p className="text-[9px] md:text-xs text-gray-500">
-                            <span className="font-medium">Starting from</span> • Per person
-                        </p>
+                        
                         {offPrice && (
                             <div className="inline-flex items-center mt-1">
-                                <span className="bg-green-100 text-green-800 text-[9px] md:text-xs font-bold px-1 py-0.5 md:px-2 rounded-full">
+                                <span className="bg-yellow-300 text-red-800 text-[9px] md:text-xs font-bold px-1 py-0.5 md:px-2 rounded-full">
                                     SAVE {Math.round(((offPrice - price) / offPrice) * 100)}%
                                 </span>
                             </div>
