@@ -1,45 +1,77 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { baseUrl, baseUrlHashless } from '../../utilities/Utilities.jsx';
 
-const RecommendedServices = () => {
-  const serviceCards = [
-    {
-      id: 1,
-      title: "Big Bus Rome",
-      subtitle: "Premium Sightseeing",
-      description: "Explore Rome's iconic landmarks with our premium double-decker buses featuring live commentary and unlimited hop-on hop-off access.",
-      image: "https://sightseeingroma.com/assets/Big-Bus-Page-Hero-Image-a01d28e0.jpg", // You can replace with actual bus images
-      isRecommended: false,
-      features: ["Live Commentary", "Free WiFi", "Multilingual Audio"]
-    },
-    {
-      id: 2,
-      title: "Green Line Tours",
-      subtitle: "Eco-Friendly Adventure",
-      description: "Discover Rome sustainably with our eco-friendly buses covering all major attractions with flexible timing and routes.",
-      image: "https://sightseeingroma.com/assets/GreenLine-Bus-Hero-Image-8b913ddc.jpg",
-      isRecommended: true,
-      badge: "Recommended",
-      features: ["Eco-Friendly", "Flexible Routes", "All Major Sites"]
-    },
-    {
-      id: 3,
-      title: "City Sightseeing",
-      subtitle: "Classic Rome Experience",
-      description: "The traditional way to see Rome with our classic red buses, professional guides, and comprehensive city coverage.",
-      image: "https://sightseeingroma.com/assets/CitySightSeeing-Bus-Hero-Image-4adc37a7.jpg",
-      isRecommended: false,
-      features: ["Professional Guides", "Comprehensive Coverage", "Classic Experience"]
-    },
-    {
-      id: 4,
-      title: "I Love Rome",
-      subtitle: "Authentic Local Tours",
-      description: "Experience Rome like a local with intimate group tours, hidden gems, and authentic Italian hospitality.",
-      image: "https://sightseeingroma.com/assets/I-Love-Rome-Bus-Hero-Image-1f39291f.jpg",
-      isRecommended: false,
-      features: ["Local Experience", "Hidden Gems", "Small Groups"]
-    }
-  ];
+const RecommendedServices = ({ recommendedPosition = 2 }) => {
+  const [serviceCards, setServiceCards] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    let mounted = true;
+    const fetchCards = async () => {
+      try {
+        const res = await fetch(`${baseUrl}api/cards/`);
+        if (!res.ok) throw new Error('Failed to fetch cards');
+        const data = await res.json();
+        if (!mounted) return;
+        let parsed = (data.cards || [])
+          .filter(c => c.card_active)
+          .map(c => ({
+            id: c.id,
+            title: c.card_title,
+            subtitle: c.card_subtitle,
+            description: c.card_description,
+            image: c.image,
+            features: c.card_features ? c.card_features.split(',').map(f => f.trim()) : [],
+            badge: c.card_badge,
+            isRecommended: !!c.card_recommended
+          }));
+
+  // Positioning: `recommendedPosition` (1-based) controls where the recommended card should appear.
+  // You can pass a prop to this component to change it, e.g. <RecommendedServices recommendedPosition={1} />
+  const recIndex = parsed.findIndex(p => p.isRecommended);
+        if (recIndex !== -1) {
+          const [recCard] = parsed.splice(recIndex, 1);
+          // compute desired index in the array after removal
+          let desiredIndex = Math.max(0, Math.min(parsed.length, recommendedPosition - 1));
+          // if the removed index was before the desired index, adjust desiredIndex
+          if (recIndex < desiredIndex) desiredIndex = Math.max(0, desiredIndex - 1);
+          parsed.splice(desiredIndex, 0, recCard);
+        }
+
+        setServiceCards(parsed);
+      } catch (err) {
+        console.error(err);
+        if (mounted) setError(err.message || 'Failed to load cards');
+      } finally {
+        if (mounted) setLoading(false);
+      }
+    };
+
+    fetchCards();
+    return () => { mounted = false };
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="py-12">
+        <div className="container mx-auto px-4 text-center">
+          <div className="inline-block animate-spin rounded-full h-10 w-10 border-b-2 border-[#930B31] mb-4"></div>
+          <p className="text-gray-600">Loading recommended services...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="py-12">
+        <div className="container mx-auto px-4 text-center">
+          <p className="text-red-500">{error}</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="py-12 mb-5 rounded-2xl bg-gradient-to-b from-gray-50 to-white">
@@ -75,7 +107,7 @@ const RecommendedServices = () => {
                       <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="currentColor" viewBox="0 0 20 20">
                         <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                       </svg>
-                      {card.badge}
+                      {card.badge || 'Recommended'}
                     </div>
                   </div>
                 </div>
@@ -84,7 +116,7 @@ const RecommendedServices = () => {
               {/* Background Image */}
               <div className="absolute inset-0">
                 <img
-                  src={card.image}
+                  src={`${baseUrlHashless}${card.image}`}
                   alt={card.title}
                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                 />
@@ -95,7 +127,7 @@ const RecommendedServices = () => {
               {/* Content */}
               <div className="relative z-10 h-full flex flex-col justify-end py-6 px-3 sm:p-6 text-white">
                 {/* Features Pills */}
-                <div className="hidden sm:block mb-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <div className="hidden xl:block mb-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                   <div className="flex flex-wrap gap-2">
                     {card.features.map((feature, index) => (
                       <span
@@ -116,13 +148,13 @@ const RecommendedServices = () => {
                   <p className=" text-sm sm:text-lg text-yellow-300 font-semibold mb-3 text-shadow">
                     {card.subtitle}
                   </p>
-                  <p className="hidden sm:block text-sm text-gray-200 leading-relaxed opacity-90 text-shadow">
+                  <p className="hidden xl:block text-sm text-gray-200 leading-relaxed opacity-90 text-shadow">
                     {card.description}
                   </p>
                 </div>
 
                 {/* CTA Button */}
-                <div className="mt-4 hidden sm:block opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-4 group-hover:translate-y-0">
+                <div className="mt-4 hidden xl:block opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-4 group-hover:translate-y-0">
                   <button className="w-full bg-[#930B31] hover:bg-red-700 text-white font-semibold py-3 px-4 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg">
                     Explore Tours
                   </button>
