@@ -95,27 +95,26 @@ const RecommendedServices = ({ recommendedPosition = 2 }) => {
         </div>
 
         {/* Cards Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-8">
-          {serviceCards.map((card) => (
-            <div
-              key={card.id}
-              onClick={() => handleCardClick(card.companySlug)}
-              className={`group relative overflow-hidden rounded-2xl shadow-lg transition-all duration-500 transform hover:scale-105 hover:shadow-2xl cursor-pointer ${
-                card.isRecommended 
-                  ? 'ring-4 ring-yellow-400 scale-105 mb-1 ring-opacity-75 shadow-yellow-400/25' 
-                  : 'hover:shadow-xl'
-              }`}
-              style={{ aspectRatio: '9/16' }}
-            >
-              {/* Recommended Badge */}
+          <div className="grid grid-cols-4 md:grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-8">
+            {serviceCards.map((card) => (
+              <div
+                key={card.id}
+                onClick={() => handleCardClick(card.companySlug)}
+                className={`group relative overflow-hidden rounded-lg lg:rounded-2xl shadow-lg transition-all duration-500 transform hover:xl:scale-105 hover:shadow-2xl cursor-pointer aspect-[1/2.75] md:aspect-[9/16] ${
+            card.isRecommended 
+              ? 'ring-4 ring-yellow-400 xl:scale-105 mb-1 ring-opacity-75 shadow-yellow-400/25' 
+              : 'hover:shadow-xl'
+                }`}
+              >
+                {/* Recommended Badge */}
               {card.isRecommended && (
-                <div className="absolute top-3 left-2 sm:top-4 sm:left-4 z-20">
+                <div className="absolute top-1 left-1 sm:top-4 sm:left-4 z-20">
                   <div className="bg-gradient-to-r from-yellow-400 to-yellow-500 text-black font-bold px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm shadow-lg animate-pulse">
                     <div className="flex items-center gap-2">
                       <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="currentColor" viewBox="0 0 20 20">
                         <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                       </svg>
-                      {card.badge || 'Recommended'}
+                      <span className='hidden lg:block'>{card.badge || 'Recommended'}</span>
                     </div>
                   </div>
                 </div>
@@ -150,15 +149,18 @@ const RecommendedServices = ({ recommendedPosition = 2 }) => {
 
                 {/* Main Content */}
                 <div className="transform transition-transform duration-300 group-hover:-translate-y-2">
-                  <h3 className="text-base sm:text-2xl font-bold mb-2 text-shadow-lg">
-                    {card.title}
+                  <h3 className="text-base sm:text-2xl font-bold mb-2 text-shadow-lg inline-block leading-tight [writing-mode:sideways-lr] [text-orientation:upright] sm:[writing-mode:horizontal-tb]">
+                  {card.title}
                   </h3>
-                  <p className=" text-sm sm:text-lg text-yellow-300 font-semibold mb-3 text-shadow">
+
+                  <div className="">
+                  <p className=" text-sm hidden xl:block sm:text-lg text-yellow-300 font-semibold mb-3 text-shadow">
                     {card.subtitle}
                   </p>
                   <p className="hidden xl:block text-sm text-gray-200 leading-relaxed opacity-90 text-shadow">
                     {card.description}
                   </p>
+                  </div>
                 </div>
 
                 {/* CTA Button */}
@@ -172,8 +174,8 @@ const RecommendedServices = ({ recommendedPosition = 2 }) => {
               {/* Glowing Border Animation for Recommended */}
               {card.isRecommended && (
                 <div className="absolute inset-0 rounded-2xl">
-                  <div className="absolute inset-0 rounded-2xl border-4 border-yellow-400 opacity-75 animate-pulse"></div>
-                  <div className="absolute inset-0 rounded-2xl border-2 border-yellow-300 opacity-50 animate-ping"></div>
+                  <div className="absolute inset-0 rounded-lg xl:rounded-2xl border-4 border-yellow-400 opacity-75 animate-pulse"></div>
+                  <div className="absolute inset-0 rounded-lg xl:rounded-2xl border-2 border-yellow-300 opacity-50 animate-ping"></div>
                 </div>
               )}
             </div>
