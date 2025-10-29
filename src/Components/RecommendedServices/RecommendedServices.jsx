@@ -86,8 +86,8 @@ const RecommendedServices = ({ recommendedPosition = 2 }) => {
         {/* Section Header */}
         <div className="text-center mb-12">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-            Choose Your Perfect 
-            <span className="text-[#930B31]"> Rome Experience</span>
+            Live Rome Your Way -  
+            <span className="text-[#930B31]"> Since 2008</span>
           </h2>
           <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto">
             Discover the Eternal City with our premium bus services, each offering unique perspectives and unforgettable memories.
