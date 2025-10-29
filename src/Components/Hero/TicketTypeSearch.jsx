@@ -160,9 +160,9 @@ const TicketTypeSearch = () => {
                                         <span className="font-medium text-sm">
                                             {showEmojis && TICKET_TYPE_EMOJIS[type]} {type}
                                         </span>
-                                        <span className="text-xs opacity-75">
+                                        {/* <span className="text-xs opacity-75">
                                             {type.includes('HOUR') ? 'Unlimited Access' : 'Single Day'}
-                                        </span>
+                                        </span> */}
                                     </div>
                                 </div>
                                 <div 

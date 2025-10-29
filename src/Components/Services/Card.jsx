@@ -121,7 +121,7 @@ const Card = ({ title, subtitle, image, duration, offPrice, ticketCount, price, 
                                     €{offPrice}
                                 </span>
                             )}
-                            <span className="text-sm md:text-xl font-bold text-[#930B31]">
+                            <span className="text-lg md:text-2xl font-bold text-[#930B31]">
                                 €{price2}
                             </span>
                         </div>
@@ -138,18 +138,8 @@ const Card = ({ title, subtitle, image, duration, offPrice, ticketCount, price, 
 
                 {/* Enhanced Buttons */}
                 <div className="flex gap-1 md:gap-2 mt-auto">
-                    <button 
-                        onClick={handleBuyNow} 
-                        className="flex-1 bg-[#930B31] hover:bg-red-700 text-white font-semibold py-1.5 md:py-3 px-2 md:px-4 rounded-lg md:rounded-xl text-[10px] md:text-sm transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl"
-                    >
-                        Book Now
-                    </button>
-                    <button 
-                        onClick={handleViewMore} 
-                        className="flex-1 bg-gray-50 hover:bg-gray-100 text-gray-700 hover:text-[#930B31] font-semibold py-1.5 md:py-3 px-2 md:px-4 rounded-lg md:rounded-xl text-[10px] md:text-sm transition-all duration-200 border border-gray-200 hover:border-[#930B31]"
-                    >
-                        View More
-                    </button>
+                    <button onClick={handleBuyNow} className="flex-1 bg-[#930B31] hover:bg-red-700 text-white font-semibold py-1.5 md:py-3 px-2 md:px-4 rounded-lg md:rounded-xl text-[10px] md:text-sm transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl">Buy Now</button>
+                    {/* <button onClick={handleViewMore} className="flex-1 bg-gray-50 hover:bg-gray-100 text-gray-700 hover:text-[#930B31] font-semibold py-1.5 md:py-3 px-2 md:px-4 rounded-lg md:rounded-xl text-[10px] md:text-sm transition-all duration-200 border border-gray-200 hover:border-[#930B31]">View More</button> */}
                 </div>
             </div>
         </div>

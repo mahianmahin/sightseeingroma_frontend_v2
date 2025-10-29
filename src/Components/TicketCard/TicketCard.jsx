@@ -114,12 +114,12 @@ const TicketCard = ({ title, subtitle, image, duration, offPrice, ticketCount, p
                                     €{offPrice}
                                 </span>
                             )}
-                            <span className="text-sm md:text-2xl font-bold text-[#930B31]">
+                            <span className="text-lg md:text-2xl font-bold text-[#930B31]">
                                 €{price2}
                             </span>
                         </div>
                         {offPrice && (
-                            <span className="bg-yellow-300 text-red-800 text-[9px] md:text-xs font-bold px-1.5 py-0.5 md:px-2 md:py-1 rounded-full">
+                            <span className="bg-yellow-300 text-red-800 text-[10px] md:text-xs font-bold px-1.5 py-0.5 md:px-2 md:py-1 rounded-full">
                                 SAVE {Math.round(((offPrice - price) / offPrice) * 100)}%
                             </span>
                         )}
@@ -128,12 +128,7 @@ const TicketCard = ({ title, subtitle, image, duration, offPrice, ticketCount, p
 
                 {/* Enhanced Button */}
                 <div className="mt-auto">
-                    <button
-                        className="w-full bg-gradient-to-r from-[#930B31] to-red-700 hover:from-red-700 hover:to-[#930B31] text-white font-bold py-2 md:py-3.5 px-4 md:px-6 rounded-lg md:rounded-xl text-[10px] md:text-base transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
-                        onClick={handleBuyNow}
-                    >
-                        Book Your Tickets
-                    </button>
+                    <button className="w-full bg-gradient-to-r from-[#930B31] to-red-700 hover:from-red-700 hover:to-[#930B31] text-white font-bold py-2 md:py-3.5 px-4 md:px-6 rounded-lg md:rounded-xl text-[10px] md:text-base transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl" onClick={handleBuyNow} >Buy Your Tickets</button>
                 </div>
             </div>
         </div>
