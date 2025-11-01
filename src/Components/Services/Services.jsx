@@ -100,17 +100,21 @@ const Services = (props) => {
 
     return true;
   }).sort((a, b) => {
-    // Apply sorting
-    switch (filters.sortBy) {
-      case 'price-low':
-        return (parseFloat(a.adult_price) || 0) - (parseFloat(b.adult_price) || 0);
-      case 'price-high':
-        return (parseFloat(b.adult_price) || 0) - (parseFloat(a.adult_price) || 0);
-      case 'duration':
-        return (a.duration || '').localeCompare(b.duration || '');
-      default:
-        return 0;
+    // Apply custom sorting if sortBy filter is active
+    if (filters.sortBy) {
+      switch (filters.sortBy) {
+        case 'price-low':
+          return (parseFloat(a.adult_price) || 0) - (parseFloat(b.adult_price) || 0);
+        case 'price-high':
+          return (parseFloat(b.adult_price) || 0) - (parseFloat(a.adult_price) || 0);
+        case 'duration':
+          return (a.duration || '').localeCompare(b.duration || '');
+        default:
+          break;
+      }
     }
+    // Default sorting by package_order when no custom sort is applied
+    return (a.package_order || 0) - (b.package_order || 0);
   });
 
   // Handle filter changes

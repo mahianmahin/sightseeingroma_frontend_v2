@@ -34,12 +34,12 @@ const CompanyThroughCard = () => {
         const company = cardsData.cards?.find(card => card.company_slug === companySlug);
         setCompanyInfo(company);
         
-        // Filter packages by company slug
+        // Filter packages by company slug and sort by package_order
         const filteredTickets = packagesData.bus_data?.filter(ticket => {
           // Convert company name to slug format for matching
           const ticketCompanySlug = ticket.company.toLowerCase().replace(/\s+/g, '-');
           return ticketCompanySlug === companySlug;
-        }) || [];
+        }).sort((a, b) => a.package_order - b.package_order) || []; // Sort by package_order
         
         setTickets(filteredTickets);
       } catch (err) {

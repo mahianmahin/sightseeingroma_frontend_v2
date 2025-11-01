@@ -30,13 +30,13 @@ const Companies = () => {
         axios
             .get(`${baseUrl}packages/`)
             .then((response) => {
-                const filteredPackages = response.data.bus_data.filter(
-                    (item) => item.company.toLowerCase() === companyName.toLowerCase()
-                );
+                const filteredPackages = response.data.bus_data
+                    .filter((item) => item.company.toLowerCase() === companyName.toLowerCase())
+                    .sort((a, b) => a.package_order - b.package_order); // Sort by package_order
                 setBusPackages(filteredPackages);
                 setUnfilteredPackages(response.data.bus_data);
             })
-                        .catch((error) => {
+            .catch((error) => {
                 console.error("Error fetching bigBus data:", error);
             });
         scrollToTop();
@@ -227,11 +227,13 @@ const Companies = () => {
                     // Get all unique durations from current company's packages
                     const currentCompanyDurations = [...new Set(busPackages.map(pkg => pkg.duration))];
                     
-                    // Filter packages from other companies with matching durations
-                    const similarPackages = unfilteredPackages.filter(pkg => 
-                        pkg.company.toLowerCase() !== companyName.toLowerCase() && 
-                        currentCompanyDurations.includes(pkg.duration)
-                    );
+                    // Filter packages from other companies with matching durations and sort by package_order
+                    const similarPackages = unfilteredPackages
+                        .filter(pkg => 
+                            pkg.company.toLowerCase() !== companyName.toLowerCase() && 
+                            currentCompanyDurations.includes(pkg.duration)
+                        )
+                        .sort((a, b) => a.package_order - b.package_order); // Sort by package_order
 
                     if (similarPackages.length === 0) {
                         return null; // Don't show section if no similar packages
