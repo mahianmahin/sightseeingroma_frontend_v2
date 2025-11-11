@@ -55,7 +55,7 @@ const HeroBottom = () => {
         return (
             <PartnerLogosEditWrapper onLogosUpdate={handleLogosUpdate}>
                 <div className="bg-[#FAD50266] py-4 md:py-12 overflow-hidden">
-                    <div className="relative mb-0 md:mb-0 mb-0">
+                    <div className="relative mb-0 md:mb-0">
                         <div className="flex animate-pulse">
                             {Array.from({ length: 4 }).map((_, index) => (
                                 <div key={`loading-${index}`} className="flex-shrink-0 mx-10 md:mx-20">
@@ -74,7 +74,7 @@ const HeroBottom = () => {
         return (
             <PartnerLogosEditWrapper onLogosUpdate={handleLogosUpdate}>
                 <div className="bg-[#FAD50266] py-4 md:py-12 overflow-hidden">
-                    <div className="relative mb-0 md:mb-0 mb-0">
+                    <div className="relative mb-0 md:mb-0">
                         <div className="text-center text-gray-500 text-sm">
                             Unable to load partner logos
                         </div>
@@ -87,7 +87,7 @@ const HeroBottom = () => {
     return (
         <PartnerLogosEditWrapper onLogosUpdate={handleLogosUpdate}>
             <div className="bg-[#FAD50266] py-4 md:py-12 overflow-hidden">
-                <div className="relative mb-0 md:mb-0 mb-0">
+                <div className="relative mb-0 md:mb-0">
                     {/* Scrolling Container */}
                     <div className="flex animate-scroll-right">
                         {/* Multiple sets to fill the entire row seamlessly */}
