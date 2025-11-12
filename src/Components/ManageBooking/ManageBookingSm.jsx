@@ -3,7 +3,7 @@ import { FaRegClock } from "react-icons/fa";
 import { FaArrowLeftLong } from "react-icons/fa6";
 import { MdKeyboardArrowRight } from "react-icons/md";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import axios from "axios";
+import axios, { all } from "axios";
 import TicketCard from "../TicketCard/TicketCard";
 import handleStripeCheckout from "../../utilities/stripeCheckout";
 import { baseUrl, baseUrlHashless } from "../../utilities/Utilities";
@@ -354,19 +354,20 @@ const ManageBookingSm = () => {
             pkg.package_tag !== data.package_tag
           ).slice(0, 8); // Limit to 8 similar packages
 
+
           if (similarPackages.length === 0) {
             return null; // Don't show section if no similar packages
           }
 
           return (
-            <div className="px-4 md:px-8">
+            <div className="px-4 md:px-8 pb-4">
               <div className="py-7 md:py-10">
                 <EditWrapper isEditor={isEditor} contentTag={"ticket-details-explore-similar"} refreshContent={refreshContent}>
                   {renderContent("ticket-details-explore-similar", hasContent, getContentByTag, '<h1 class="text-2xl font-bold mb-4">Explore Similar Packages</h1>')}
                 </EditWrapper>
               </div>
 
-              <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-10">
+              <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-10 mb-4">
                 {similarPackages.map((ticket) => (
                   <TicketCard
                     key={`similar-${ticket.id}-${ticket.package_tag}`}
