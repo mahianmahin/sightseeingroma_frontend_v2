@@ -133,7 +133,7 @@ const ManageBookingSm = () => {
   };
 
   return (
-    <div className="min-h-screen pt-24"> {/* Changed from pt-16 to pt-24 */}
+    <div className="min-h-screen pt-[67px]"> {/* Changed from pt-16 to pt-24 */}
       <div>
         <div className="md:hidden block">
         <div>
@@ -142,13 +142,7 @@ const ManageBookingSm = () => {
         </div>
       </div>
 
-      <div className="pt-10 pb-6 px-4">
-        <div className="block md:hidden">
-          <div className="flex items-center gap-5">
-            <FaArrowLeftLong size={15}></FaArrowLeftLong>
-            <p className="font-bold text-md">Checkout</p>
-          </div>
-        </div>
+      <div className="pt-2 lg:pt-10 pb-3 lg:pb-6 px-4">
         <div className="flex text-sm items-center gap-6 py-3">
           <p>{data?.type}</p>
           <div className="flex items-center gap-2">
@@ -171,7 +165,7 @@ const ManageBookingSm = () => {
         </div>
         <h2 className="text-sm  font-semibold mb-2">{data?.title}</h2>
 
-        <div className="flex text-sm items-center gap-0  color-1 font-semibold">
+        <div className="hidden lg:flex text-sm items-center gap-0  color-1 font-semibold">
           <p>Select ticket</p>
           <p>
             <MdKeyboardArrowRight size={20} />

@@ -28,6 +28,8 @@ import RequireAuth from '../Components/RequireAuth'
 import Analytics from '../Page/Analytics'
 import Companies from '../Page/Companies'
 import CompanyThroughCard from '../Page/CompanyThroughCard'
+import EmbeddedCheckout from '../Page/EmbeddedCheckout'
+import PaymentReturn from '../Page/PaymentReturn'
 
 export const router = createBrowserRouter([
   {
@@ -102,6 +104,14 @@ export const router = createBrowserRouter([
       {
         path: '/verify/:code/',
         element: <ProcessTicketsV2></ProcessTicketsV2>
+      },
+      {
+        path: '/checkout',
+        element: <EmbeddedCheckout />
+      },
+      {
+        path: '/payment-return',
+        element: <PaymentReturn />
       },
       {
         path: '/profile',
