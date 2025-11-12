@@ -21,7 +21,7 @@ const ManageBookingMd = () => {
   const { id, status } = useParams();
   const navigate = useNavigate();
   const [data, setData] = useState(null);
-  const [adultCount, setAdultCount] = useState(0);
+  const [adultCount, setAdultCount] = useState(1); // Default to 1 adult ticket
   const [youthCount, setYouthCount] = useState(0);
   const [selectedDate, setSelectedDate] = useState('');
   const [message, setMessage] = useState('');

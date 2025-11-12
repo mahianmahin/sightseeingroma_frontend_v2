@@ -20,7 +20,7 @@ const ManageBookingSm = () => {
   const { id, status } = useParams();
   const navigate = useNavigate();
   const [data, setData] = useState(null);
-  const [adultCount, setAdultCount] = useState(0);
+  const [adultCount, setAdultCount] = useState(1); // Default to 1 adult ticket
   const [youthCount, setYouthCount] = useState(0);
   const [selectedDate, setSelectedDate] = useState('');
   const [message, setMessage] = useState('');
@@ -178,142 +178,159 @@ const ManageBookingSm = () => {
         </div>
       </div>
 
-      <div className="bg-[#F2F2F7] pb-8">
-        <div className="p-4 rounded-lg">
-          <div className="border-2 p-3 rounded-lg bg-white">
-            <h1 className="text-base font-bold py-4">Book Your Tickets</h1>
+      <div className="bg-[#F2F2F7] pb-4 md:pb-8 md:mb-0">
+        <div className="p-3 md:p-4 rounded-lg">
+          <div className="border-2 p-3 md:p-4 rounded-lg bg-white">
+            <h1 className="text-base md:text-lg font-bold pb-3 md:py-4">Book Your Tickets</h1>
 
-            {/* Adult Section */}
-            <div className="mb-6 border rounded-lg p-4 bg-white shadow">
-              <h2 className="text-sm font-bold">Adult - € {adultPrice}</h2>
-              <p className="text-gray-500 text-sm mb-4">
-                Adult: between 19 to 99 years old
-              </p>
-              <div>
-                <div className="flex text-sm items-center justify-between">
-                  <h3 className="color-1 font-bold mb-2">Total price</h3>
-                  <h3 className="color-1 font-bold mb-2 text-right">
-                    Ticket count
-                  </h3>
+            {/* Compact Adult Section */}
+            <div className="mb-3 md:mb-6 border rounded-lg p-3 md:p-4 bg-white shadow">
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex-1">
+                  <h2 className="text-sm font-bold">Adult - €{adultPrice}</h2>
+                  <p className="text-gray-500 text-xs md:text-sm">Age 19-99</p>
                 </div>
-                <div className="flex items-center justify-between border gap-3 p-2 rounded-lg">
-                  <p className="text-base font-bold color-1 py-4">
-                    € {totalAdultPrice}
-                  </p>
-                  <div className="flex items-center gap-3 p-2 rounded-lg bg-[#F2F2F7]">
-                    <button
-                      className="border bg-[#FEF7FF] rounded-md px-3 py-1"
-                      onClick={() =>
-                        setAdultCount(Math.max(0, adultCount - 1))
-                      }
-                    >
-                      −
-                    </button>
-                    <span className="text-sm bg-white px-4 rounded-md">
-                      {adultCount}
-                    </span>
-                    <button
-                      className="border bg-[#FEF7FF] rounded-md px-3 py-1"
-                      onClick={() => setAdultCount(adultCount + 1)}
-                    >
-                      +
-                    </button>
-                  </div>
+                <div className="flex items-center gap-2 md:gap-3 p-1.5 md:p-2 rounded-lg bg-[#F2F2F7]">
+                  <button
+                    className="border bg-[#FEF7FF] rounded-md px-2 md:px-3 py-1 text-sm md:text-base"
+                    onClick={() => setAdultCount(Math.max(0, adultCount - 1))}
+                  >
+                    −
+                  </button>
+                  <span className="text-sm md:text-base bg-white px-3 md:px-4 py-0.5 rounded-md min-w-[32px] md:min-w-[40px] text-center">
+                    {adultCount}
+                  </span>
+                  <button
+                    className="border bg-[#FEF7FF] rounded-md px-2 md:px-3 py-1 text-sm md:text-base"
+                    onClick={() => setAdultCount(adultCount + 1)}
+                  >
+                    +
+                  </button>
                 </div>
+              </div>
+              <div className="flex items-center justify-between pt-2 border-t">
+                <span className="text-xs md:text-sm text-gray-600">Total:</span>
+                <span className="text-base md:text-lg font-bold text-[#930B31]">€{totalAdultPrice}</span>
               </div>
             </div>
 
-            {/* Youth Section */}
-            <div className="mb-6 border rounded-lg p-4 bg-white shadow">
-              <h2 className="text-sm font-bold">Youth - € {youthPrice}</h2>
-              <p className="text-gray-500 text-sm mb-4">
-                Youth: between 6 to 18 years old
-              </p>
-              <div>
-                <div className="flex items-center text-sm justify-between">
-                  <h3 className="color-1 font-bold mb-2">Total price</h3>
-                  <h3 className="color-1 font-bold mb-2 text-right">
-                    Ticket count
-                  </h3>
+            {/* Compact Youth Section */}
+            <div className="mb-3 md:mb-6 border rounded-lg p-3 md:p-4 bg-white shadow">
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex-1">
+                  <h2 className="text-sm font-bold">Youth - €{youthPrice}</h2>
+                  <p className="text-gray-500 text-xs md:text-sm">Age 6-18</p>
                 </div>
-                <div className="flex items-center justify-between border gap-3 p-2 rounded-lg">
-                  <p className="text-base font-bold color-1 py-4">
-                    € {totalYouthPrice}
-                  </p>
-                  <div className="flex items-center gap-3 p-2 rounded-lg bg-[#F2F2F7]">
-                    <button
-                      className="border bg-[#FEF7FF] rounded-md px-3 py-1"
-                      onClick={() =>
-                        setYouthCount(Math.max(0, youthCount - 1))
-                      }
-                    >
-                      −
-                    </button>
-                    <span className="text-lg bg-white px-4 rounded-md">
-                      {youthCount}
-                    </span>
-                    <button
-                      className="border bg-[#FEF7FF] rounded-md px-3 py-1"
-                      onClick={() => setYouthCount(youthCount + 1)}
-                    >
-                      +
-                    </button>
-                  </div>
+                <div className="flex items-center gap-2 md:gap-3 p-1.5 md:p-2 rounded-lg bg-[#F2F2F7]">
+                  <button
+                    className="border bg-[#FEF7FF] rounded-md px-2 md:px-3 py-1 text-sm md:text-base"
+                    onClick={() => setYouthCount(Math.max(0, youthCount - 1))}
+                  >
+                    −
+                  </button>
+                  <span className="text-sm md:text-base bg-white px-3 md:px-4 py-0.5 rounded-md min-w-[32px] md:min-w-[40px] text-center">
+                    {youthCount}
+                  </span>
+                  <button
+                    className="border bg-[#FEF7FF] rounded-md px-2 md:px-3 py-1 text-sm md:text-base"
+                    onClick={() => setYouthCount(youthCount + 1)}
+                  >
+                    +
+                  </button>
                 </div>
+              </div>
+              <div className="flex items-center justify-between pt-2 border-t">
+                <span className="text-xs md:text-sm text-gray-600">Total:</span>
+                <span className="text-base md:text-lg font-bold text-[#930B31]">€{totalYouthPrice}</span>
               </div>
             </div>
 
-            {/* Note */}
-            <p className="text-sm color-1 font-medium mb-4">
-              *Note: Children aged 0-5 years can travel free of charge and do
-              not require a ticket.
-            </p>
+            {/* Compact Note */}
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-2 md:p-3 mb-3 md:mb-4">
+              <p className="text-xs md:text-sm text-blue-800 flex items-start gap-2">
+                <svg className="w-4 h-4 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                </svg>
+                <span>Children aged 0-5 travel free (no ticket required)</span>
+              </p>
+            </div>
 
-            {/* Policies */}
-            <div className="flex space-x-4 pt-8 text-blue-500 text-sm">
-              <Link
-                to={"/returnPolicy"}
-                className="text-blue-600 hover:underline"
-              >
+            {/* Compact Policies */}
+            <div className="flex flex-wrap gap-3 md:gap-4 pt-3 md:pt-4 text-xs md:text-sm border-t">
+              <Link to={"/returnPolicy"} className="text-blue-600 hover:underline flex items-center gap-1">
+                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
                 Return Policy
               </Link>
-              <Link to={"/refund"} className="text-blue-600 hover:underline">
+              <Link to={"/refund"} className="text-blue-600 hover:underline flex items-center gap-1">
+                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
                 Refund Policy
               </Link>
             </div>
           </div>
         </div>
 
-        {/* Summary Section */}
-        <div className="w-full md:w-1/3 px-3">
-          <div className="border-4 border-gray-400 p-6 rounded-lg shadow">
-            <h3 className="text-xl font-semibold mb-4">Summary</h3>
-            <div className="mb-2">
-              <p className="flex justify-between items-center space-y-3">
-                <span>Total ticket price (adult):</span>
-                <span className="font-bold">€ {totalAdultPrice}</span>
-              </p>
-              <p className="flex justify-between items-center space-y-3">
-                <span>Total ticket price (youth):</span>
-                <span className="font-bold">€ {totalYouthPrice}</span>
-              </p>
+        {/* Compact Summary Section - Sticky on Mobile */}
+        <div className="fixed bottom-0 left-0 right-0 md:relative md:w-1/3 px-3 z-50 md:z-auto">
+          <div className="border-2 md:border-4 border-gray-300 md:border-gray-400 p-3 md:p-6 rounded-t-lg md:rounded-lg shadow-lg md:shadow-md bg-white">
+            <h3 className="text-base md:text-xl font-bold mb-2 md:mb-4 text-gray-900">Order Summary</h3>
+            
+            {/* Compact price breakdown */}
+            <div className="space-y-2 mb-3 md:mb-4">
+              {adultCount > 0 && (
+                <div className="flex justify-between items-center text-sm md:text-base">
+                  <span className="text-gray-600">Adult ({adultCount}x):</span>
+                  <span className="font-semibold">€{totalAdultPrice}</span>
+                </div>
+              )}
+              {youthCount > 0 && (
+                <div className="flex justify-between items-center text-sm md:text-base">
+                  <span className="text-gray-600">Youth ({youthCount}x):</span>
+                  <span className="font-semibold">€{totalYouthPrice}</span>
+                </div>
+              )}
             </div>
-            <hr />
-            <div className="flex justify-between space-y-3 font-bold my-4">
-              <span>Total price:</span>
-              <span>€ {totalPrice}</span>
+            
+            <div className="border-t-2 border-gray-200 pt-3 mb-4">
+              <div className="flex justify-between items-center">
+                <span className="text-base md:text-lg font-bold text-gray-900">Total:</span>
+                <span className="text-xl md:text-2xl font-bold text-[#930B31]">€{totalPrice}</span>
+              </div>
             </div>
+            
             <button
-              className={`w-full py-2 rounded ${
+              className={`w-full py-3 md:py-3.5 rounded-lg font-bold text-sm md:text-base transition-all duration-300 ${
                 totalPrice === 0
-                  ? "bg-gray-300 cursor-not-allowed"
-                  : "bg-2 text-white hover:bg-red-800"
+                  ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                  : "bg-[#930B31] text-white hover:bg-red-800 hover:shadow-lg transform hover:scale-[1.02]"
               }`}
               disabled={totalPrice === 0}
               onClick={() => handleStripeCheckoutFunction(adultCount, youthCount)}
             >
-              Buy Tickets
+              {totalPrice === 0 ? "Select Tickets" : "Proceed to Payment"}
             </button>
+            
+            {/* Trust indicators */}
+            <div className="mt-3 md:mt-4 pt-3 border-t border-gray-100">
+              <div className="flex items-center justify-center gap-3 text-xs text-gray-500">
+                <div className="flex items-center gap-1">
+                  <svg className="w-3 h-3 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
+                  </svg>
+                  <span>Secure Transfer</span>
+                </div>
+                <span className="text-gray-300">|</span>
+                <div className="flex items-center gap-1">
+                  <svg className="w-3 h-3 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                  </svg>
+                  <span>Instant Confirm</span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
