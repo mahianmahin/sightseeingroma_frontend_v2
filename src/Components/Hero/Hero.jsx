@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import HeroBottom from "./HeroBottom";
 
 import { baseMediaUrl, baseUrl, baseUrlHashless } from "../../utilities/Utilities";
-import TicketTypeSearch from "./TicketTypeSearch";
 import EditWrapper from "../Edit_Wrapper/EditWrapper";
 import EditImageWrapper from "../Edit_Wrapper/EditImageWrapper";
 import renderContent from "../../utilities/renderContent.jsx";
@@ -45,12 +44,6 @@ const Hero = (props) => {
               </h5>
             </div>
 
-            {/* search box */}
-            <div className="hidden md:block">
-              <div className="w-[100%] mx-auto">
-                <TicketTypeSearch />
-              </div>
-            </div>
           </div>
         </div>
       </EditImageWrapper>
