@@ -13,7 +13,6 @@ import PaymentCancel from '../Page/PaymentCancel'
 import PaymentSuccess from '../Page/PaymentSuccess'
 import Refund from '../Page/Refund'
 import ReturnPolicy from '../Page/ReturnPolicy'
-import SearchPage from '../Page/SearchPage'
 import Success from '../Page/Success'
 import TermsCondition from '../Page/Terms&Condition'
 import Your_Purchased_Tickets from '../Page/Your_Purchased_Tickets'
@@ -85,10 +84,10 @@ export const router = createBrowserRouter([
         path: '/manageBookings/:status/:id',
         element: <ManageBooking></ManageBooking>
       },
-      {
-        path: '/search',
-        element: <SearchPage></SearchPage>
-      },
+      // {
+      //   path: '/search',
+      //   element: <SearchPage></SearchPage>
+      // },
       {
         path: '/viewsimilar/:hours/:company',
         element: <ViewMore></ViewMore>
