@@ -234,7 +234,7 @@ const Services = (props) => {
         {/* </div> */}
 
         {/* Recommended Services Section */}
-        <RecommendedServices />
+        {/* <RecommendedServices /> */}
 
         
 
@@ -485,6 +485,8 @@ const Services = (props) => {
             </div>
           )}
         </div>
+
+        <RecommendedServices />
       </div>
     </div>
   );

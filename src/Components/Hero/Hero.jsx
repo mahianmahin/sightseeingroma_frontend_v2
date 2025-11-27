@@ -144,9 +144,9 @@ const Hero = (props) => {
         </div>
       </div>
 
-      <div className="hidden md:block">
+      {/* <div className="hidden md:block">
         <HeroBottom />
-      </div>
+      </div> */}
     </div>
   );
 };
