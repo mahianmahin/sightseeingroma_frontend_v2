@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaCheck, FaTimes, FaWifi, FaUsers, FaClock, FaMapMarkedAlt } from 'react-icons/fa';
-import { baseUrl } from '../utilities/Utilities';
+import scrollToTop, { baseUrl } from '../utilities/Utilities';
 import Loader from '../Components/Loader/Loader';
+import TicketCard from '../Components/TicketCard/TicketCard';
 
 const TicketComparison = () => {
     const navigate = useNavigate();
@@ -13,6 +14,7 @@ const TicketComparison = () => {
 
     useEffect(() => {
         fetchPackages();
+        scrollToTop();
     }, []);
 
     const fetchPackages = async () => {
@@ -215,54 +217,24 @@ const TicketComparison = () => {
                             Our most popular and highly-rated tour packages, chosen by thousands of satisfied customers
                         </p>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
                             {recommendedPackages.map((pkg) => (
-                                <div key={pkg.id} className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-shadow duration-300">
-                                    <div className="bg-gradient-to-br from-[#930B31] to-red-800 text-white p-6">
-                                        <div className="flex justify-between items-start mb-3">
-                                            <span className="bg-[#FAD502] text-[#930B31] text-xs font-bold px-3 py-1 rounded-full">
-                                                RECOMMENDED
-                                            </span>
-                                        </div>
-                                        <h3 className="font-bold text-xl mb-2 line-clamp-2">{pkg.title}</h3>
-                                        <p className="text-sm opacity-90 capitalize">{pkg.company}</p>
-                                    </div>
-
-                                    <div className="p-6">
-                                        <div className="flex items-baseline gap-2 mb-4">
-                                            <span className="text-3xl font-bold text-[#930B31]">€{pkg.adult_price}</span>
-                                            {pkg.off_price > pkg.adult_price && (
-                                                <span className="text-lg text-gray-400 line-through">€{pkg.off_price}</span>
-                                            )}
-                                        </div>
-
-                                        <div className="space-y-2 mb-6">
-                                            <div className="flex items-center gap-2 text-sm text-gray-600">
-                                                <FaClock className="text-[#930B31]" />
-                                                <span>{pkg.duration}</span>
-                                            </div>
-                                            <div className="flex items-center gap-2 text-sm text-gray-600">
-                                                <FaCheck className="text-green-500" />
-                                                <span>Free WiFi Onboard</span>
-                                            </div>
-                                            <div className="flex items-center gap-2 text-sm text-gray-600">
-                                                <FaCheck className="text-green-500" />
-                                                <span>Audio Guide</span>
-                                            </div>
-                                            <div className="flex items-center gap-2 text-sm text-gray-600">
-                                                <FaCheck className="text-green-500" />
-                                                <span>Hop-On Hop-Off</span>
-                                            </div>
-                                        </div>
-
-                                        <button
-                                            onClick={() => handleViewTicket(pkg.package_tag)}
-                                            className="w-full bg-[#930B31] text-white py-3 rounded-lg font-bold hover:bg-red-800 transition-colors"
-                                        >
-                                            Book Now
-                                        </button>
-                                    </div>
-                                </div>
+                                <TicketCard
+                                    key={pkg.id}
+                                    title={pkg.title}
+                                    subtitle={pkg.type}
+                                    image={pkg.thumbnail_large}
+                                    duration={pkg.duration}
+                                    offPrice={pkg.off_price}
+                                    price={pkg.adult_price}
+                                    price2={pkg.youth_price}
+                                    id={pkg.package_tag}
+                                    status="E9"
+                                    thumbnail_small={pkg.thumbnail_small}
+                                    thumbnail_large={pkg.thumbnail_large}
+                                    thumbnail_small_alt={pkg.thumbnail_small_alt}
+                                    thumbnail_large_alt={pkg.thumbnail_large_alt}
+                                />
                             ))}
                         </div>
                     </div>
