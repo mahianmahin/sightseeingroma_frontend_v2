@@ -59,7 +59,7 @@ const TicketComparison = () => {
     return (
         <div className="min-h-screen bg-gray-50">
             {/* Hero Section */}
-            <div className="bg-[#930B31] text-white py-32 pb-16 md:py-24">
+            <div className="bg-[#930B31] text-white py-32 pb-16">
                 <div className="container mx-auto px-4">
                     <h1 className="text-3xl md:text-5xl font-bold text-center mb-4">
                         Compare Bus Tour Tickets

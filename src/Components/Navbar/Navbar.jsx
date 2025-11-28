@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { LuHome } from "react-icons/lu";
+import { LuHome, LuTicket } from "react-icons/lu";
 import { MdOutlineLocationOn } from "react-icons/md";
 import { BsInfoCircle } from "react-icons/bs";
 import { TbLogin2, TbLogout2 } from "react-icons/tb";
@@ -227,8 +227,18 @@ const Navbar = () => {
                                 </>
                             )}
 
+                            {/* Buy Tickets Button */}
+                            <li className="ml-4">
+                                <button className="font-bold bg-1 hover:bg-yellow-600 rounded-lg px-4 py-3 transition-colors duration-200">
+                                    <Link to={"/compare-tickets"} className="flex items-center gap-2 hover:text-inherit">
+                                        <LuTicket className="text-xl" />
+                                        Buy Tickets
+                                    </Link>
+                                </button>
+                            </li>
+
                             {/* Authentication button */}
-                            {isLoggedIn ? (
+                            {isLoggedIn && (
                                 <li>
                                     <button
                                         onClick={logout}
@@ -238,22 +248,20 @@ const Navbar = () => {
                                         Logout
                                     </button>
                                 </li>
-                            ) : (
-                                <li className="ml-4">
-                                    <button className="font-bold bg-1 hover:bg-yellow-600 rounded-lg px-4 py-3 transition-colors duration-200">
-                                        <Link to={"/login"} className="flex items-center gap-2 hover:text-inherit">
-                                            <TbLogin2 className="text-xl" />
-                                            Login
-                                        </Link>
-                                    </button>
-                                </li>
                             )}
                         </ul>
                     </div>
                 </div>
 
                 <div className="flex items-center space-x-3 lg:hidden">
-                    {isLoggedIn ? (
+                    {/* Buy Tickets Button - Mobile (Icon Only) */}
+                    <button className="font-bold bg-1 hover:bg-yellow-600 rounded-lg p-2.5 transition-colors duration-200">
+                        <Link to={"/compare-tickets"} className="flex items-center hover:text-inherit">
+                            <LuTicket size={18} />
+                        </Link>
+                    </button>
+
+                    {isLoggedIn && (
                         <>
                             <Link to={"/profile"} className="text-white hover:text-gray-300 transition-colors duration-200">
                                 <FaUser size={18} />
@@ -265,13 +273,6 @@ const Navbar = () => {
                                 <HiOutlineLogout size={20} />
                             </button>
                         </>
-                    ) : (
-                        <button className="font-bold bg-1 hover:bg-yellow-600 rounded-lg px-3 py-2 transition-colors duration-200">
-                            <Link to={"/login"} className="flex items-center gap-1 hover:text-inherit">
-                                <TbLogin2 size={16} />
-                                Login
-                            </Link>
-                        </button>
                     )}
                 </div>
             </div>
