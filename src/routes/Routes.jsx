@@ -29,6 +29,7 @@ import Companies from '../Page/Companies'
 import CompanyThroughCard from '../Page/CompanyThroughCard'
 import EmbeddedCheckout from '../Page/EmbeddedCheckout'
 import PaymentReturn from '../Page/PaymentReturn'
+import TicketComparison from '../Page/TicketComparison'
 
 export const router = createBrowserRouter([
   {
@@ -46,6 +47,10 @@ export const router = createBrowserRouter([
       {
         path: '/company-packages/:companySlug',
         element: <CompanyThroughCard />
+      },
+      {
+        path: '/compare-tickets',
+        element: <TicketComparison />
       },
       // Legacy redirects for SEO compatibility
       {

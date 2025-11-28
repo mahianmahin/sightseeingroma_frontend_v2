@@ -16,7 +16,7 @@ const Hero = (props) => {
   const heroImageUrl = heroImageData?.image?.file ? `${baseUrlHashless}${heroImageData.image.file}` : null;
 
   const handleBuyTickets = () => {
-    navigate('/search');
+    navigate('/compare-tickets');
   };
 
   const ServiceBar = () => (
