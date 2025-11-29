@@ -4,6 +4,7 @@ import Hero from '../Components/Hero/Hero';
 import HeroBottom from '../Components/Hero/HeroBottom';
 import Work from '../Components/How-Its-Work/Work';
 import Services from '../Components/Services/Services';
+import SectionNav from '../Components/SectionNav/SectionNav';
 import HelmetWrapper from "../utilities/HelmetWrapper";
 import useEditorCheck from '../hooks/useEditorCheck';
 import EditPanelSheet from '../Components/EditPanel/EditPanelSheet';
@@ -25,17 +26,24 @@ const Home = () => {
 
                     <Hero isEditor={isEditor} loading={loading} hasContent={hasContent} getContentByTag={getContentByTag} getImageByTag={getImageByTag} refreshContent={refreshContent}></Hero>
 
-                    <Services isEditor={isEditor} loading={loading} hasContent={hasContent} getContentByTag={getContentByTag} refreshContent={refreshContent}></Services>
-                    {/* <div className="block md:hidden">
-                        <HeroBottom></HeroBottom>
-                    </div> */}
-
-                    <Work isEditor={isEditor} hasContent={hasContent} getContentByTag={getContentByTag} getImageByTag={getImageByTag} refreshContent={refreshContent}></Work>
+                    {/* Section Navigation */}
+                    <SectionNav />
 
 
-                    {/* <Banner isEditor={isEditor} loading={loading} hasContent={hasContent} getContentByTag={getContentByTag} getImageByTag={getImageByTag} refreshContent={refreshContent}></Banner> */}
+                    {/* Tickets Section */}
+                    <div id="tickets">
+                        <Services isEditor={isEditor} loading={loading} hasContent={hasContent} getContentByTag={getContentByTag} refreshContent={refreshContent}></Services>
+                    </div>
+                    
+                    {/* Features Section */}
+                    <div id="features">
+                        <Work isEditor={isEditor} hasContent={hasContent} getContentByTag={getContentByTag} getImageByTag={getImageByTag} refreshContent={refreshContent}></Work>
+                    </div>
 
-                    <Contact isEditor={isEditor} loading={loading} hasContent={hasContent} getContentByTag={getContentByTag} getImageByTag={getImageByTag} refreshContent={refreshContent}></Contact>
+                    {/* Routes Section */}
+                    <div id="routes">
+                        <Contact isEditor={isEditor} loading={loading} hasContent={hasContent} getContentByTag={getContentByTag} getImageByTag={getImageByTag} refreshContent={refreshContent}></Contact>
+                    </div>
 
                 </div>
             </div>
