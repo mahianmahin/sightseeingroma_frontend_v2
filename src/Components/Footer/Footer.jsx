@@ -19,6 +19,7 @@ const Footer = () => {
         instagram: "https://www.instagram.com/sightseeingroma"
     });
     const [socialLoading, setSocialLoading] = useState(true);
+    const [showCredit, setShowCredit] = useState(true);
 
     useEffect(() => {
         const fetchFolders = async () => {
@@ -49,6 +50,8 @@ const Footer = () => {
                             facebook: result.data.website_facebook || socialLinks.facebook,
                             instagram: result.data.website_instagram || socialLinks.instagram
                         });
+                        // Set credit visibility - default to true if not set
+                        setShowCredit(result.data.credit !== undefined ? result.data.credit : true);
                     }
                 }
             } catch (error) {
@@ -266,9 +269,11 @@ const Footer = () => {
                 </div>
             </div>
             
-            <div className="container mx-auto px-4 border-gray-700 flex flex-col-reverse md:flex-row items-start md:items-center justify-between text-sm space-y-4 md:space-y-0">
-                <p>Designed & Developed by <a href="https://wa.me/8801762142364" target="_blank" rel="noopener noreferrer" className="text-yellow-500">Mahian Mahin</a>.</p>
-            </div>
+            {showCredit && (
+                <div className="container mx-auto px-4 border-gray-700 flex flex-col-reverse md:flex-row items-start md:items-center justify-between text-sm space-y-4 md:space-y-0">
+                    <p>Designed & Developed by <a href="https://wa.me/8801762142364" target="_blank" rel="noopener noreferrer" className="text-yellow-500">Mahian Mahin</a>.</p>
+                </div>
+            )}
 
         </div>
     );
