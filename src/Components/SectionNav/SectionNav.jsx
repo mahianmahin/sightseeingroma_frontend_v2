@@ -1,12 +1,14 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { FaStar, FaTicketAlt, FaRoute } from 'react-icons/fa';
 
 const SectionNav = () => {
     const [activeSection, setActiveSection] = useState('features');
+    const [isSticky, setIsSticky] = useState(false);
+    const sectionNavRef = useRef(null);
 
     const sections = [
-        { id: 'features', label: 'FEATURES', icon: FaStar },
         { id: 'tickets', label: 'TICKETS', icon: FaTicketAlt },
+        { id: 'features', label: 'FEATURES', icon: FaStar },
         { id: 'routes', label: 'ROUTES', icon: FaRoute }
     ];
 
@@ -31,6 +33,14 @@ const SectionNav = () => {
         const handleScroll = () => {
             const scrollPosition = window.scrollY + 150;
 
+            // Check if the component is actually stuck at the top
+            // by comparing its position to the viewport top
+            if (sectionNavRef.current) {
+                const rect = sectionNavRef.current.getBoundingClientRect();
+                // If the component is at the very top (position 0), it's stuck
+                setIsSticky(rect.top <= 0);
+            }
+
             for (const section of sections) {
                 const element = document.getElementById(section.id);
                 if (element) {
@@ -44,11 +54,14 @@ const SectionNav = () => {
         };
 
         window.addEventListener('scroll', handleScroll);
+        // Call once on mount to set initial state
+        handleScroll();
+        
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
     return (
-        <div className="sticky top-0 z-40 bg-white shadow-md">
+        <div ref={sectionNavRef} className="sticky top-0 z-40 bg-white shadow-md">
             {/* Mobile View - Full Width Buttons */}
             <div className="lg:hidden">
                 <div className="flex w-full">
@@ -60,15 +73,18 @@ const SectionNav = () => {
                             <button
                                 key={section.id}
                                 onClick={() => scrollToSection(section.id)}
-                                className={`flex-1 py-4 px-3 font-bold text-sm transition-all duration-300 relative ${
+                                className={`flex-1 py-3 px-3 font-bold text-sm transition-all duration-300 relative ${
                                     isActive
                                         ? 'bg-[#930B31] text-white'
                                         : 'bg-[#FFF5F5] text-gray-700 hover:bg-[#FFE5E5]'
                                 }`}
                             >
                                 <div className="flex flex-col items-center justify-center gap-1">
-                                    <Icon className={`text-lg ${isActive ? 'text-[#FAD502]' : 'text-[#930B31]'}`} />
-                                    <span className="text-xs">{section.label}</span>
+                                    {/* Hide icons when sticky on mobile */}
+                                    {!isSticky && (
+                                        <Icon className={`text-lg ${isActive ? 'text-[#FAD502]' : 'text-[#930B31]'}`} />
+                                    )}
+                                    <span className={isSticky ? 'text-sm' : 'text-xs'}>{section.label}</span>
                                 </div>
                                 
                                 {/* Active indicator line */}
