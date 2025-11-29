@@ -5,11 +5,13 @@ import HeroBottom from '../Components/Hero/HeroBottom';
 import Work from '../Components/How-Its-Work/Work';
 import Services from '../Components/Services/Services';
 import SectionNav from '../Components/SectionNav/SectionNav';
+import PromoBanner from '../Components/PromoBanner/PromoBanner';
 import HelmetWrapper from "../utilities/HelmetWrapper";
 import useEditorCheck from '../hooks/useEditorCheck';
 import EditPanelSheet from '../Components/EditPanel/EditPanelSheet';
 import useStaticContent from '../hooks/useStaticContent';
 import SEO from '../Components/SEO/SEO';
+import RecommendedServices from '../Components/RecommendedServices/RecommendedServices';
 
 const Home = () => {
     // Use the custom hook for editor check
@@ -34,6 +36,11 @@ const Home = () => {
                     <div id="tickets">
                         <Services isEditor={isEditor} loading={loading} hasContent={hasContent} getContentByTag={getContentByTag} refreshContent={refreshContent}></Services>
                     </div>
+
+                    <PromoBanner />
+                    
+                    <RecommendedServices />
+
                     
                     {/* Features Section */}
                     <div id="features">

@@ -5,6 +5,7 @@ import Card from "./Card";
 import EditWrapper from "../Edit_Wrapper/EditWrapper";
 import renderContent from "../../utilities/renderContent.jsx";
 import RecommendedServices from "../RecommendedServices/RecommendedServices";
+import PromoBanner from "../PromoBanner/PromoBanner.jsx";
 
 const Services = (props) => {
   const [activeTab, setActiveTab] = useState(0);
@@ -485,8 +486,6 @@ const Services = (props) => {
             </div>
           )}
         </div>
-
-        <RecommendedServices />
       </div>
     </div>
   );
