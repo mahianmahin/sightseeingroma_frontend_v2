@@ -1,3 +1,4 @@
+import { InfoIcon } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 import { FaStar, FaTicketAlt, FaRoute } from 'react-icons/fa';
 
@@ -9,7 +10,7 @@ const SectionNav = () => {
     const sections = [
         { id: 'tickets', label: 'TICKETS', icon: FaTicketAlt },
         { id: 'features', label: 'FEATURES', icon: FaStar },
-        { id: 'routes', label: 'ROUTES', icon: FaRoute }
+        { id: 'routes', label: 'GUIDE', icon: FaRoute }
     ];
 
     // Scroll to section

@@ -274,7 +274,7 @@ const Services = (props) => {
                     : "bg-gray-100 text-gray-700 hover:bg-gray-200 hover:text-[#930B31]"
                 }`}
               >
-                <span className="relative z-10">{folder.name}</span>
+                <span className="relative z-10">{folder.display_name}</span>
                 {activeTab === index && !hasActiveFilters && (
                   <div className="absolute inset-0 bg-gradient-to-r from-[#930B31] to-red-700 rounded-xl opacity-90"></div>
                 )}
