@@ -16,6 +16,7 @@ import EditWrapper from "../Edit_Wrapper/EditWrapper";
 import renderContent from "../../utilities/renderContent";
 import Description2 from "../Description/Description2";
 import TicketEditModal from "../TicketEditModal/TicketEditModal";
+import DateSelector from "../DateSelector/DateSelector";
 
 const ManageBookingMd = () => {
   const { id, status } = useParams();
@@ -100,32 +101,33 @@ const ManageBookingMd = () => {
   };
 
   function handleStripeCheckoutFunction(adultCount, youthCount, infantCount) {
-    if (data?.dates && selectedDate === '') {
+    if (selectedDate === '') {
       setMessage("Please select a date first");
       setShowMessage(true);
-    } else {
-      setMessage('');
-      setShowMessage(false);
-      setBigLoader(true);
-
-      const tempElement = document.createElement('div');
-      tempElement.innerHTML = data?.description || '';
-      const cleanText = tempElement.textContent || tempElement.innerText;
-
-      handleStripeCheckout(
-        data?.title || '',
-        cleanText,
-        data?.thumbnail_large ? baseUrlHashless + data.thumbnail_large : (data?.image_big ? baseUrlHashless + data.image_big : ''),
-        selectedDate,
-        adultCount,
-        youthCount,
-        infantCount,
-        navigate,
-        id,
-        status,
-        setBigLoader
-      );
+      return;
     }
+    
+    setMessage('');
+    setShowMessage(false);
+    setBigLoader(true);
+
+    const tempElement = document.createElement('div');
+    tempElement.innerHTML = data?.description || '';
+    const cleanText = tempElement.textContent || tempElement.innerText;
+
+    handleStripeCheckout(
+      data?.title || '',
+      cleanText,
+      data?.thumbnail_large ? baseUrlHashless + data.thumbnail_large : (data?.image_big ? baseUrlHashless + data.image_big : ''),
+      selectedDate,
+      adultCount,
+      youthCount,
+      infantCount,
+      navigate,
+      id,
+      status,
+      setBigLoader
+    );
   }
 
   const { isEditor } = useEditorCheck();
@@ -273,6 +275,15 @@ const ManageBookingMd = () => {
         <div className="w-full md:w-1/3">
           <div className="bg-gray-50 border-4 border-gray-300 p-6 rounded-lg shadow">
             
+            {/* Date Selector - Desktop */}
+            <div className="mb-6">
+              <DateSelector 
+                selectedDate={selectedDate}
+                onDateChange={setSelectedDate}
+                isMobile={false}
+              />
+            </div>
+
             <EditWrapper isEditor={isEditor} contentTag={"ticket-details-summary-title"} refreshContent={refreshContent}>
               {renderContent('ticket-details-summary-title', hasContent, getContentByTag, 'Summary')}
             </EditWrapper>
@@ -292,6 +303,19 @@ const ManageBookingMd = () => {
               <span>Total price:</span>
               <span>€ {totalPrice}</span>
             </div>
+            
+            {/* Validation Message */}
+            {showMessage && message && (
+              <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+                <p className="text-sm text-red-800 flex items-center gap-2">
+                  <svg className="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                  </svg>
+                  {message}
+                </p>
+              </div>
+            )}
+            
             <button
               className={`w-full py-2 rounded ${
                 totalPrice === 0

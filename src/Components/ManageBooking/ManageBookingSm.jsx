@@ -14,6 +14,7 @@ import useStaticContent from "../../hooks/useStaticContent";
 import EditWrapper from "../Edit_Wrapper/EditWrapper";
 import renderContent from "../../utilities/renderContent";
 import TicketEditModal from "../TicketEditModal/TicketEditModal";
+import DateSelector from "../DateSelector/DateSelector";
 
 
 const ManageBookingSm = () => {
@@ -93,32 +94,33 @@ const ManageBookingSm = () => {
   }, [id, status]);
 
   function handleStripeCheckoutFunction(adultCount, youthCount) {
-    if (data?.dates && selectedDate === '') {
+    if (selectedDate === '') {
       setMessage("Please select a date first");
       setShowMessage(true);
-    } else {
-      setMessage('');
-      setShowMessage(false);
-      setBigLoader(true);
-
-      const tempElement = document.createElement('div');
-      tempElement.innerHTML = data?.description || '';
-      const cleanText = tempElement.textContent || tempElement.innerText;
-
-      handleStripeCheckout(
-        data?.title || '',
-        cleanText,
-        data?.thumbnail_small ? baseUrlHashless + data.thumbnail_small : (data?.image_big ? baseUrlHashless + data.image_big : ''),
-        selectedDate,
-        adultCount,
-        youthCount,
-        0, // Assuming infant count is 0 for now
-        navigate,
-        id,
-        status,
-        setBigLoader
-      );
+      return;
     }
+    
+    setMessage('');
+    setShowMessage(false);
+    setBigLoader(true);
+
+    const tempElement = document.createElement('div');
+    tempElement.innerHTML = data?.description || '';
+    const cleanText = tempElement.textContent || tempElement.innerText;
+
+    handleStripeCheckout(
+      data?.title || '',
+      cleanText,
+      data?.thumbnail_small ? baseUrlHashless + data.thumbnail_small : (data?.image_big ? baseUrlHashless + data.image_big : ''),
+      selectedDate,
+      adultCount,
+      youthCount,
+      0, // Assuming infant count is 0 for now
+      navigate,
+      id,
+      status,
+      setBigLoader
+    );
   }
 
   const { isEditor } = useEditorCheck();
@@ -182,6 +184,15 @@ const ManageBookingSm = () => {
         <div className="p-3 md:p-4 rounded-lg">
           <div className="border-2 p-3 md:p-4 rounded-lg bg-white">
             <h1 className="text-base md:text-lg font-bold pb-3 md:py-4">Book Your Tickets</h1>
+
+            {/* Date Selector - Mobile */}
+            <div className="mb-4">
+              <DateSelector 
+                selectedDate={selectedDate}
+                onDateChange={setSelectedDate}
+                isMobile={true}
+              />
+            </div>
 
             {/* Compact Adult Section */}
             <div className="mb-3 md:mb-6 border rounded-lg p-3 md:p-4 bg-white shadow">
@@ -300,6 +311,18 @@ const ManageBookingSm = () => {
                 <span className="text-xl md:text-2xl font-bold text-[#930B31]">€{totalPrice}</span>
               </div>
             </div>
+            
+            {/* Validation Message */}
+            {showMessage && message && (
+              <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+                <p className="text-sm text-red-800 flex items-center gap-2">
+                  <svg className="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                  </svg>
+                  {message}
+                </p>
+              </div>
+            )}
             
             <button
               className={`w-full py-3 md:py-3.5 rounded-lg font-bold text-sm md:text-base transition-all duration-300 ${
