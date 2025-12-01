@@ -191,6 +191,7 @@ const ManageBookingSm = () => {
                 selectedDate={selectedDate}
                 onDateChange={setSelectedDate}
                 isMobile={true}
+                ticketCount={adultCount + youthCount}
               />
             </div>
 

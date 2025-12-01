@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { FaCalendarAlt } from 'react-icons/fa';
 
-const DateSelector = ({ selectedDate, onDateChange, isMobile = false }) => {
-    const [activeOption, setActiveOption] = useState('');
+const DateSelector = ({ selectedDate, onDateChange, isMobile = false, ticketCount = 1 }) => {
+    const [activeOption, setActiveOption] = useState('today');
     const [showCalendar, setShowCalendar] = useState(false);
     const [calendarDate, setCalendarDate] = useState('');
 
@@ -51,6 +51,15 @@ const DateSelector = ({ selectedDate, onDateChange, isMobile = false }) => {
         setShowCalendar(false);
     };
 
+    // Set today as default on mount
+    useEffect(() => {
+        if (!selectedDate) {
+            const todayStr = today.toISOString().split('T')[0];
+            onDateChange(todayStr);
+            setActiveOption('today');
+        }
+    }, []);
+
     // Determine which option is active based on selectedDate
     useEffect(() => {
         if (selectedDate) {
@@ -70,14 +79,16 @@ const DateSelector = ({ selectedDate, onDateChange, isMobile = false }) => {
 
     return (
         <div className={`${isMobile ? 'w-full' : 'w-full md:w-auto'}`}>
-            <h3 className="text-base md:text-lg font-bold mb-3">Select Date</h3>
+            <h3 className="text-sm md:text-lg lg:font-bold mb-3">
+                I need the ticket{ticketCount > 1 ? 's' : ''} for: 
+            </h3>
             
             {/* Date Options */}
             <div className={`grid ${isMobile ? 'grid-cols-3 gap-2' : 'grid-cols-1 md:grid-cols-3 gap-3'} mb-4`}>
                 {/* Today Button */}
                 <button
                     onClick={handleTodayClick}
-                    className={`py-3 px-4 rounded-lg font-semibold text-sm transition-all duration-200 ${
+                    className={`py-3 px-4 rounded lg:rounded-lg font-semibold text-xs md:text-sm transition-all duration-200 ${
                         activeOption === 'today'
                             ? 'bg-[#930B31] text-white shadow-lg'
                             : 'bg-white border-2 border-gray-200 text-gray-700 hover:border-[#930B31] hover:text-[#930B31]'
@@ -89,7 +100,7 @@ const DateSelector = ({ selectedDate, onDateChange, isMobile = false }) => {
                 {/* Tomorrow Button */}
                 <button
                     onClick={handleTomorrowClick}
-                    className={`py-3 px-4 rounded-lg font-semibold text-sm transition-all duration-200 ${
+                    className={`py-3 px-4 rounded lg:rounded-lg font-semibold text-xs md:text-sm transition-all duration-200 ${
                         activeOption === 'tomorrow'
                             ? 'bg-[#930B31] text-white shadow-lg'
                             : 'bg-white border-2 border-gray-200 text-gray-700 hover:border-[#930B31] hover:text-[#930B31]'
@@ -101,7 +112,7 @@ const DateSelector = ({ selectedDate, onDateChange, isMobile = false }) => {
                 {/* Pick a Date Button */}
                 <button
                     onClick={handlePickDateClick}
-                    className={`py-3 px-4 rounded-lg font-semibold text-sm transition-all duration-200 flex items-center justify-center gap-2 ${
+                    className={`py-3 px-4 rounded lg:rounded-lg font-semibold text-xs md:text-sm transition-all duration-200 flex items-center justify-center gap-2 ${
                         activeOption === 'pick'
                             ? 'bg-[#930B31] text-white shadow-lg'
                             : 'bg-white border-2 border-gray-200 text-gray-700 hover:border-[#930B31] hover:text-[#930B31]'
@@ -141,9 +152,9 @@ const DateSelector = ({ selectedDate, onDateChange, isMobile = false }) => {
 
             {/* Selected Date Display */}
             {selectedDate && (
-                <div className="mt-3 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
-                    <p className="text-sm text-yellow-800 flex items-center gap-2">
-                        <FaCalendarAlt className="text-yellow-600" />
+                <div className="">
+                    <p className="text-sm text-red-800 flex items-center gap-2">
+                        <FaCalendarAlt className="text-red-600" />
                         <span className="font-semibold">Selected Date:</span>
                         <span>{formatDate(selectedDate)}</span>
                     </p>
