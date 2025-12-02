@@ -1,6 +1,4 @@
-import { FaPhoneAlt } from "react-icons/fa";
-import { FaLocationDot } from "react-icons/fa6";
-import { IoIosMailUnread } from "react-icons/io";
+import { FaPhoneAlt, FaMapMarkerAlt, FaEnvelope } from "react-icons/fa";
 import { useState, useEffect } from "react";
 import { baseUrl, baseUrlHashless } from "../../utilities/Utilities";
 import GetInTouch from '../../assets/new/Get-in-Touch.jpg';
@@ -47,58 +45,107 @@ const Contact = (props) => {
         fetchContactData();
     }, []);
 
+    const contactItems = [
+        {
+            icon: <FaPhoneAlt />,
+            label: "Call Us",
+            value: contactData.phone,
+            link: `tel:${contactData.phone}`,
+            isExternal: false
+        },
+        {
+            icon: <FaEnvelope />,
+            label: "Email Us",
+            value: contactData.email,
+            link: `mailto:${contactData.email}`,
+            isExternal: false
+        },
+        {
+            icon: <FaMapMarkerAlt />,
+            label: "Visit Us",
+            value: contactData.address,
+            link: contactData.mapLink,
+            isExternal: true
+        }
+    ];
+
     return (
-        <div className="flex flex-col md:flex-row md:justify-between md:items-center p-6 md:p-12 ">
-            {/* Contact Info */}
-            <div className="text-left md:w-1/2 mb-6 md:mb-0">
-                <EditWrapper isEditor={props.isEditor} contentTag={"get-in-touch-label"} refreshContent={props.refreshContent}>
-                    {renderContent('get-in-touch-label', props.hasContent, props.getContentByTag, 'Get in Touch')}
-                </EditWrapper>
-                
-                <EditWrapper isEditor={props.isEditor} contentTag={"get-in-touch-title"} refreshContent={props.refreshContent}>
-                    {renderContent('get-in-touch-title', props.hasContent, props.getContentByTag, 'Get in Touch')}
-                </EditWrapper>
+        <div className="relative w-full bg-white overflow-hidden">
+            <div className="container mx-auto px-4 py-8 lg:py-16">
+                <div className="flex flex-col-reverse lg:flex-row items-center gap-8 lg:gap-16">
+                    
+                    {/* Content Section */}
+                    <div className="w-full lg:w-1/2">
+                        <div className="text-center lg:text-left mb-8">
+                            <h4 className="text-[#FAD502] font-bold uppercase tracking-wider mb-2 text-sm md:text-base">
+                                <EditWrapper isEditor={props.isEditor} contentTag={"get-in-touch-label"} refreshContent={props.refreshContent}>
+                                    {renderContent('get-in-touch-label', props.hasContent, props.getContentByTag, 'Contact Us')}
+                                </EditWrapper>
+                            </h4>
+                            <h2 className="text-3xl lg:text-5xl font-bold text-[#930B31] mb-4">
+                                <EditWrapper isEditor={props.isEditor} contentTag={"get-in-touch-title"} refreshContent={props.refreshContent}>
+                                    {renderContent('get-in-touch-title', props.hasContent, props.getContentByTag, 'Get in Touch')}
+                                </EditWrapper>
+                            </h2>
+                            <div className="text-gray-600 text-base lg:text-lg leading-relaxed">
+                                <EditWrapper isEditor={props.isEditor} contentTag={"get-in-touch-subtitle"} refreshContent={props.refreshContent}>
+                                    {renderContent('get-in-touch-subtitle', props.hasContent, props.getContentByTag, 'We are here to help you with any questions you may have.')}
+                                </EditWrapper>
+                            </div>
+                        </div>
 
-                <EditWrapper isEditor={props.isEditor} contentTag={"get-in-touch-subtitle"} refreshContent={props.refreshContent}>
-                    {renderContent('get-in-touch-subtitle', props.hasContent, props.getContentByTag, 'We would love to hear from you!')}
-                </EditWrapper>
-                
-                {loading ? (
-                    <div className="space-y-2">
-                        <div className="h-6 bg-gray-200 rounded animate-pulse"></div>
-                        <div className="h-6 bg-gray-200 rounded animate-pulse"></div>
-                        <div className="h-6 bg-gray-200 rounded animate-pulse"></div>
+                        {loading ? (
+                            <div className="space-y-4">
+                                {[1, 2, 3].map(i => (
+                                    <div key={i} className="h-16 bg-gray-100 rounded-lg animate-pulse"></div>
+                                ))}
+                            </div>
+                        ) : (
+                            <div className="grid gap-4">
+                                {contactItems.map((item, index) => (
+                                    <a 
+                                        key={index}
+                                        href={item.link}
+                                        target={item.isExternal ? "_blank" : "_self"}
+                                        rel="noopener noreferrer"
+                                        className="group flex items-center gap-4 p-4 rounded-xl bg-gray-50 hover:bg-white border border-gray-100 hover:border-[#FAD502] hover:shadow-md transition-all duration-300"
+                                    >
+                                        <div className="w-12 h-12 rounded-full bg-[#930B31] text-white flex items-center justify-center text-xl group-hover:scale-110 transition-transform duration-300">
+                                            {item.icon}
+                                        </div>
+                                        <div className="flex-1">
+                                            <p className="text-xs text-gray-500 font-semibold uppercase tracking-wide mb-0.5">
+                                                {item.label}
+                                            </p>
+                                            <p className="text-[#930B31] font-bold text-sm md:text-base break-all md:break-normal">
+                                                {item.value}
+                                            </p>
+                                        </div>
+                                    </a>
+                                ))}
+                            </div>
+                        )}
                     </div>
-                ) : (
-                    <ul className="space-y-2 text-sm md:text-base font-bold">
-                        <li className="flex items-center gap-2">
-                            <FaPhoneAlt /> 
-                            <a href={`tel:${contactData.phone}`} target="_blank" rel="noopener noreferrer">
-                                {contactData.phone}
-                            </a>
-                        </li>
-                        <li className="flex items-center gap-2">
-                            <IoIosMailUnread /> 
-                            <a href={`mailto:${contactData.email}`} target="_blank" rel="noopener noreferrer">
-                                {contactData.email}
-                            </a>
-                        </li>
-                        <li className="flex items-center gap-2 underline">
-                            <FaLocationDot /> 
-                            <a href={contactData.mapLink} target="_blank" rel="noopener noreferrer">
-                                {contactData.address}
-                            </a>
-                        </li>
-                    </ul>
-                )}
-            </div>
 
-            {/* Image Section */}
-            <EditImageWrapper isEditor={props.isEditor} uniqueTag="get-in-touch" refreshContent={props.refreshContent} className="w-full md:w-1/2">
-                <div className="w-full md:w-1/2">
-                    <img src={contactImageUrl} alt={contactImageData?.image?.alt_text} className="w-full h-auto rounded-lg object-cover" />
+                    {/* Image Section */}
+                    <div className="w-full lg:w-1/2">
+                        <div className="overflow-hidden">
+                            <EditImageWrapper 
+                                isEditor={props.isEditor} 
+                                uniqueTag="get-in-touch" 
+                                refreshContent={props.refreshContent} 
+                                className="w-full"
+                            >
+                                <img 
+                                    src={contactImageUrl} 
+                                    alt="Contact Us" 
+                                    className="w-full h-auto object-cover" 
+                                />
+                            </EditImageWrapper>
+                        </div>
+                    </div>
                 </div>
-            </EditImageWrapper>
+            </div>
         </div>
     );
 };

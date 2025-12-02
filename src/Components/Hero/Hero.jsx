@@ -61,7 +61,7 @@ const Hero = (props) => {
               </h1>
 
               {/* Subtitle */}
-              <div className="text-lg lg:text-xl mb-8 font-medium leading-relaxed opacity-95">
+              <div className="text-lg lg:text-xl mb-6 font-medium leading-relaxed opacity-95">
                 <EditWrapper isEditor={props.isEditor} contentTag={"hero-subtitle"} refreshContent={props.refreshContent}>
                   {renderContent('hero-subtitle', props.hasContent, props.getContentByTag, "See the Eternal City's legendary landmarks on our Hop-on, Hop-off Rome Big Bus Tour!")}
                 </EditWrapper>
