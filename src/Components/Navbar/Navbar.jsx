@@ -238,7 +238,7 @@ const Navbar = () => {
                             </li>
 
                             {/* Authentication button */}
-                            {isLoggedIn && (
+                            {isLoggedIn ? (
                                 <li>
                                     <button
                                         onClick={logout}
@@ -246,6 +246,16 @@ const Navbar = () => {
                                     >
                                         <HiOutlineLogout size={20} />
                                         Logout
+                                    </button>
+                                </li>
+                            ) : (
+                                <li>
+                                    <button
+                                        onClick={() => handleMenuClick("/login")}
+                                        className="btn btn-ghost text-white hover:bg-blue-500/20 hover:text-blue-200 rounded-lg px-4 py-2 transition-all duration-200 flex items-center gap-2"
+                                    >
+                                        <TbLogin2 size={20} />
+                                        Login
                                     </button>
                                 </li>
                             )}
