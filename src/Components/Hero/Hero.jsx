@@ -68,7 +68,7 @@ const Hero = (props) => {
               </div>
 
               {/* Button & Price Group */}
-              <div className="flex flex-col sm:flex-row items-center gap-6 justify-center lg:justify-start mb-8 lg:mb-12">
+              <div className="flex flex-col sm:flex-row items-center gap-6 justify-center lg:justify-start mb-2 lg:mb-12">
                 <button 
                   onClick={handleBuyTickets}
                   className="bg-[#FAD502] text-[#930B31] font-bold py-3 px-5 lg:py-4 lg:px-8 rounded-lg text-l lg:text-lg hover:bg-yellow-400 transition shadow-lg uppercase tracking-wide transform hover:scale-105 duration-200"
@@ -81,6 +81,11 @@ const Hero = (props) => {
                     {renderContent('hero-price-text', props.hasContent, props.getContentByTag, 'Loading...')}
                   </EditWrapper>
                 </div>
+              </div>
+
+              {/* Mobile TripAdvisor Widget - Shows after price, before image */}
+              <div className="lg:hidden text-white mb-12 flex justify-center">
+                <TripAdvisorWidget />
               </div>
 
               {/* Desktop Widgets */}
@@ -131,11 +136,6 @@ const Hero = (props) => {
                 className="w-full h-auto object-cover"
               />
             </EditImageWrapper>
-          </div>
-
-          {/* Mobile Widgets */}
-          <div className="text-gray-800">
-            <TripAdvisorWidget />
           </div>
           
           <div className="w-full max-w-md">
