@@ -74,18 +74,16 @@ const SectionNav = () => {
                             <button
                                 key={section.id}
                                 onClick={() => scrollToSection(section.id)}
-                                className={`flex-1 py-3 px-3 font-bold text-sm transition-all duration-300 relative ${
+                                className={`flex-1 py-3 px-3 font-bold text-sm transition-all duration-300 relative min-h-[52px] ${
                                     isActive
                                         ? 'bg-[#930B31] text-white'
                                         : 'bg-[#FFF5F5] text-gray-700 hover:bg-[#FFE5E5]'
                                 }`}
                             >
-                                <div className="flex flex-col items-center justify-center gap-1">
-                                    {/* Hide icons when sticky on mobile */}
-                                    {!isSticky && (
-                                        <Icon className={`text-lg ${isActive ? 'text-[#FAD502]' : 'text-[#930B31]'}`} />
-                                    )}
-                                    <span className={isSticky ? 'text-sm' : 'text-xs'}>{section.label}</span>
+                                <div className="flex items-center justify-center gap-2">
+                                    {/* Icons always visible */}
+                                    <Icon className={`text-lg ${isActive ? 'text-[#FAD502]' : 'text-[#930B31]'}`} />
+                                    <span className="text-xs">{section.label}</span>
                                 </div>
                                 
                                 {/* Active indicator line */}

@@ -47,7 +47,7 @@ const Hero = (props) => {
     <div className="w-full">
       {/* Main Hero Section - Red Background */}
       <div className="bg-[#930B31] w-full relative overflow-hidden">
-        <div className="container mx-auto px-4 pt-32 pb-48 lg:pt-40 lg:pb-20">
+        <div className="container mx-auto px-4 pt-24 pb-48 lg:pt-40 lg:pb-20">
           <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-16">
             
             {/* Left Column (Text Content) */}

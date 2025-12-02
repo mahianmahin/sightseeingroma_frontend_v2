@@ -42,10 +42,18 @@ const AgentPoint = () => {
             {/* Google Map Embed */}
             <div className="py-4 mb-5 md:mb-10 px-0 md:px-10">
                 
-                <div className="">
-                    <EditWrapper isEditor={isEditor} contentTag={"agent-point-iframe-code"} refreshContent={refreshContent}>
-                        {renderContent('agent-point-iframe-code', hasContent, getContentByTag, '<p>Loading map...</p>')}
-                    </EditWrapper>
+                <div className="w-full overflow-hidden rounded-lg">
+                    {/* <EditWrapper isEditor={isEditor} contentTag={"agent-point-iframe-code"} refreshContent={refreshContent}>
+                        {hasContent('agent-point-iframe-code') ? (
+                            <div dangerouslySetInnerHTML={{ __html: getContentByTag('agent-point-iframe-code') }} />
+                        ) : (
+                            <div className="flex items-center justify-center h-[480px] bg-gray-100 rounded-lg">
+                                <p className="text-gray-500">Loading map...</p>
+                            </div>
+                        )}
+                    </EditWrapper> */}
+
+                    <iframe src="https://www.google.com/maps/d/u/0/embed?mid=1P0UrlCLUfEB_xT4TmrzdMK0aYOvBSaI&ehbc=2E312F&noprof=1" width="100%" height="480"></iframe>
                 </div>
 
             </div>
