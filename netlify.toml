@@ -1,0 +1,40 @@
+# Netlify configuration file
+# https://docs.netlify.com/configure-builds/file-based-configuration/
+
+[build]
+  # Build command
+  command = "npm run build:sitemap"
+  # Output directory
+  publish = "dist"
+
+# Redirect rules
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+  force = false
+  
+  # Don't redirect sitemap and robots
+  conditions = {path = ["!/sitemap.xml", "!/robots.txt"]}
+
+# Headers for specific files
+[[headers]]
+  for = "/sitemap.xml"
+  [headers.values]
+    Content-Type = "application/xml; charset=utf-8"
+    Cache-Control = "public, max-age=3600"
+
+[[headers]]
+  for = "/robots.txt"
+  [headers.values]
+    Content-Type = "text/plain; charset=utf-8"
+    Cache-Control = "public, max-age=86400"
+
+# Security headers for all pages
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    X-XSS-Protection = "1; mode=block"

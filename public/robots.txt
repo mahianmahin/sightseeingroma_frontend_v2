@@ -1,5 +1,5 @@
 # Robots.txt for https://www.sightseeingroma.com
-# Generated on 2025-12-15T14:15:28.987Z
+# Generated on 2025-12-15T14:40:25.790Z
 
 User-agent: *
 Allow: /
