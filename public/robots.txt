@@ -1,0 +1,22 @@
+# Robots.txt for https://www.sightseeingroma.com
+# Generated on 2025-12-15T14:15:28.987Z
+
+User-agent: *
+Allow: /
+
+# Disallow private/user-specific pages
+Disallow: /analytics
+Disallow: /yourticket
+Disallow: /profile
+Disallow: /success
+Disallow: /cancel
+Disallow: /checkout
+Disallow: /payment-return
+Disallow: /reset-password
+Disallow: /reset-success
+Disallow: /test
+Disallow: /verify/
+Disallow: /success/
+
+# Sitemap location
+Sitemap: https://www.sightseeingroma.com/sitemap.xml

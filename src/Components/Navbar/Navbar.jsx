@@ -230,7 +230,7 @@ const Navbar = () => {
                             {/* Buy Tickets Button */}
                             <li className="ml-4">
                                 <button className="font-bold bg-1 hover:bg-yellow-600 rounded-lg px-4 py-3 transition-colors duration-200">
-                                    <Link to={"/compare-tickets"} className="flex items-center gap-2 hover:text-inherit">
+                                    <Link to={"/company-packages/big-bus"} className="flex items-center gap-2 hover:text-inherit">
                                         <LuTicket className="text-xl" />
                                         Buy Tickets
                                     </Link>
