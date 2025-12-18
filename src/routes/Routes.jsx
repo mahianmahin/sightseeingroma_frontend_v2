@@ -30,6 +30,8 @@ import CompanyThroughCard from '../Page/CompanyThroughCard'
 import EmbeddedCheckout from '../Page/EmbeddedCheckout'
 import PaymentReturn from '../Page/PaymentReturn'
 import TicketComparison from '../Page/TicketComparison'
+import Blogs from '../Page/Blogs'
+import BlogDetail from '../Page/BlogDetail'
 
 export const router = createBrowserRouter([
   {
@@ -51,6 +53,14 @@ export const router = createBrowserRouter([
       {
         path: '/compare-tickets',
         element: <TicketComparison />
+      },
+      {
+        path: '/blogs',
+        element: <Blogs />
+      },
+      {
+        path: '/blog/:slug',
+        element: <BlogDetail />
       },
       // Legacy redirects for SEO compatibility
       {

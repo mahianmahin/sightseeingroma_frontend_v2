@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { LuHome, LuTicket } from "react-icons/lu";
 import { MdOutlineLocationOn } from "react-icons/md";
 import { BsInfoCircle } from "react-icons/bs";
+import { HiOutlineNewspaper } from "react-icons/hi";
 import { TbLogin2, TbLogout2 } from "react-icons/tb";
 import { HiOutlineLogout } from "react-icons/hi";
 import { FaUser, FaHistory } from "react-icons/fa";
@@ -145,6 +146,13 @@ const Navbar = () => {
                                     </>
                                 )}
 
+                                {/* Blog link - available for all users */}
+                                <li onClick={() => handleMenuClick("/blogs")}>
+                                    <a className="text-base font-semibold hover:bg-gray-50 rounded-lg px-3 py-2 transition-colors duration-200">
+                                        <HiOutlineNewspaper className="text-indigo-600" /> Blog
+                                    </a>
+                                </li>
+
                                 <hr className="my-2" />
                               
                                 {/* Authentication button */}
@@ -226,6 +234,13 @@ const Navbar = () => {
                                     </li>
                                 </>
                             )}
+
+                            {/* Blog link - available for all users */}
+                            <li onClick={() => handleMenuClick("/blogs")}>
+                                <a className="hover:bg-white/10 rounded-lg px-4 py-2 transition-all duration-200 flex items-center gap-2">
+                                    <HiOutlineNewspaper className="text-lg" /> Blog
+                                </a>
+                            </li>
 
                             {/* Buy Tickets Button */}
                             <li className="ml-4">
