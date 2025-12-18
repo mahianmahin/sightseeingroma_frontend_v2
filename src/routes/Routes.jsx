@@ -32,6 +32,7 @@ import PaymentReturn from '../Page/PaymentReturn'
 import TicketComparison from '../Page/TicketComparison'
 import Blogs from '../Page/Blogs'
 import BlogDetail from '../Page/BlogDetail'
+import Sitemap from '../Page/Sitemap'
 
 export const router = createBrowserRouter([
   {
@@ -176,5 +177,9 @@ export const router = createBrowserRouter([
         <ResetSuccess />
       </ResetPasswordProvider>
     )
+  },
+  {
+    path: '/sitemap.xml',
+    element: <Sitemap />
   }
 ])
