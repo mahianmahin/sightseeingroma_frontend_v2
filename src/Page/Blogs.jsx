@@ -23,6 +23,29 @@ const Blogs = () => {
     return doc.body.textContent || '';
   };
 
+  // Helper function to clean title HTML (remove comments, fix colors)
+  const cleanTitleHtml = (html) => {
+    if (!html) return '';
+    
+    // Remove HTML comments
+    let cleaned = html.replace(/<!--[\s\S]*?-->/g, '');
+    
+    // Replace text-white with text-gray-800 for visibility on white background
+    cleaned = cleaned.replace(/text-white/g, 'text-gray-800');
+    
+    // Normalize font sizes for card display (replace large sizes with card-appropriate sizes)
+    cleaned = cleaned.replace(/text-4xl/g, 'text-base');
+    cleaned = cleaned.replace(/text-3xl/g, 'text-base');
+    cleaned = cleaned.replace(/text-2xl/g, 'text-base');
+    cleaned = cleaned.replace(/text-xl/g, 'text-sm');
+    cleaned = cleaned.replace(/text-lg/g, 'text-sm');
+    
+    // Remove any leading/trailing whitespace and line breaks
+    cleaned = cleaned.trim();
+    
+    return cleaned;
+  };
+
   // Fetch blog posts
   useEffect(() => {
     setLoading(true);
@@ -159,10 +182,22 @@ const Blogs = () => {
 
                         {/* Content */}
                         <div className="p-5">
-                          <h2 
-                            className="text-lg md:text-xl font-bold text-gray-800 mb-2 line-clamp-2 group-hover:text-[#930B31] transition-colors"
-                            dangerouslySetInnerHTML={{ __html: post.title }}
-                          />
+                          {post.title ? (
+                            <div 
+                              className="mb-2 group-hover:text-[#930B31] transition-colors overflow-hidden"
+                              style={{
+                                display: '-webkit-box',
+                                WebkitLineClamp: 2,
+                                WebkitBoxOrient: 'vertical',
+                                overflow: 'hidden'
+                              }}
+                              dangerouslySetInnerHTML={{ __html: cleanTitleHtml(post.title) }}
+                            />
+                          ) : (
+                            <h2 className="text-lg md:text-xl font-bold text-gray-800 mb-2 line-clamp-2 group-hover:text-[#930B31] transition-colors">
+                              Untitled Post
+                            </h2>
+                          )}
                           
                           <p className="text-gray-600 text-sm mb-4 line-clamp-3">
                             {post.excerpt}
