@@ -17,6 +17,12 @@ const Blogs = () => {
     total_pages: 0
   });
 
+  // Helper function to strip HTML tags
+  const stripHtml = (html) => {
+    const doc = new DOMParser().parseFromString(html, 'text/html');
+    return doc.body.textContent || '';
+  };
+
   // Fetch blog posts
   useEffect(() => {
     setLoading(true);
@@ -141,7 +147,7 @@ const Blogs = () => {
                           {post.featured_image_url ? (
                             <img
                               src={`${baseUrlHashless}${post.featured_image_url}`}
-                              alt={post.featured_image_alt || post.title}
+                              alt={post.featured_image_alt || stripHtml(post.title)}
                               className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                             />
                           ) : (
@@ -153,9 +159,10 @@ const Blogs = () => {
 
                         {/* Content */}
                         <div className="p-5">
-                          <h2 className="text-lg md:text-xl font-bold text-gray-800 mb-2 line-clamp-2 group-hover:text-[#930B31] transition-colors">
-                            {post.title}
-                          </h2>
+                          <h2 
+                            className="text-lg md:text-xl font-bold text-gray-800 mb-2 line-clamp-2 group-hover:text-[#930B31] transition-colors"
+                            dangerouslySetInnerHTML={{ __html: post.title }}
+                          />
                           
                           <p className="text-gray-600 text-sm mb-4 line-clamp-3">
                             {post.excerpt}
