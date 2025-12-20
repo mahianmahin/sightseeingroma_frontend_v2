@@ -7,6 +7,13 @@
   # Output directory
   publish = "dist"
 
+# Sitemap proxy to backend (must be before SPA fallback)
+[[redirects]]
+  from = "/sitemap.xml"
+  to = "https://api.sightseeingroma.com/sitemap.xml"
+  status = 200
+  force = true
+
 # Redirect rules for SPA
 [[redirects]]
   from = "/*"
