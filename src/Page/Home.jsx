@@ -1,3 +1,4 @@
+import React from 'react';
 import Banner from '../Components/Banner/Banner';
 import Contact from '../Components/Contact/Contact';
 import Hero from '../Components/Hero/Hero';
@@ -12,12 +13,15 @@ import EditPanelSheet from '../Components/EditPanel/EditPanelSheet';
 import useStaticContent from '../hooks/useStaticContent';
 import SEO from '../Components/SEO/SEO';
 import RecommendedServices from '../Components/RecommendedServices/RecommendedServices';
+import FeaturedToday from '../Components/FeaturedToday/FeaturedToday';
+import WhyBook from '../Components/WhyBook/WhyBook';
 
 const Home = () => {
     // Use the custom hook for editor check
     const { isEditor, error } = useEditorCheck();
     const staticContentData = useStaticContent('home-page');
     const {getContentByTag, getImageByTag, hasContent, loading, refreshContent} = staticContentData;
+    
 
     return (
         <>
@@ -31,6 +35,10 @@ const Home = () => {
                     {/* Section Navigation */}
                     <SectionNav />
 
+                    {/* Featured Today Section */}
+                    <FeaturedToday isEditor={isEditor} hasContent={hasContent} getContentByTag={getContentByTag} getImageByTag={getImageByTag} refreshContent={refreshContent} />
+
+                    <WhyBook isEditor={isEditor} getImageByTag={getImageByTag} loading={loading} />
 
                     {/* Tickets Section */}
                     <div id="tickets">

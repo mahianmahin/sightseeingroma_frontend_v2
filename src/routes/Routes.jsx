@@ -33,6 +33,7 @@ import TicketComparison from '../Page/TicketComparison'
 import Blogs from '../Page/Blogs'
 import BlogDetail from '../Page/BlogDetail'
 import Sitemap from '../Page/Sitemap'
+import FeaturedOffer from '../Page/FeaturedOffer'
 
 export const router = createBrowserRouter([
   {
@@ -42,6 +43,10 @@ export const router = createBrowserRouter([
       {
         path: '/',
         element: <Home />,
+      },
+      {
+        path: '/featured-today',
+        element: <FeaturedOffer />
       },
       {
         path: '/bus/:companySlug/:companyName',
