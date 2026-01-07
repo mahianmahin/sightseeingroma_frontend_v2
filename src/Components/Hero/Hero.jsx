@@ -23,7 +23,10 @@ const Hero = (props) => {
   };
 
   const handleFeaturedOffer = () => {
-      navigate('/featured-today');
+      const featuredSection = document.getElementById('featured-today');
+      if (featuredSection) {
+          featuredSection.scrollIntoView({ behavior: 'smooth' });
+      }
   };
 
   return (

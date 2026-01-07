@@ -15,6 +15,7 @@ import SEO from '../Components/SEO/SEO';
 import RecommendedServices from '../Components/RecommendedServices/RecommendedServices';
 import FeaturedToday from '../Components/FeaturedToday/FeaturedToday';
 import WhyBook from '../Components/WhyBook/WhyBook';
+import FinalCTA from '../Components/FinalCTA/FinalCTA';
 
 const Home = () => {
     // Use the custom hook for editor check
@@ -39,6 +40,9 @@ const Home = () => {
                     <FeaturedToday isEditor={isEditor} hasContent={hasContent} getContentByTag={getContentByTag} getImageByTag={getImageByTag} refreshContent={refreshContent} />
 
                     <WhyBook isEditor={isEditor} getImageByTag={getImageByTag} loading={loading} />
+
+                    {/* Section 5: Final CTA */}
+                    <FinalCTA isEditor={isEditor} getImageByTag={getImageByTag} loading={loading} />
 
                     {/* Tickets Section */}
                     <div id="tickets">
