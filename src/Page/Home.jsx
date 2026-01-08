@@ -16,6 +16,7 @@ import RecommendedServices from '../Components/RecommendedServices/RecommendedSe
 import FeaturedToday from '../Components/FeaturedToday/FeaturedToday';
 import WhyBook from '../Components/WhyBook/WhyBook';
 import FinalCTA from '../Components/FinalCTA/FinalCTA';
+import CustomerReviews from '../Components/CustomerReviews/CustomerReviews';
 
 const Home = () => {
     // Use the custom hook for editor check
@@ -49,6 +50,8 @@ const Home = () => {
                         <Services isEditor={isEditor} loading={loading} hasContent={hasContent} getContentByTag={getContentByTag} refreshContent={refreshContent}></Services>
                     </div>
 
+                    <CustomerReviews />
+
                     <PromoBanner />
                     
                     <RecommendedServices />
@@ -62,6 +65,11 @@ const Home = () => {
                     {/* Routes Section */}
                     <div id="routes">
                         <Contact isEditor={isEditor} loading={loading} hasContent={hasContent} getContentByTag={getContentByTag} getImageByTag={getImageByTag} refreshContent={refreshContent}></Contact>
+                    </div>
+
+                    {/* Customer Reviews Section */}
+                    <div id="reviews">
+                        <CustomerReviews isEditor={isEditor} loading={loading} hasContent={hasContent} getContentByTag={getContentByTag} refreshContent={refreshContent}></CustomerReviews>
                     </div>
 
                 </div>
