@@ -66,8 +66,8 @@ const CustomerReviews = () => {
                     style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
                 >
                     {reviews.map((review) => (
-                        <div key={review.id} className="min-w-[85vw] md:min-w-[calc(33.333%-1.33rem)] snap-start flex flex-col bg-white rounded-xl shadow-lg shadow-gray-100 hover:shadow-xl transition-shadow duration-300 p-6 md:p-8 h-auto border border-gray-100">
-                           <div className="mb-6 h-48 md:h-56 overflow-hidden rounded-lg bg-gray-100 relative group flex-shrink-0">
+                        <div key={review.id} className="min-w-[85vw] md:min-w-[calc(33.333%-1.33rem)] snap-start flex flex-col bg-white rounded-xl shadow-lg shadow-gray-100 hover:shadow-xl transition-shadow duration-300 h-auto border border-gray-100 overflow-hidden">
+                           <div className="w-full aspect-[3/4] bg-gray-100 relative group flex-shrink-0">
                                 <img 
                                     src={review.image && review.image.startsWith('http') ? review.image : `${baseUrlHashless}${review.image}`} 
                                     alt={`${review.name} - ${review.country}`}
@@ -79,17 +79,19 @@ const CustomerReviews = () => {
                                 />
                             </div>
                             
-                            <div className="flex-grow flex flex-col">
-                                <FaQuoteLeft className="text-gray-300 text-2xl mb-4 flex-shrink-0" />
-                                <blockquote className="text-gray-600 italic font-light leading-relaxed mb-6 text-base md:text-lg flex-grow">
-                                    "{review.review_text}"
-                                </blockquote>
-                            </div>
-                            
-                            <div className="mt-auto border-t border-gray-50 pt-4 flex-shrink-0">
-                                <p className="font-bold text-gray-800 text-lg">
-                                    {review.name} <span className="text-gray-500 font-medium">— {review.country}</span>
-                                </p>
+                            <div className="flex-grow flex flex-col p-6 md:p-8">
+                                <div className="flex-grow flex flex-col">
+                                    <FaQuoteLeft className="text-gray-300 text-2xl mb-4 flex-shrink-0" />
+                                    <blockquote className="text-gray-600 italic font-light leading-relaxed mb-6 text-base md:text-lg flex-grow">
+                                        "{review.review_text}"
+                                    </blockquote>
+                                </div>
+                                
+                                <div className="mt-auto border-t border-gray-50 pt-4 flex-shrink-0">
+                                    <p className="font-bold text-gray-800 text-lg">
+                                        {review.name} <span className="text-gray-500 font-medium">— {review.country}</span>
+                                    </p>
+                                </div>
                             </div>
                         </div>
                     ))}
