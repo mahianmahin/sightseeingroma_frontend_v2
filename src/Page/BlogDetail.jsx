@@ -200,7 +200,8 @@ const BlogDetail = () => {
             <div className="flex flex-wrap items-center gap-4 md:gap-6 text-sm text-white/90">
               <div className="flex items-center gap-2">
                 <FaCalendarAlt className="text-[#FAD502]" />
-                <span>{formatDate(post.published_at)}</span>
+                <span>{formatDate(post.updated_at)}</span>
+                {console.log(post.updated_at)}
               </div>
               <div className="flex items-center gap-2">
                 <FaClock className="text-[#FAD502]" />

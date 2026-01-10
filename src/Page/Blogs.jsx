@@ -207,7 +207,7 @@ const Blogs = () => {
                           <div className="flex flex-wrap items-center gap-4 text-xs text-gray-500">
                             <div className="flex items-center gap-1">
                               <FaCalendarAlt />
-                              <span>{formatDate(post.published_at)}</span>
+                              <span>{formatDate(post.created_at)}</span>
                             </div>
                             <div className="flex items-center gap-1">
                               <FaClock />
