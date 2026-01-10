@@ -245,23 +245,27 @@ const BlogDetail = () => {
                     <div
                       key={relatedPost.id}
                       onClick={() => navigate(`/blog/${relatedPost.slug}`)}
-                      className="bg-white border border-gray-200 rounded-xl overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer group"
+                      className="bg-white border border-gray-200 rounded-xl overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer group flex flex-col h-full"
                     >
                       {relatedPost.featured_image_url ? (
-                        <img
-                          src={`${baseUrlHashless}${relatedPost.featured_image_url}`}
-                          alt={relatedPost.featured_image_alt || stripHtml(relatedPost.title)}
-                          className="w-full h-40 object-cover group-hover:scale-110 transition-transform duration-300"
-                        />
+                        <div className="w-full h-40 overflow-hidden">
+                            <img
+                              src={`${baseUrlHashless}${relatedPost.featured_image_url}`}
+                              alt={relatedPost.featured_image_alt || stripHtml(relatedPost.title)}
+                              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                            />
+                        </div>
                       ) : (
                         <div className="w-full h-40 bg-gradient-to-br from-[#930B31] to-[#FAD502]"></div>
                       )}
-                      <div className="p-4">
-                        <h3 
-                          className="font-bold text-gray-900 mb-2 line-clamp-2 text-sm md:text-base group-hover:text-[#930B31] transition-colors"
-                          dangerouslySetInnerHTML={{ __html: relatedPost.title }}
-                        />
-                        <p className="text-xs text-gray-500">
+                      <div className="p-4 flex flex-col flex-grow">
+                        <h3 className="font-bold text-gray-900 mb-2 line-clamp-2 text-sm md:text-base group-hover:text-[#930B31] transition-colors">
+                            {stripHtml(relatedPost.title || '')}
+                        </h3>
+                        <p className="text-gray-600 text-xs md:text-sm line-clamp-3 mb-4 flex-grow">
+                            {relatedPost.excerpt ? stripHtml(relatedPost.excerpt) : ''}
+                        </p>
+                        <p className="text-xs text-gray-500 mt-auto">
                           {formatDate(relatedPost.published_at)}
                         </p>
                       </div>
