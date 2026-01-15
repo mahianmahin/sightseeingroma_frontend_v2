@@ -4,18 +4,20 @@ import { FaCalendarAlt, FaClock, FaArrowLeft } from 'react-icons/fa';
 import { Helmet } from 'react-helmet-async';
 import { baseUrl, baseUrlHashless } from '../utilities/Utilities';
 import GlobalSEO from '../Components/GlobalSEO';
+import useEditorCheck from '../hooks/useEditorCheck';
+import BlogEditPanelSheet from '../Components/EditPanel/BlogEditPanelSheet';
 
 const BlogDetail = () => {
   const { slug } = useParams();
   const navigate = useNavigate();
+  const { isEditor } = useEditorCheck();
   
   const [post, setPost] = useState(null);
   const [relatedPosts, setRelatedPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    window.scrollTo(0, 0);
+  const fetchPost = () => {
     setLoading(true);
     setError(null);
     
@@ -38,6 +40,11 @@ const BlogDetail = () => {
         setError('Blog post not found');
         setLoading(false);
       });
+  };
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    fetchPost();
   }, [slug]);
 
   const formatDate = (dateString) => {
@@ -142,9 +149,9 @@ const BlogDetail = () => {
         {/* Canonical URL */}
         <link rel="canonical" href={`https://www.sightseeingroma.com/blog/${post.slug}`} />
         
-        {/* Article Schema.org Structured Data */}
+        {/* Article Schema.org Structured Data - Use custom if available, otherwise generate default */}
         <script type="application/ld+json">
-          {JSON.stringify({
+          {JSON.stringify(post.schema_json || {
             "@context": "https://schema.org",
             "@type": "BlogPosting",
             "headline": stripHtml(post.title),
@@ -172,6 +179,9 @@ const BlogDetail = () => {
         </script>
       </Helmet>
       <GlobalSEO />
+      
+      {/* Blog SEO Editor Panel */}
+      <BlogEditPanelSheet isEditor={isEditor} blogSlug={post.slug} blogData={post} onUpdate={fetchPost} />
       
       {/* Hero Section with Image and Title Overlay */}
       <div className="relative w-full h-[400px] md:h-[500px] overflow-hidden">
