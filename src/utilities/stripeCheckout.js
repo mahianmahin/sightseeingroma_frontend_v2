@@ -3,7 +3,7 @@ import { baseUrl } from './Utilities';
 import { trackUserActivity, ACTIVITY_TYPES } from './activityTracker';
 
 // Function to initiate Stripe Checkout with embedded mode
-const handleStripeCheckout = async (title, description, image, date, adult_count, youth_count, infant_count, navigate, packageId, status, loaderTrigger) => {
+const handleStripeCheckout = async (title, description, image, date, adult_count, youth_count, infant_count, navigate, packageId, status, loaderTrigger, offerId = null) => {
   // Show loader if provided
   if (loaderTrigger) {
     loaderTrigger(true);
@@ -16,7 +16,8 @@ const handleStripeCheckout = async (title, description, image, date, adult_count
       ticketType: title,
       quantity: totalQuantity,
       packageId: packageId,
-      date: date
+      date: date,
+      offerId: offerId
     };
 
     // Track payment initiation with the prepared tracking data
@@ -33,6 +34,9 @@ const handleStripeCheckout = async (title, description, image, date, adult_count
     formData.append('infant_count', infant_count);
     formData.append('package_id', packageId);
     formData.append('package_identifier', status);
+    if (offerId) {
+      formData.append('offer_id', offerId);
+    }
 
     // Make a POST request to your server using the FormData object
     const response = await fetch(`${baseUrl}create-checkout-session/`, {

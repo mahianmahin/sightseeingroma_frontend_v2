@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import { FaRegClock } from "react-icons/fa";
+import { FaRegClock, FaTag } from "react-icons/fa";
 import { FaArrowLeftLong } from "react-icons/fa6";
 import { MdKeyboardArrowRight } from "react-icons/md";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import axios, { all } from "axios";
 import TicketCard from "../TicketCard/TicketCard";
 import handleStripeCheckout from "../../utilities/stripeCheckout";
@@ -15,12 +15,17 @@ import EditWrapper from "../Edit_Wrapper/EditWrapper";
 import renderContent from "../../utilities/renderContent";
 import TicketEditModal from "../TicketEditModal/TicketEditModal";
 import DateSelector from "../DateSelector/DateSelector";
+import CountdownTimer from "../CountdownTimer/CountdownTimer";
 
 
 const ManageBookingSm = () => {
   const { id, status } = useParams();
+  const [searchParams] = useSearchParams();
+  const offerId = searchParams.get('offer_id');
   const navigate = useNavigate();
   const [data, setData] = useState(null);
+  const [offerData, setOfferData] = useState(null);  // Store offer details
+  const [offerLoading, setOfferLoading] = useState(false);  // Loading state for offer data
   const [adultCount, setAdultCount] = useState(1); // Default to 1 adult ticket
   const [youthCount, setYouthCount] = useState(0);
   const [selectedDate, setSelectedDate] = useState('');
@@ -36,8 +41,12 @@ const ManageBookingSm = () => {
   // Ticket edit modal state
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
-  const adultPrice = data?.adult_price || 0;
-  const youthPrice = data?.youth_price || 0;
+  // Use offer prices if available, otherwise regular prices
+  const adultPrice = offerData?.offer_adult_price || data?.adult_price || 0;
+  const youthPrice = offerData?.offer_youth_price || data?.youth_price || 0;
+  const originalAdultPrice = data?.adult_price || 0;
+  const originalYouthPrice = data?.youth_price || 0;
+  const hasOfferPricing = offerData && (parseFloat(offerData.offer_adult_price) < parseFloat(originalAdultPrice));
   const totalAdultPrice = adultCount * adultPrice;
   const totalYouthPrice = youthCount * youthPrice;
   const totalPrice = totalAdultPrice + totalYouthPrice;
@@ -91,7 +100,42 @@ const ManageBookingSm = () => {
     };
 
     fetchAllPackages();
-  }, [id, status]);
+
+    // Fetch offer data - either by offer_id or auto-detect by package_tag
+    const fetchOfferData = async () => {
+      setOfferLoading(true);
+      try {
+        if (offerId) {
+          // Fetch specific offer by ID
+          const response = await fetch(`${baseUrl}featured-offers/${offerId}/`);
+          const result = await response.json();
+          if (result.status === 200 && result.data) {
+            setOfferData(result.data);
+          }
+        } else {
+          // Auto-detect offer by package_tag
+          const response = await fetch(`${baseUrl}featured-offers/by-package/`);
+          const result = await response.json();
+          if (result.status === 200 && result.data && result.data[id]) {
+            // Found an active offer for this package
+            const offerInfo = result.data[id];
+            // Fetch full offer details
+            const offerResponse = await fetch(`${baseUrl}featured-offers/${offerInfo.offer_id}/`);
+            const offerResult = await offerResponse.json();
+            if (offerResult.status === 200 && offerResult.data) {
+              setOfferData(offerResult.data);
+            }
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching offer data:', error);
+      } finally {
+        setOfferLoading(false);
+      }
+    };
+
+    fetchOfferData();
+  }, [id, status, offerId]);
 
   function handleStripeCheckoutFunction(adultCount, youthCount) {
     if (selectedDate === '') {
@@ -119,7 +163,8 @@ const ManageBookingSm = () => {
       navigate,
       id,
       status,
-      setBigLoader
+      setBigLoader,
+      offerId // Pass offer ID for offer pricing
     );
   }
 
@@ -181,9 +226,32 @@ const ManageBookingSm = () => {
       </div>
 
       <div className="bg-[#F2F2F7] pb-4 md:pb-8 md:mb-0">
-        <div className="p-3 md:p-4 rounded-lg">
+        <div className="p-0 md:p-4 rounded-lg">
           <div className="border-2 p-3 md:p-4 rounded-lg bg-white">
             <h1 className="text-base md:text-lg font-bold pb-3 md:py-4">Book Your Tickets</h1>
+
+            {/* Offer Banner with Countdown Timer */}
+            {hasOfferPricing && (
+              <div className="mb-4 bg-gradient-to-r from-[#930B31] to-[#7a0929] text-white rounded-lg p-3 shadow-lg">
+                <div className="flex flex-col gap-2">
+                  <div className="flex items-center gap-2">
+                    <div className="bg-white/20 p-2 rounded-full">
+                      <FaTag className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <span className="text-sm font-bold">{offerData?.badge_text || 'Special Offer'}</span>
+                      <p className="text-xs opacity-80">Special pricing applied!</p>
+                    </div>
+                  </div>
+                  {offerData?.offer_end && (
+                    <div className="flex items-center justify-between bg-white/10 rounded-lg p-2">
+                      <span className="text-xs opacity-80">Ends in:</span>
+                      <CountdownTimer endTime={offerData.offer_end} compact={false} />
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
 
             {/* Date Selector - Mobile */}
             <div className="mb-4">
@@ -199,7 +267,12 @@ const ManageBookingSm = () => {
             <div className="mb-3 md:mb-6 border rounded-lg p-3 md:p-4 bg-white shadow">
               <div className="flex items-center justify-between mb-2">
                 <div className="flex-1">
-                  <h2 className="text-sm font-bold">Adult - €{adultPrice}</h2>
+                  <div className="flex items-center gap-2">
+                    <h2 className="text-sm font-bold">Adult - €{adultPrice}</h2>
+                    {hasOfferPricing && (
+                      <span className="text-xs text-gray-400 line-through">€{originalAdultPrice}</span>
+                    )}
+                  </div>
                   <p className="text-gray-500 text-xs md:text-sm">Age 19-99</p>
                 </div>
                 <div className="flex items-center gap-2 md:gap-3 p-1.5 md:p-2 rounded-lg bg-[#F2F2F7]">
@@ -230,7 +303,12 @@ const ManageBookingSm = () => {
             <div className="mb-3 md:mb-6 border rounded-lg p-3 md:p-4 bg-white shadow">
               <div className="flex items-center justify-between mb-2">
                 <div className="flex-1">
-                  <h2 className="text-sm font-bold">Youth - €{youthPrice}</h2>
+                  <div className="flex items-center gap-2">
+                    <h2 className="text-sm font-bold">Youth - €{youthPrice}</h2>
+                    {hasOfferPricing && (
+                      <span className="text-xs text-gray-400 line-through">€{originalYouthPrice}</span>
+                    )}
+                  </div>
                   <p className="text-gray-500 text-xs md:text-sm">Age 6-18</p>
                 </div>
                 <div className="flex items-center gap-2 md:gap-3 p-1.5 md:p-2 rounded-lg bg-[#F2F2F7]">

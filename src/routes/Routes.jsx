@@ -49,6 +49,14 @@ export const router = createBrowserRouter([
         element: <FeaturedOffer />
       },
       {
+        path: '/featured-offers',
+        element: <FeaturedOffer />
+      },
+      {
+        path: '/rome-sightseeing-deals',
+        element: <FeaturedOffer />
+      },
+      {
         path: '/bus/:companySlug/:companyName',
         element: <Companies />
       },

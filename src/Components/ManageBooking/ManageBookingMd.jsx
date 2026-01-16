@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { FaRegClock } from "react-icons/fa";
+import { FaRegClock, FaTag } from "react-icons/fa";
 import { MdKeyboardArrowRight } from "react-icons/md";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import axios from "axios";
 import TicketCard from "../TicketCard/TicketCard";
 import handleStripeCheckout from "../../utilities/stripeCheckout";
@@ -17,11 +17,15 @@ import renderContent from "../../utilities/renderContent";
 import Description2 from "../Description/Description2";
 import TicketEditModal from "../TicketEditModal/TicketEditModal";
 import DateSelector from "../DateSelector/DateSelector";
+import CountdownTimer from "../CountdownTimer/CountdownTimer";
 
 const ManageBookingMd = () => {
   const { id, status } = useParams();
+  const [searchParams] = useSearchParams();
+  const offerId = searchParams.get('offer_id');
   const navigate = useNavigate();
   const [data, setData] = useState(null);
+  const [offerData, setOfferData] = useState(null);  // Store offer details
   const [adultCount, setAdultCount] = useState(1); // Default to 1 adult ticket
   const [youthCount, setYouthCount] = useState(0);
   const [selectedDate, setSelectedDate] = useState('');
@@ -37,8 +41,12 @@ const ManageBookingMd = () => {
   // Ticket edit modal state
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
-  const adultPrice = data?.adult_price || 0;
-  const youthPrice = data?.youth_price || 0;
+  // Use offer prices if available, otherwise regular prices
+  const adultPrice = offerData?.offer_adult_price || data?.adult_price || 0;
+  const youthPrice = offerData?.offer_youth_price || data?.youth_price || 0;
+  const originalAdultPrice = data?.adult_price || 0;
+  const originalYouthPrice = data?.youth_price || 0;
+  const hasOfferPricing = offerData && (parseFloat(offerData.offer_adult_price) < parseFloat(originalAdultPrice));
   const totalAdultPrice = adultCount * adultPrice;
   const totalYouthPrice = youthCount * youthPrice;
   const totalPrice = totalAdultPrice + totalYouthPrice;
@@ -72,6 +80,37 @@ const ManageBookingMd = () => {
         setShowMessage(true);
       });
 
+    // Fetch offer data - either by offer_id or auto-detect by package_tag
+    const fetchOfferData = async () => {
+      try {
+        if (offerId) {
+          // Fetch specific offer by ID
+          const response = await fetch(`${baseUrl}featured-offers/${offerId}/`);
+          const result = await response.json();
+          if (result.status === 200 && result.data) {
+            setOfferData(result.data);
+          }
+        } else {
+          // Auto-detect offer by package_tag
+          const response = await fetch(`${baseUrl}featured-offers/by-package/`);
+          const result = await response.json();
+          if (result.status === 200 && result.data && result.data[id]) {
+            // Found an active offer for this package
+            const offerInfo = result.data[id];
+            // Fetch full offer details
+            const offerResponse = await fetch(`${baseUrl}featured-offers/${offerInfo.offer_id}/`);
+            const offerResult = await offerResponse.json();
+            if (offerResult.status === 200 && offerResult.data) {
+              setOfferData(offerResult.data);
+            }
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching offer data:', error);
+      }
+    };
+
+    fetchOfferData();
 
     // Fetch all packages for similar packages
     const fetchAllPackages = async () => {
@@ -92,7 +131,7 @@ const ManageBookingMd = () => {
     };
 
     fetchAllPackages();
-  }, [id, status]);
+  }, [id, status, offerId]);
 
   const getCleanText = (htmlText) => {
     const tempElement = document.createElement('div');
@@ -126,7 +165,8 @@ const ManageBookingMd = () => {
       navigate,
       id,
       status,
-      setBigLoader
+      setBigLoader,
+      offerId  // Pass offer ID to checkout
     );
   }
 
@@ -195,6 +235,29 @@ const ManageBookingMd = () => {
 
       <div className="flex flex-col md:flex-row bg-[#F2F2F7] gap-6 py-10 px-8">
         <div className="flex-1 bg-white p-6 border rounded-lg">
+          
+          {/* Offer Banner with Countdown Timer */}
+          {hasOfferPricing && (
+            <div className="bg-gradient-to-r from-[#930B31] to-[#7a0929] text-white rounded-lg p-4 mb-6 shadow-lg">
+              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <div className="flex items-center gap-3">
+                  <div className="bg-white/20 p-3 rounded-full">
+                    <FaTag className="text-2xl" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-lg">{offerData?.badge_text || 'Limited-Time Offer'}</h3>
+                    <p className="text-sm opacity-90">Special pricing applied - Book now and save!</p>
+                  </div>
+                </div>
+                {offerData?.offer_end && (
+                  <div className="flex flex-col items-start md:items-end">
+                    <span className="text-xs opacity-80 mb-1">Offer ends in:</span>
+                    <CountdownTimer endTime={offerData.offer_end} />
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
 
           <EditWrapper isEditor={isEditor} contentTag={"ticket-details-heading"} refreshContent={refreshContent}>
             {renderContent('ticket-details-heading', hasContent, getContentByTag)}
@@ -202,7 +265,12 @@ const ManageBookingMd = () => {
           
           <div className="flex justify-between items-center mb-6 border rounded-lg py-5 px-4">
             <div>
-              <h4 className="text-lg font-bold">Adult - € {adultPrice}</h4>
+              <div className="flex items-center gap-2">
+                <h4 className="text-lg font-bold">Adult - € {adultPrice}</h4>
+                {hasOfferPricing && (
+                  <span className="text-sm text-gray-400 line-through">€ {originalAdultPrice}</span>
+                )}
+              </div>
 
               <EditWrapper isEditor={isEditor} contentTag={`ticket-details-adult-description-${data?.company}`} refreshContent={refreshContent}>
                 {renderContent(`ticket-details-adult-description-${data?.company}`, hasContent, getContentByTag)}
@@ -231,7 +299,12 @@ const ManageBookingMd = () => {
 
           <div className="flex justify-between items-center mb-6 border py-5 px-4 rounded-lg">
             <div>
-              <h4 className="text-lg font-bold">Youth - € {youthPrice}</h4>
+              <div className="flex items-center gap-2">
+                <h4 className="text-lg font-bold">Youth - € {youthPrice}</h4>
+                {hasOfferPricing && (
+                  <span className="text-sm text-gray-400 line-through">€ {originalYouthPrice}</span>
+                )}
+              </div>
 
               <EditWrapper isEditor={isEditor} contentTag={`ticket-details-youth-description-${data?.company}`} refreshContent={refreshContent}>
                 {renderContent(`ticket-details-youth-description-${data?.company}`, hasContent, getContentByTag)}

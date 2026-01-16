@@ -1,14 +1,20 @@
 import { FaRegClock, FaStar } from "react-icons/fa6";
 import { LuTicket } from "react-icons/lu";
 import { FiMapPin } from "react-icons/fi";
+import { FaTag } from "react-icons/fa";
 import PropTypes from "prop-types";
 import { baseUrl } from "../../utilities/Utilities";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { useActiveOffers, getOfferForPackage } from "../../hooks/useActiveOffers";
 
 const TicketCard = ({ title, subtitle, image, duration, offPrice, ticketCount, price, id , status, price2 , id1, thumbnail_small, thumbnail_large, thumbnail_small_alt, thumbnail_large_alt}) => {
     const navigate = useNavigate();
     const [isLargeScreen, setIsLargeScreen] = useState(false);
+    const { activeOffers } = useActiveOffers();
+    
+    // Check if this package has an active offer
+    const activeOffer = getOfferForPackage(activeOffers, id);
 
     // Check screen size on mount and resize
     useEffect(() => {
@@ -29,7 +35,13 @@ const TicketCard = ({ title, subtitle, image, duration, offPrice, ticketCount, p
     }
 
     const handleBuyNow = () => {
-        navigate(`/manageBookings/${calculatedStatus}/${id}`); // Navigate to ManageBooking with the status and id as parameters
+        // If there's an active offer, include offer_id in the URL
+        const baseUrl = `/manageBookings/${calculatedStatus}/${id}`;
+        if (activeOffer) {
+            navigate(`${baseUrl}?offer_id=${activeOffer.offer_id}`);
+        } else {
+            navigate(baseUrl);
+        }
     };
 
     // Determine which image to use based on screen size and availability
@@ -65,7 +77,7 @@ const TicketCard = ({ title, subtitle, image, duration, offPrice, ticketCount, p
     };
 
     return (
-        <div className="group w-full mb-4 md:mb-6 mx-auto bg-white rounded-2xl shadow-lg hover:shadow-xl overflow-hidden border border-gray-100 flex flex-col transition-all duration-300 transform hover:-translate-y-1">
+        <div className={`group w-full mb-4 md:mb-6 mx-auto bg-white rounded-2xl shadow-lg hover:shadow-xl overflow-hidden border ${activeOffer ? 'border-red-400 ring-2 ring-red-300 ring-opacity-50' : 'border-gray-100'} flex flex-col transition-all duration-300 transform hover:-translate-y-1`}>
             {/* Image Section with Enhanced Overlay */}
             <div onClick={handleBuyNow} className="relative overflow-hidden">
                 <img
@@ -73,6 +85,21 @@ const TicketCard = ({ title, subtitle, image, duration, offPrice, ticketCount, p
                     alt={getImageAlt()}
                     className="w-full h-[140px] md:h-[180px] object-cover transition-transform duration-500 group-hover:scale-110"
                 />
+                
+                {/* Offer Badge - Shows when there's an active offer - Enhanced Glow Effect */}
+                {activeOffer && (
+                    <div className="absolute top-2 left-2 z-10">
+                        <div className="relative">
+                            {/* Glowing background */}
+                            <div className="absolute inset-0 bg-red-500 rounded-full blur-md opacity-75 animate-pulse"></div>
+                            {/* Badge content */}
+                            <div className="relative bg-gradient-to-r from-[#930B31] to-red-600 text-white text-[9px] md:text-xs font-bold px-2 py-1 md:px-3 md:py-1.5 rounded-full shadow-lg flex items-center gap-1">
+                                <FaTag className="w-2 h-2 md:w-3 md:h-3 animate-bounce" />
+                                <span>{activeOffer.badge_text}</span>
+                            </div>
+                        </div>
+                    </div>
+                )}
                 
                 {/* Gradient Overlay */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>

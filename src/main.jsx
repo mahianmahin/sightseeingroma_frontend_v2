@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client'; // Correct import for createRoot
 import { HelmetProvider } from 'react-helmet-async';
 import { RouterProvider } from 'react-router-dom';
 import { router } from './routes/Routes';
+import { ActiveOffersProvider } from './hooks/useActiveOffers';
 
 import './index.css';
 
@@ -12,7 +13,9 @@ const root = createRoot(rootElement); // Correct usage of createRoot
 root.render(
   <StrictMode>
     <HelmetProvider>
-      <RouterProvider router={router} />
+      <ActiveOffersProvider>
+        <RouterProvider router={router} />
+      </ActiveOffersProvider>
     </HelmetProvider>
   </StrictMode>
 );

@@ -40,9 +40,8 @@ const FeaturedToday = () => {
     } = featuredData;
 
     const handleGetTickets = () => {
-        if (button_link) {
-            navigate(button_link);
-        }
+        // Navigate to the featured offers page
+        navigate('/featured-offers');
     };
 
     return (

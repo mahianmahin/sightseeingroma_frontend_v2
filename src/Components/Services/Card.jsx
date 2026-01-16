@@ -1,13 +1,18 @@
-import { FaRegClock, FaStar } from "react-icons/fa";
+import { FaRegClock, FaStar, FaTag } from "react-icons/fa";
 import { HiOutlineTicket } from "react-icons/hi";
 import { FiMapPin } from "react-icons/fi";
 import { baseUrl } from "../../utilities/Utilities";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { useActiveOffers, getOfferForPackage } from "../../hooks/useActiveOffers";
 
 const Card = ({ title, subtitle, image, duration, offPrice, ticketCount, price, price2, id, company, id1, thumbnail_small, thumbnail_large, thumbnail_small_alt, thumbnail_large_alt }) => {
     const navigate = useNavigate();
     const [isLargeScreen, setIsLargeScreen] = useState(false);
+    const { activeOffers } = useActiveOffers();
+    
+    // Check if this package has an active offer
+    const activeOffer = getOfferForPackage(activeOffers, id);
 
     // Check screen size on mount and resize
     useEffect(() => {
@@ -24,8 +29,13 @@ const Card = ({ title, subtitle, image, duration, offPrice, ticketCount, price, 
 
     const handleBuyNow = () => {
         if (id) {
-            console.log('Navigating to:', `/manageBookings/${calculatedStatus}/${id}`);
-            navigate(`/manageBookings/${calculatedStatus}/${id}`);
+            // If there's an active offer, include offer_id in the URL
+            const url = `/manageBookings/${calculatedStatus}/${id}`;
+            if (activeOffer) {
+                navigate(`${url}?offer_id=${activeOffer.offer_id}`);
+            } else {
+                navigate(url);
+            }
         } else {
             console.error("ID is missing, navigation failed.");
         }
@@ -72,7 +82,7 @@ const Card = ({ title, subtitle, image, duration, offPrice, ticketCount, price, 
     };
 
     return (
-        <div className="group w-full bg-white shadow-lg hover:shadow-xl rounded-2xl overflow-hidden mx-auto h-full flex flex-col transition-all duration-300 transform hover:-translate-y-1 border border-gray-100">
+        <div className={`group w-full bg-white shadow-lg hover:shadow-xl rounded-2xl overflow-hidden mx-auto h-full flex flex-col transition-all duration-300 transform hover:-translate-y-1 border ${activeOffer ? 'border-red-400 ring-2 ring-red-300 ring-opacity-50' : 'border-gray-100'}`}>
             {/* Image Container with Overlay */}
             <div onClick={handleBuyNow} className="relative overflow-hidden">
                 <img 
@@ -80,6 +90,21 @@ const Card = ({ title, subtitle, image, duration, offPrice, ticketCount, price, 
                     alt={getImageAlt()}
                     className="w-full h-32 md:h-48 object-cover transition-transform duration-300 group-hover:scale-105"
                 />
+                
+                {/* Offer Badge - Shows when there's an active offer - Enhanced Glow Effect */}
+                {activeOffer && (
+                    <div className="absolute top-2 left-2 z-10">
+                        <div className="relative">
+                            {/* Glowing background */}
+                            <div className="absolute inset-0 bg-red-500 rounded-full blur-md opacity-75 animate-pulse"></div>
+                            {/* Badge content */}
+                            <div className="relative bg-gradient-to-r from-[#930B31] to-red-600 text-white text-[9px] md:text-xs font-bold px-2 py-1 md:px-3 md:py-1.5 rounded-full shadow-lg flex items-center gap-1">
+                                <FaTag className="w-2 h-2 md:w-3 md:h-3 animate-bounce" />
+                                <span>{activeOffer.badge_text}</span>
+                            </div>
+                        </div>
+                    </div>
+                )}
                 
                 {/* Gradient Overlay */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
