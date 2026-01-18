@@ -18,12 +18,14 @@ import Description2 from "../Description/Description2";
 import TicketEditModal from "../TicketEditModal/TicketEditModal";
 import DateSelector from "../DateSelector/DateSelector";
 import CountdownTimer from "../CountdownTimer/CountdownTimer";
+import useBlogTracking from "../../hooks/useBlogTracking";
 
 const ManageBookingMd = () => {
   const { id, status } = useParams();
   const [searchParams] = useSearchParams();
   const offerId = searchParams.get('offer_id');
   const navigate = useNavigate();
+  const { trackTicketVisit, trackPaymentInitiate } = useBlogTracking();
   const [data, setData] = useState(null);
   const [offerData, setOfferData] = useState(null);  // Store offer details
   const [adultCount, setAdultCount] = useState(1); // Default to 1 adult ticket
@@ -133,6 +135,13 @@ const ManageBookingMd = () => {
     fetchAllPackages();
   }, [id, status, offerId]);
 
+  // Track ticket visit for blog conversion analytics
+  useEffect(() => {
+    if (data && id) {
+      trackTicketVisit(id);
+    }
+  }, [data, id, trackTicketVisit]);
+
   const getCleanText = (htmlText) => {
     const tempElement = document.createElement('div');
     tempElement.innerHTML = htmlText || '';
@@ -149,6 +158,9 @@ const ManageBookingMd = () => {
     setMessage('');
     setShowMessage(false);
     setBigLoader(true);
+
+    // Track payment initiation for blog conversion analytics
+    trackPaymentInitiate(id);
 
     const tempElement = document.createElement('div');
     tempElement.innerHTML = data?.description || '';

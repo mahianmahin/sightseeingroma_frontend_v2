@@ -16,6 +16,7 @@ import renderContent from "../../utilities/renderContent";
 import TicketEditModal from "../TicketEditModal/TicketEditModal";
 import DateSelector from "../DateSelector/DateSelector";
 import CountdownTimer from "../CountdownTimer/CountdownTimer";
+import useBlogTracking from "../../hooks/useBlogTracking";
 
 
 const ManageBookingSm = () => {
@@ -23,6 +24,7 @@ const ManageBookingSm = () => {
   const [searchParams] = useSearchParams();
   const offerId = searchParams.get('offer_id');
   const navigate = useNavigate();
+  const { trackTicketVisit, trackPaymentInitiate } = useBlogTracking();
   const [data, setData] = useState(null);
   const [offerData, setOfferData] = useState(null);  // Store offer details
   const [offerLoading, setOfferLoading] = useState(false);  // Loading state for offer data
@@ -137,6 +139,13 @@ const ManageBookingSm = () => {
     fetchOfferData();
   }, [id, status, offerId]);
 
+  // Track ticket visit for blog conversion analytics
+  useEffect(() => {
+    if (data && id) {
+      trackTicketVisit(id);
+    }
+  }, [data, id, trackTicketVisit]);
+
   function handleStripeCheckoutFunction(adultCount, youthCount) {
     if (selectedDate === '') {
       setMessage("Please select a date first");
@@ -147,6 +156,9 @@ const ManageBookingSm = () => {
     setMessage('');
     setShowMessage(false);
     setBigLoader(true);
+
+    // Track payment initiation for blog conversion analytics
+    trackPaymentInitiate(id);
 
     const tempElement = document.createElement('div');
     tempElement.innerHTML = data?.description || '';

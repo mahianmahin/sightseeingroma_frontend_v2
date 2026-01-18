@@ -1,9 +1,11 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { trackUserActivity, ACTIVITY_TYPES } from '../utilities/activityTracker';
+import useBlogTracking from '../hooks/useBlogTracking';
 
 const PaymentCancel = () => {
   const navigate = useNavigate();
+  const { trackPaymentCancel } = useBlogTracking();
 
   useEffect(() => {
     // Track cancelled payment
@@ -16,6 +18,9 @@ const PaymentCancel = () => {
       ticketType: ticketType,
       status: 'cancelled'
     });
+
+    // Track blog conversion cancellation (if visitor came from a blog)
+    trackPaymentCancel();
 
     // Track page view
     trackUserActivity(ACTIVITY_TYPES.PAGE_VIEW, { pageName: 'Payment Cancelled' });

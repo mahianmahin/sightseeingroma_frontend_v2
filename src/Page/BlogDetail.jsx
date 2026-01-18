@@ -5,12 +5,14 @@ import { Helmet } from 'react-helmet-async';
 import { baseUrl, baseUrlHashless } from '../utilities/Utilities';
 import GlobalSEO from '../Components/GlobalSEO';
 import useEditorCheck from '../hooks/useEditorCheck';
+import useBlogTracking from '../hooks/useBlogTracking';
 import BlogEditPanelSheet from '../Components/EditPanel/BlogEditPanelSheet';
 
 const BlogDetail = () => {
   const { slug } = useParams();
   const navigate = useNavigate();
   const { isEditor } = useEditorCheck();
+  const { trackBlogVisit } = useBlogTracking();
   
   const [post, setPost] = useState(null);
   const [relatedPosts, setRelatedPosts] = useState([]);
@@ -46,6 +48,13 @@ const BlogDetail = () => {
     window.scrollTo(0, 0);
     fetchPost();
   }, [slug]);
+
+  // Track blog visit for conversion analytics
+  useEffect(() => {
+    if (slug && post) {
+      trackBlogVisit(slug);
+    }
+  }, [slug, post, trackBlogVisit]);
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);

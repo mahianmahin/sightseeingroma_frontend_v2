@@ -25,6 +25,7 @@ import ResetSuccess from '../Components/LoginComponent/ResetPassword/ResetSucces
 import Profile from '../Page/Profile'
 import RequireAuth from '../Components/RequireAuth'
 import Analytics from '../Page/Analytics'
+import BlogConversionStats from '../Page/BlogConversionStats'
 import Companies from '../Page/Companies'
 import CompanyThroughCard from '../Page/CompanyThroughCard'
 import EmbeddedCheckout from '../Page/EmbeddedCheckout'
@@ -154,6 +155,10 @@ export const router = createBrowserRouter([
   {
     path: '/analytics',
     element: <Analytics />
+  },
+  {
+    path: '/blog-analytics',
+    element: <BlogConversionStats />
   },
   {
     path: '/login',

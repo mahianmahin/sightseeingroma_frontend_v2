@@ -1,21 +1,27 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { trackUserActivity, ACTIVITY_TYPES } from '../utilities/activityTracker';
+import useBlogTracking from '../hooks/useBlogTracking';
 
 const PaymentSuccess = () => {
     const navigate = useNavigate();
+    const { trackPaymentComplete } = useBlogTracking();
 
     useEffect(() => {
         // Track successful payment
         const urlParams = new URLSearchParams(window.location.search);
         const amount = urlParams.get('amount');
         const ticketType = urlParams.get('ticketType');
+        const packageTag = urlParams.get('package_tag');
 
         trackUserActivity(ACTIVITY_TYPES.PAYMENT_COMPLETED, {
             amount: amount,
             ticketType: ticketType,
             status: 'completed'
         });
+
+        // Track blog conversion (if visitor came from a blog)
+        trackPaymentComplete(packageTag);
 
         // Track page view
         trackUserActivity(ACTIVITY_TYPES.PAGE_VIEW, { pageName: 'Payment Success' });
