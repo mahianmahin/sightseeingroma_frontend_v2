@@ -133,7 +133,7 @@ const Navbar = () => {
                                     </>
                                 ) : (
                                     <>
-                                        <li onClick={() => handleMenuClick("/aboutus")}>
+                                        <li onClick={() => handleMenuClick("/about-us")}>
                                             <a className="text-base font-semibold hover:bg-gray-50 rounded-lg px-3 py-2 transition-colors duration-200">
                                                 <BsInfoCircle className="text-blue-600" /> About Us
                                             </a>
@@ -222,7 +222,7 @@ const Navbar = () => {
                                 </>
                             ) : (
                                 <>
-                                    <li onClick={() => handleMenuClick("/aboutus")}>
+                                    <li onClick={() => handleMenuClick("/about-us")}>
                                         <a className="hover:bg-white/10 rounded-lg px-4 py-2 transition-all duration-200 flex items-center gap-2">
                                             <BsInfoCircle className="text-lg" /> About Us
                                         </a>

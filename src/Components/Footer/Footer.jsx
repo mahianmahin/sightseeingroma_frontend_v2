@@ -172,7 +172,7 @@ const Footer = () => {
                         </EditWrapper>
                         
                         <ul className="flex flex-col space-y-2 text-sm">
-                            <Link to={'/aboutus'}><li>About Us</li></Link>
+                            <Link to={'/about-us'}><li>About Us</li></Link>
                             <Link to={'/blogs'}><li>Blog</li></Link>
                             <Link to={'/terms'}><li>Terms & Conditions</li></Link>
                             <Link to={'/returnPolicy'}><li>Return Policy</li></Link>

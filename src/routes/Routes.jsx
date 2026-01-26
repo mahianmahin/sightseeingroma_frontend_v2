@@ -83,6 +83,10 @@ export const router = createBrowserRouter([
         element: <AboutUs></AboutUs>
       },
       {
+        path: '/about-us',
+        element: <AboutUs></AboutUs>
+      },
+      {
         path:'/terms',
         element: <TermsCondition></TermsCondition>
       },

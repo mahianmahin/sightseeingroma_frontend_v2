@@ -67,11 +67,6 @@ const Home = () => {
                         <Contact isEditor={isEditor} loading={loading} hasContent={hasContent} getContentByTag={getContentByTag} getImageByTag={getImageByTag} refreshContent={refreshContent}></Contact>
                     </div>
 
-                    {/* Customer Reviews Section */}
-                    <div id="reviews">
-                        <CustomerReviews isEditor={isEditor} loading={loading} hasContent={hasContent} getContentByTag={getContentByTag} refreshContent={refreshContent}></CustomerReviews>
-                    </div>
-
                 </div>
             </div>
         </>
