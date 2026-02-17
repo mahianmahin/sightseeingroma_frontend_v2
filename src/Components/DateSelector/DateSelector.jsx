@@ -13,7 +13,7 @@ const DateSelector = ({ selectedDate, onDateChange, isMobile = false, ticketCoun
     
     const minDate = today.toISOString().split('T')[0];
     const maxDate = new Date(today);
-    maxDate.setMonth(maxDate.getMonth() + 5);
+    maxDate.setFullYear(maxDate.getFullYear() + 1);
     const maxDateStr = maxDate.toISOString().split('T')[0];
 
     // Format date for display
