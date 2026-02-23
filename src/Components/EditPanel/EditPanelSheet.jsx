@@ -51,25 +51,53 @@ const EditPanelSheet = ({ isEditor, error, page, refreshContent, metaInfo }) => 
     }
     try {
       const accessToken = localStorage.getItem('access');
+      const metaPayload = {
+        meta_title: metaTitle,
+        meta_description: metaDescription,
+        meta_keywords: metaKeywords,
+        schema_json: parsedSchema,
+      };
+
+      // Try to update the existing page first
       const response = await fetch(`${baseUrl}pages/${page}/update/`, {
         method: "PATCH",
         headers: {
           "Authorization": `Bearer ${accessToken}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          meta_title: metaTitle,
-          meta_description: metaDescription,
-          meta_keywords: metaKeywords,
-          schema_json: parsedSchema,
-        })
+        body: JSON.stringify(metaPayload)
       });
-      const data = await response.json();
-      if (response.ok && data.status === 200) {
-        setSaveSuccess(true);
-        refreshContent && refreshContent();
+
+      // If page doesn't exist (404), auto-create it then apply meta
+      if (response.status === 404) {
+        const pageTitle = page.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+        const createResponse = await fetch(`${baseUrl}pages/create/`, {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${accessToken}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            title: pageTitle,
+            slug: page,
+            ...metaPayload,
+          })
+        });
+        const createData = await createResponse.json();
+        if (createResponse.ok && (createData.status === 201 || createData.status === 200)) {
+          setSaveSuccess(true);
+          refreshContent && refreshContent();
+        } else {
+          setSaveError(createData.error || "Failed to create page for meta information");
+        }
       } else {
-        setSaveError(data.error || "Failed to update meta information");
+        const data = await response.json();
+        if (response.ok && data.status === 200) {
+          setSaveSuccess(true);
+          refreshContent && refreshContent();
+        } else {
+          setSaveError(data.error || "Failed to update meta information");
+        }
       }
     } catch (err) {
       setSaveError(err.message || "Failed to update meta information");

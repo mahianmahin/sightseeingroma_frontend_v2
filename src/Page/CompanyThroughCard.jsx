@@ -1,10 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import scrollToTop, { baseUrl, baseUrlHashless } from '../utilities/Utilities.jsx';
+import useStaticContent from '../hooks/useStaticContent';
+import useEditorCheck from '../hooks/useEditorCheck';
+import EditPanelSheet from '../Components/EditPanel/EditPanelSheet';
+import HelmetWrapper from '../utilities/HelmetWrapper';
 
 const CompanyThroughCard = () => {
   const { companySlug } = useParams();
   const navigate = useNavigate();
+  const { isEditor } = useEditorCheck();
+  const pageSlug = `company-packages-${companySlug}`;
+  const staticContentData = useStaticContent(pageSlug);
+  const { pageData: pageMeta, refreshContent } = staticContentData;
   const [tickets, setTickets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -93,6 +101,21 @@ const CompanyThroughCard = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* SEO / Meta */}
+      <HelmetWrapper
+        title={pageMeta?.meta_title || (companyInfo ? companyInfo.card_title : '')}
+        description={pageMeta?.meta_description || (companyInfo ? companyInfo.card_subtitle : '')}
+        keywords={pageMeta?.meta_keywords}
+        schema={pageMeta?.schema_json}
+      />
+
+      {/* Editor Panel for Meta (only visible to editors) */}
+      <EditPanelSheet
+        isEditor={isEditor}
+        page={pageSlug}
+        refreshContent={refreshContent}
+        metaInfo={pageMeta}
+      />
       {/* Current Company Header */}
       {companyInfo && (
         <div className="pt-20 bg-gradient-to-r from-[#930B31] to-red-700 text-white">

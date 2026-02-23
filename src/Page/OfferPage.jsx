@@ -5,10 +5,17 @@ import OfferBanner from './../Components/OfferBanner/OfferBanner';
 import { FaArrowLeftLong } from "react-icons/fa6";
 import OfferBannerMd from "../Components/OfferBanner/OfferBannerMd";
 import { useNavigate } from "react-router-dom";  // Import useNavigate
+import useStaticContent from '../hooks/useStaticContent';
+import useEditorCheck from '../hooks/useEditorCheck';
+import EditPanelSheet from '../Components/EditPanel/EditPanelSheet';
+import HelmetWrapper from '../utilities/HelmetWrapper';
 
 const OfferPage = () => {
     const [tickets, setTickets] = useState([]);
     const navigate = useNavigate();  // Create navigate function
+    const { isEditor } = useEditorCheck();
+    const staticContentData = useStaticContent('offer');
+    const { pageData: pageMeta, refreshContent } = staticContentData;
 
     // Fetch data using Axios
     useEffect(() => {
@@ -33,6 +40,20 @@ const OfferPage = () => {
 
     return (
         <div className="container mx-auto">
+            {/* SEO / Meta for /offer */}
+            <HelmetWrapper
+                title={pageMeta?.meta_title}
+                description={pageMeta?.meta_description}
+                keywords={pageMeta?.meta_keywords}
+                schema={pageMeta?.schema_json}
+            />
+
+            <EditPanelSheet
+                isEditor={isEditor}
+                page={'offer'}
+                refreshContent={refreshContent}
+                metaInfo={pageMeta}
+            />
             <div className="block md:hidden">
                 <OfferBanner />
             </div>
