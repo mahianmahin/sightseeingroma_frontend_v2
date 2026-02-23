@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaTag, FaArrowRight } from 'react-icons/fa';
 import { baseUrl, baseUrlHashless } from '../../utilities/Utilities';
+import OptimizedImage from '../OptimizedImage/OptimizedImage';
 
 const FeaturedToday = () => {
     const navigate = useNavigate();
@@ -69,17 +70,14 @@ const FeaturedToday = () => {
                         
                         {/* LEFT: IMAGE */}
                         <div className="w-full md:w-[45%] relative aspect-[4/3] md:aspect-auto md:min-h-[450px] overflow-hidden">
-                            {/* Desktop Image */}
-                            <img 
-                                src={`${baseUrlHashless}${desktop_image}`} 
-                                alt={title} 
-                                className="hidden md:block w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                            />
-                            {/* Mobile Image */}
-                            <img 
-                                src={`${baseUrlHashless}${mobile_image || desktop_image}`} 
-                                alt={title} 
-                                className="block md:hidden w-full h-full object-cover"
+                            <OptimizedImage
+                                src={`${baseUrlHashless}${desktop_image}`}
+                                srcSmall={mobile_image ? `${baseUrlHashless}${mobile_image}` : undefined}
+                                srcLarge={`${baseUrlHashless}${desktop_image}`}
+                                alt={title}
+                                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                                wrapperClassName="w-full h-full"
+                                sizes="(max-width: 768px) 100vw, 45vw"
                             />
 
                             {/* BADGES - Top Left Corner */}

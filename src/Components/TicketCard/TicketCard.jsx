@@ -5,27 +5,15 @@ import { FaTag } from "react-icons/fa";
 import PropTypes from "prop-types";
 import { baseUrl } from "../../utilities/Utilities";
 import { useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
 import { useActiveOffers, getOfferForPackage } from "../../hooks/useActiveOffers";
+import OptimizedImage from "../OptimizedImage/OptimizedImage";
 
 const TicketCard = ({ title, subtitle, image, duration, offPrice, ticketCount, price, id , status, price2 , id1, thumbnail_small, thumbnail_large, thumbnail_small_alt, thumbnail_large_alt}) => {
     const navigate = useNavigate();
-    const [isLargeScreen, setIsLargeScreen] = useState(false);
     const { activeOffers } = useActiveOffers();
     
     // Check if this package has an active offer
     const activeOffer = getOfferForPackage(activeOffers, id);
-
-    // Check screen size on mount and resize
-    useEffect(() => {
-        const checkScreenSize = () => {
-            setIsLargeScreen(window.innerWidth >= 768);
-        };
-
-        checkScreenSize();
-        window.addEventListener('resize', checkScreenSize);
-        return () => window.removeEventListener('resize', checkScreenSize);
-    }, []);
     
     let calculatedStatus = null;
     if (duration) {
@@ -44,46 +32,25 @@ const TicketCard = ({ title, subtitle, image, duration, offPrice, ticketCount, p
         }
     };
 
-    // Determine which image to use based on screen size and availability
-    const getImageSrc = () => {
-        if (isLargeScreen && thumbnail_large) {
-            return `${baseUrl}${thumbnail_large}`;
-        } else if (!isLargeScreen && thumbnail_small) {
-            return `${baseUrl}${thumbnail_small}`;
-        } else if (thumbnail_large) {
-            return `${baseUrl}${thumbnail_large}`;
-        } else if (thumbnail_small) {
-            return `${baseUrl}${thumbnail_small}`;
-        } else {
-            // Fallback to old image field if new fields are not available
-            return `${baseUrl}${image}`;
-        }
-    };
-
-    // Determine which alt text to use based on screen size and availability
-    const getImageAlt = () => {
-        if (isLargeScreen && thumbnail_large_alt) {
-            return thumbnail_large_alt;
-        } else if (!isLargeScreen && thumbnail_small_alt) {
-            return thumbnail_small_alt;
-        } else if (thumbnail_large_alt) {
-            return thumbnail_large_alt;
-        } else if (thumbnail_small_alt) {
-            return thumbnail_small_alt;
-        } else {
-            // Fallback to title
-            return title;
-        }
-    };
+    // Build image URLs
+    const imgSmall = thumbnail_small ? `${baseUrl}${thumbnail_small}` : null;
+    const imgLarge = thumbnail_large ? `${baseUrl}${thumbnail_large}` : null;
+    const imgFallback = image ? `${baseUrl}${image}` : null;
 
     return (
         <div className={`group w-full mb-4 md:mb-6 mx-auto bg-white rounded-2xl shadow-lg hover:shadow-xl overflow-hidden border ${activeOffer ? 'border-red-400 ring-2 ring-red-300 ring-opacity-50' : 'border-gray-100'} flex flex-col transition-all duration-300 transform hover:-translate-y-1`}>
             {/* Image Section with Enhanced Overlay */}
             <div onClick={handleBuyNow} className="relative overflow-hidden">
-                <img
-                    src={getImageSrc()}
-                    alt={getImageAlt()}
+                <OptimizedImage
+                    src={imgFallback}
+                    srcSmall={imgSmall}
+                    srcLarge={imgLarge}
+                    alt={title}
+                    altSmall={thumbnail_small_alt}
+                    altLarge={thumbnail_large_alt}
                     className="w-full h-[140px] md:h-[180px] object-cover transition-transform duration-500 group-hover:scale-110"
+                    wrapperClassName="w-full h-[140px] md:h-[180px]"
+                    sizes="(max-width: 768px) 50vw, 25vw"
                 />
                 
                 {/* Offer Badge - Shows when there's an active offer - Enhanced Glow Effect */}

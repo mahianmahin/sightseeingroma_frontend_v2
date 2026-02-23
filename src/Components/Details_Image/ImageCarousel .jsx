@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { FaTimes, FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import OptimizedImage from "../OptimizedImage/OptimizedImage";
 
 const ImageCarousel = ({ images }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -30,15 +31,16 @@ const ImageCarousel = ({ images }) => {
       {/* Mobile: Red background with smaller centered image */}
       {/* Desktop: Full size image with gray background */}
       <div className="relative h-[140px] md:h-[500px] overflow-hidden bg-[#930B31] md:bg-gray-100 flex items-center justify-center">
-        <img
+        <OptimizedImage
           src={currentImage.src || currentImage}
+          srcSmall={currentImage.srcSmall}
+          srcLarge={currentImage.srcLarge || currentImage.src || currentImage}
           alt={currentImage.alt || `Slide ${currentIndex + 1}`}
           className="block h-[120px] w-[200px] md:w-full md:h-full object-cover cursor-pointer transition-all duration-300 hover:scale-105 rounded-lg md:rounded-none"
+          wrapperClassName="w-full h-full flex items-center justify-center"
+          sizes="(max-width: 768px) 100vw, 80vw"
+          eager={currentIndex === 0}
           onClick={() => setSelectedImage(currentImage)}
-          onError={(e) => {
-            console.error('Image failed to load:', currentImage.src || currentImage);
-            e.target.src = '/placeholder-image.jpg'; // Fallback image
-          }}
         />
         
         {/* Image overlay with better contrast - only on desktop */}

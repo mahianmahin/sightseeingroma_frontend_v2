@@ -1,64 +1,47 @@
 
 import ImageCarousel from "./ImageCarousel ";
-import { useState, useEffect } from "react";
 import { baseUrlHashless } from "../../utilities/Utilities";
 
 const DetailsImage = ({ img1, img2, img3, img4, data }) => {
-  const [isLargeScreen, setIsLargeScreen] = useState(false);
 
-  // Check screen size on mount and resize
-  useEffect(() => {
-    const checkScreenSize = () => {
-      setIsLargeScreen(window.innerWidth >= 768);
-    };
-
-    checkScreenSize();
-    window.addEventListener('resize', checkScreenSize);
-    return () => window.removeEventListener('resize', checkScreenSize);
-  }, []);
-
-  // Build images array with proper URLs and alt texts
+  // Build images array with both small and large URLs for srcset
   const images = [];
   
   if (data) {
-    // Use responsive images based on screen size
     const imageFields = [
       {
         large: data.carousel_one_large,
         small: data.carousel_one_small,
-        alt: isLargeScreen 
-          ? (data.carousel_one_large_alt || data.title || 'Image 1')
-          : (data.carousel_one_small_alt || data.title || 'Image 1')
+        altLarge: data.carousel_one_large_alt || data.title || 'Image 1',
+        altSmall: data.carousel_one_small_alt || data.title || 'Image 1',
       },
       {
         large: data.carousel_two_large,
         small: data.carousel_two_small,
-        alt: isLargeScreen 
-          ? (data.carousel_two_large_alt || data.title || 'Image 2')
-          : (data.carousel_two_small_alt || data.title || 'Image 2')
+        altLarge: data.carousel_two_large_alt || data.title || 'Image 2',
+        altSmall: data.carousel_two_small_alt || data.title || 'Image 2',
       },
       {
         large: data.carousel_three_large,
         small: data.carousel_three_small,
-        alt: isLargeScreen 
-          ? (data.carousel_three_large_alt || data.title || 'Image 3')
-          : (data.carousel_three_small_alt || data.title || 'Image 3')
+        altLarge: data.carousel_three_large_alt || data.title || 'Image 3',
+        altSmall: data.carousel_three_small_alt || data.title || 'Image 3',
       },
       {
         large: data.carousel_four_large,
         small: data.carousel_four_small,
-        alt: isLargeScreen 
-          ? (data.carousel_four_large_alt || data.title || 'Image 4')
-          : (data.carousel_four_small_alt || data.title || 'Image 4')
+        altLarge: data.carousel_four_large_alt || data.title || 'Image 4',
+        altSmall: data.carousel_four_small_alt || data.title || 'Image 4',
       }
     ];
 
-    imageFields.forEach((field, index) => {
-      const imagePath = isLargeScreen ? field.large : field.small;
-      if (imagePath) {
+    imageFields.forEach((field) => {
+      if (field.large || field.small) {
         images.push({
-          src: baseUrlHashless + imagePath,
-          alt: field.alt
+          src: baseUrlHashless + (field.large || field.small),
+          srcSmall: field.small ? baseUrlHashless + field.small : undefined,
+          srcLarge: field.large ? baseUrlHashless + field.large : undefined,
+          alt: field.altLarge || field.altSmall,
         });
       }
     });

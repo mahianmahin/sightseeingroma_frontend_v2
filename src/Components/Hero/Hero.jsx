@@ -4,6 +4,7 @@ import { FaStar, FaCheckCircle, FaShieldAlt, FaBolt, FaLandmark, FaBus, FaTicket
 import { baseUrlHashless } from "../../utilities/Utilities";
 import EditWrapper from "../Edit_Wrapper/EditWrapper";
 import renderContent from "../../utilities/renderContent.jsx";
+import OptimizedImage from "../OptimizedImage/OptimizedImage";
 
 const Hero = (props) => {
   const navigate = useNavigate();
@@ -31,7 +32,14 @@ const Hero = (props) => {
       {/* Background Image with Overlay */}
       <div className="absolute inset-0 z-0">
         {heroImageUrl ? (
-            <img src={heroImageUrl} alt="Rome Sightseeing" className="w-full h-full object-cover" />
+            <OptimizedImage
+              src={heroImageUrl}
+              alt="Rome Sightseeing"
+              className="w-full h-full object-cover"
+              wrapperClassName="w-full h-full"
+              eager={true}
+              sizes="100vw"
+            />
         ) : (
              <div className="w-full h-full bg-gray-900"></div>
         )}

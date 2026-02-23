@@ -3,27 +3,15 @@ import { HiOutlineTicket } from "react-icons/hi";
 import { FiMapPin } from "react-icons/fi";
 import { baseUrl } from "../../utilities/Utilities";
 import { useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
 import { useActiveOffers, getOfferForPackage } from "../../hooks/useActiveOffers";
+import OptimizedImage from "../OptimizedImage/OptimizedImage";
 
 const Card = ({ title, subtitle, image, duration, offPrice, ticketCount, price, price2, id, company, id1, thumbnail_small, thumbnail_large, thumbnail_small_alt, thumbnail_large_alt }) => {
     const navigate = useNavigate();
-    const [isLargeScreen, setIsLargeScreen] = useState(false);
     const { activeOffers } = useActiveOffers();
     
     // Check if this package has an active offer
     const activeOffer = getOfferForPackage(activeOffers, id);
-
-    // Check screen size on mount and resize
-    useEffect(() => {
-        const checkScreenSize = () => {
-            setIsLargeScreen(window.innerWidth >= 768);
-        };
-
-        checkScreenSize();
-        window.addEventListener('resize', checkScreenSize);
-        return () => window.removeEventListener('resize', checkScreenSize);
-    }, []);
 
     let calculatedStatus = duration ? "E9" : "E8";
 
@@ -49,46 +37,25 @@ const Card = ({ title, subtitle, image, duration, offPrice, ticketCount, price, 
         }
     };
 
-    // Determine which image to use based on screen size and availability
-    const getImageSrc = () => {
-        if (isLargeScreen && thumbnail_large) {
-            return `${baseUrl}${thumbnail_large}`;
-        } else if (!isLargeScreen && thumbnail_small) {
-            return `${baseUrl}${thumbnail_small}`;
-        } else if (thumbnail_large) {
-            return `${baseUrl}${thumbnail_large}`;
-        } else if (thumbnail_small) {
-            return `${baseUrl}${thumbnail_small}`;
-        } else {
-            // Fallback to old image field if new fields are not available
-            return `${baseUrl}${image}`;
-        }
-    };
-
-    // Determine which alt text to use based on screen size and availability
-    const getImageAlt = () => {
-        if (isLargeScreen && thumbnail_large_alt) {
-            return thumbnail_large_alt;
-        } else if (!isLargeScreen && thumbnail_small_alt) {
-            return thumbnail_small_alt;
-        } else if (thumbnail_large_alt) {
-            return thumbnail_large_alt;
-        } else if (thumbnail_small_alt) {
-            return thumbnail_small_alt;
-        } else {
-            // Fallback to title
-            return title;
-        }
-    };
+    // Build image URLs
+    const imgSmall = thumbnail_small ? `${baseUrl}${thumbnail_small}` : null;
+    const imgLarge = thumbnail_large ? `${baseUrl}${thumbnail_large}` : null;
+    const imgFallback = image ? `${baseUrl}${image}` : null;
 
     return (
         <div className={`group w-full bg-white shadow-lg hover:shadow-xl rounded-2xl overflow-hidden mx-auto h-full flex flex-col transition-all duration-300 transform hover:-translate-y-1 border ${activeOffer ? 'border-red-400 ring-2 ring-red-300 ring-opacity-50' : 'border-gray-100'}`}>
             {/* Image Container with Overlay */}
             <div onClick={handleBuyNow} className="relative overflow-hidden">
-                <img 
-                    src={getImageSrc()}
-                    alt={getImageAlt()}
+                <OptimizedImage
+                    src={imgFallback}
+                    srcSmall={imgSmall}
+                    srcLarge={imgLarge}
+                    alt={title}
+                    altSmall={thumbnail_small_alt}
+                    altLarge={thumbnail_large_alt}
                     className="w-full h-32 md:h-48 object-cover transition-transform duration-300 group-hover:scale-105"
+                    wrapperClassName="w-full h-32 md:h-48"
+                    sizes="(max-width: 768px) 50vw, 25vw"
                 />
                 
                 {/* Offer Badge - Shows when there's an active offer - Enhanced Glow Effect */}

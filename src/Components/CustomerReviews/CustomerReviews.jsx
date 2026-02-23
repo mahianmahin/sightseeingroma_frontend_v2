@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
 import { baseUrlHashless } from '../../utilities/Utilities';
 import { FaQuoteLeft, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
+import OptimizedImage from '../OptimizedImage/OptimizedImage';
 
 const CustomerReviews = () => {
     const [reviews, setReviews] = useState([]);
@@ -68,14 +69,12 @@ const CustomerReviews = () => {
                     {reviews.map((review) => (
                         <div key={review.id} className="min-w-[85vw] md:min-w-[calc(33.333%-1.33rem)] snap-start flex flex-col bg-white rounded-xl shadow-lg shadow-gray-100 hover:shadow-xl transition-shadow duration-300 h-auto border border-gray-100 overflow-hidden">
                            <div className="w-full aspect-[3/4] bg-gray-100 relative group flex-shrink-0">
-                                <img 
+                                <OptimizedImage 
                                     src={review.image && review.image.startsWith('http') ? review.image : `${baseUrlHashless}${review.image}`} 
                                     alt={`${review.name} - ${review.country}`}
                                     className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500"
-                                    onError={(e) => {
-                                        e.target.onerror = null; 
-                                        e.target.parentElement.style.display = 'none';
-                                    }} 
+                                    wrapperClassName="w-full h-full"
+                                    sizes="(max-width: 768px) 85vw, 33vw"
                                 />
                             </div>
                             

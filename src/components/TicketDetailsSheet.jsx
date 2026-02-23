@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Clock, Euro, Calendar, Users, Info } from "lucide-react";
+import OptimizedImage from "../Components/OptimizedImage/OptimizedImage";
 
 const TicketDetailsSheet = ({ ticket, children }) => {
   const [selectedQuantity, setSelectedQuantity] = useState(1);
@@ -34,10 +35,11 @@ const TicketDetailsSheet = ({ ticket, children }) => {
           {/* Ticket Image */}
           {ticket.image && (
             <div className="w-full h-48 rounded-lg overflow-hidden bg-gray-100">
-              <img 
+              <OptimizedImage 
                 src={ticket.image} 
                 alt={ticket.title}
                 className="w-full h-full object-cover"
+                wrapperClassName="w-full h-full"
               />
             </div>
           )}

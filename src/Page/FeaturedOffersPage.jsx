@@ -6,6 +6,7 @@ import GlobalSEO from '../Components/GlobalSEO';
 import CountdownTimer from '../Components/CountdownTimer/CountdownTimer';
 import { baseUrl, baseUrlHashless } from '../utilities/Utilities';
 import useEditorCheck from '../hooks/useEditorCheck';
+import OptimizedImage from '../Components/OptimizedImage/OptimizedImage';
 
 const FeaturedOffersPage = () => {
     const navigate = useNavigate();
@@ -161,10 +162,12 @@ const FeaturedOffersPage = () => {
                                 >
                                     {/* Image Section */}
                                     <div className="relative aspect-[16/9] overflow-hidden">
-                                        <img 
+                                        <OptimizedImage 
                                             src={offer.offer_image_url ? `${baseUrlHashless}${offer.offer_image_url}` : '/placeholder-offer.jpg'}
                                             alt={offer.offer_title}
                                             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                            wrapperClassName="w-full h-full"
+                                            sizes="(max-width: 768px) 100vw, 50vw"
                                         />
                                         
                                         {/* Badge */}

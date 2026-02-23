@@ -9,6 +9,7 @@ import useStaticContent from '../hooks/useStaticContent';
 import SEO from '../Components/SEO/SEO';
 import EditPanelSheet from '../Components/EditPanel/EditPanelSheet';
 import { baseUrl, baseUrlHashless } from '../utilities/Utilities';
+import OptimizedImage from '../Components/OptimizedImage/OptimizedImage';
 
 const FeaturedOffer = () => {
   const navigate = useNavigate();
@@ -204,10 +205,12 @@ const FeaturedOffer = () => {
                 >
                   {/* Image Section */}
                   <div className="relative h-28 sm:h-36 md:h-48 overflow-hidden">
-                    <img 
+                    <OptimizedImage 
                       src={offer.offer_image_url ? `${baseUrlHashless}${offer.offer_image_url}` : (offer.package_thumbnail ? `${baseUrlHashless}${offer.package_thumbnail}` : '/placeholder.jpg')}
                       alt={offer.offer_title || offer.package_title}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      wrapperClassName="w-full h-full"
+                      sizes="(max-width: 768px) 50vw, 33vw"
                     />
                     {/* Badge */}
                     <div className="absolute top-2 md:top-4 left-2 md:left-4">
