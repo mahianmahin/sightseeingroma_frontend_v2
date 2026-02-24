@@ -1,40 +1,65 @@
-import { createBrowserRouter, Navigate } from 'react-router-dom'
-import Login from '../Components/LoginComponent/Login/Login'
-import Regi from '../Components/LoginComponent/Registation/Regi'
-import ViewMore from '../Components/ViewMore/ViewMore'
+import { createBrowserRouter } from 'react-router-dom'
+import { lazy, Suspense } from 'react'
 import Main from '../Layouts/Main'
-import AboutUs from '../Page/AboutUs'
-import AgentPoint from '../Page/AgentPoint'
-import ManageBooking from '../Page/ManageBooking'
-import Home from '../Page/Home'
-import NotFound from '../Page/NotFound'
-import OfferPage from '../Page/OfferPage'
-import PaymentCancel from '../Page/PaymentCancel'
-import PaymentSuccess from '../Page/PaymentSuccess'
-import Refund from '../Page/Refund'
-import ReturnPolicy from '../Page/ReturnPolicy'
-import Success from '../Page/Success'
-import TermsCondition from '../Page/Terms&Condition'
-import Your_Purchased_Tickets from '../Page/Your_Purchased_Tickets'
-import ProcessTicketsV2 from './../Page/ProcessTicketsV2'
-import TicketTypeSearch from '../Components/Hero/TicketTypeSearch'
-import { ResetPasswordProvider } from '../Components/LoginComponent/ResetPassword/ResetPasswordContext'
-import RequestReset from '../Components/LoginComponent/ResetPassword/RequestReset'
-import ResetPassword from '../Components/LoginComponent/ResetPassword/ResetPassword'
-import ResetSuccess from '../Components/LoginComponent/ResetPassword/ResetSuccess'
-import Profile from '../Page/Profile'
 import RequireAuth from '../Components/RequireAuth'
-import Analytics from '../Page/Analytics'
-import BlogConversionStats from '../Page/BlogConversionStats'
-import Companies from '../Page/Companies'
-import CompanyThroughCard from '../Page/CompanyThroughCard'
-import EmbeddedCheckout from '../Page/EmbeddedCheckout'
-import PaymentReturn from '../Page/PaymentReturn'
-import TicketComparison from '../Page/TicketComparison'
-import Blogs from '../Page/Blogs'
-import BlogDetail from '../Page/BlogDetail'
-import Sitemap from '../Page/Sitemap'
-import FeaturedOffer from '../Page/FeaturedOffer'
+
+// Lightweight loading fallback for lazy-loaded routes
+const PageLoader = () => (
+  <div className="min-h-screen flex items-center justify-center">
+    <div className="w-8 h-8 border-4 border-[#930B31] border-t-transparent rounded-full animate-spin" />
+  </div>
+)
+
+// Helper to wrap a lazy component in Suspense
+const S = (Component) => (
+  <Suspense fallback={<PageLoader />}>
+    <Component />
+  </Suspense>
+)
+
+// Lazy-loaded page components
+const Home = lazy(() => import('../Page/Home'))
+const AboutUs = lazy(() => import('../Page/AboutUs'))
+const TermsCondition = lazy(() => import('../Page/Terms&Condition'))
+const ReturnPolicy = lazy(() => import('../Page/ReturnPolicy'))
+const Refund = lazy(() => import('../Page/Refund'))
+const AgentPoint = lazy(() => import('../Page/AgentPoint'))
+const OfferPage = lazy(() => import('../Page/OfferPage'))
+const ManageBooking = lazy(() => import('../Page/ManageBooking'))
+const ViewMore = lazy(() => import('../Components/ViewMore/ViewMore'))
+const Your_Purchased_Tickets = lazy(() => import('../Page/Your_Purchased_Tickets'))
+const PaymentSuccess = lazy(() => import('../Page/PaymentSuccess'))
+const PaymentCancel = lazy(() => import('../Page/PaymentCancel'))
+const Success = lazy(() => import('../Page/Success'))
+const ProcessTicketsV2 = lazy(() => import('../Page/ProcessTicketsV2'))
+const EmbeddedCheckout = lazy(() => import('../Page/EmbeddedCheckout'))
+const PaymentReturn = lazy(() => import('../Page/PaymentReturn'))
+const Companies = lazy(() => import('../Page/Companies'))
+const CompanyThroughCard = lazy(() => import('../Page/CompanyThroughCard'))
+const TicketComparison = lazy(() => import('../Page/TicketComparison'))
+const Blogs = lazy(() => import('../Page/Blogs'))
+const BlogDetail = lazy(() => import('../Page/BlogDetail'))
+const FeaturedOffer = lazy(() => import('../Page/FeaturedOffer'))
+const NotFound = lazy(() => import('../Page/NotFound'))
+const Profile = lazy(() => import('../Page/Profile'))
+const Sitemap = lazy(() => import('../Page/Sitemap'))
+
+// Standalone pages (outside Main layout)
+const Login = lazy(() => import('../Components/LoginComponent/Login/Login'))
+const Regi = lazy(() => import('../Components/LoginComponent/Registation/Regi'))
+const Analytics = lazy(() => import('../Page/Analytics'))
+const BlogConversionStats = lazy(() => import('../Page/BlogConversionStats'))
+const TicketTypeSearch = lazy(() => import('../Components/Hero/TicketTypeSearch'))
+
+// Reset password components
+const ResetPasswordProvider = lazy(() =>
+  import('../Components/LoginComponent/ResetPassword/ResetPasswordContext').then(m => ({
+    default: m.ResetPasswordProvider,
+  }))
+)
+const RequestReset = lazy(() => import('../Components/LoginComponent/ResetPassword/RequestReset'))
+const ResetPassword = lazy(() => import('../Components/LoginComponent/ResetPassword/ResetPassword'))
+const ResetSuccess = lazy(() => import('../Components/LoginComponent/ResetPassword/ResetSuccess'))
 
 export const router = createBrowserRouter([
   {
@@ -43,165 +68,172 @@ export const router = createBrowserRouter([
     children: [
       {
         path: '/',
-        element: <Home />,
+        element: S(Home),
       },
       {
         path: '/featured-today',
-        element: <FeaturedOffer />
+        element: S(FeaturedOffer),
       },
       {
         path: '/featured-offers',
-        element: <FeaturedOffer />
+        element: S(FeaturedOffer),
       },
       {
         path: '/rome-sightseeing-deals',
-        element: <FeaturedOffer />
+        element: S(FeaturedOffer),
       },
       {
         path: '/bus/:companySlug/:companyName',
-        element: <Companies />
+        element: S(Companies),
       },
       {
         path: '/company-packages/:companySlug',
-        element: <CompanyThroughCard />
+        element: S(CompanyThroughCard),
       },
       {
         path: '/compare-tickets',
-        element: <TicketComparison />
+        element: S(TicketComparison),
       },
       {
         path: '/blogs',
-        element: <Blogs />
+        element: S(Blogs),
       },
       {
         path: '/blog/:slug',
-        element: <BlogDetail />
+        element: S(BlogDetail),
       },
-      // Legacy redirects for SEO compatibility
       {
         path: '/aboutus',
-        element: <AboutUs></AboutUs>
+        element: S(AboutUs),
       },
       {
         path: '/about-us',
-        element: <AboutUs></AboutUs>
+        element: S(AboutUs),
       },
       {
-        path:'/terms',
-        element: <TermsCondition></TermsCondition>
+        path: '/terms',
+        element: S(TermsCondition),
       },
       {
         path: '/returnPolicy',
-        element : <ReturnPolicy></ReturnPolicy>
+        element: S(ReturnPolicy),
       },
       {
         path: '/refund',
-        element: <Refund></Refund>
+        element: S(Refund),
       },
       {
         path: '/agentpoints',
-        element: <AgentPoint></AgentPoint>
+        element: S(AgentPoint),
       },
       {
         path: '/offer',
-        element: <OfferPage></OfferPage>
+        element: S(OfferPage),
       },
       {
         path: '/yourticket',
-        element: <Your_Purchased_Tickets></Your_Purchased_Tickets>
+        element: S(Your_Purchased_Tickets),
       },
       {
         path: '/success',
-        element: <PaymentSuccess></PaymentSuccess>
+        element: S(PaymentSuccess),
       },
       {
         path: '/manageBookings/:status/:id',
-        element: <ManageBooking></ManageBooking>
+        element: S(ManageBooking),
       },
-      // {
-      //   path: '/search',
-      //   element: <SearchPage></SearchPage>
-      // },
       {
         path: '/viewsimilar/:hours/:company',
-        element: <ViewMore></ViewMore>
+        element: S(ViewMore),
       },
       {
-        path:'/success/:unique_id/',
-        element: <Success></Success>
+        path: '/success/:unique_id/',
+        element: S(Success),
       },
       {
         path: '/cancel/',
-        element: <PaymentCancel></PaymentCancel>
+        element: S(PaymentCancel),
       },
       {
         path: '/verify/:code/',
-        element: <ProcessTicketsV2></ProcessTicketsV2>
+        element: S(ProcessTicketsV2),
       },
       {
         path: '/checkout',
-        element: <EmbeddedCheckout />
+        element: S(EmbeddedCheckout),
       },
       {
         path: '/payment-return',
-        element: <PaymentReturn />
+        element: S(PaymentReturn),
       },
       {
         path: '/profile',
-        element: <RequireAuth><Profile /></RequireAuth>
+        element: (
+          <RequireAuth>
+            <Suspense fallback={<PageLoader />}>
+              <Profile />
+            </Suspense>
+          </RequireAuth>
+        ),
       },
       {
         path: '*',
-        element: <NotFound />
-      }
+        element: S(NotFound),
+      },
     ],
   },
   {
     path: '/analytics',
-    element: <Analytics />
+    element: S(Analytics),
   },
   {
     path: '/blog-analytics',
-    element: <BlogConversionStats />
+    element: S(BlogConversionStats),
   },
   {
     path: '/login',
-    element: <Login />
+    element: S(Login),
   },
   {
     path: '/registation',
-    element: <Regi />
+    element: S(Regi),
   },
   {
     path: '/test',
-    element: <TicketTypeSearch />
+    element: S(TicketTypeSearch),
   },
   {
     path: '/forgot-password',
     element: (
-      <ResetPasswordProvider>
-        <RequestReset />
-      </ResetPasswordProvider>
-    )
+      <Suspense fallback={<PageLoader />}>
+        <ResetPasswordProvider>
+          <RequestReset />
+        </ResetPasswordProvider>
+      </Suspense>
+    ),
   },
   {
     path: '/reset-password',
     element: (
-      <ResetPasswordProvider>
-        <ResetPassword />
-      </ResetPasswordProvider>
-    )
+      <Suspense fallback={<PageLoader />}>
+        <ResetPasswordProvider>
+          <ResetPassword />
+        </ResetPasswordProvider>
+      </Suspense>
+    ),
   },
   {
     path: '/reset-success',
     element: (
-      <ResetPasswordProvider>
-        <ResetSuccess />
-      </ResetPasswordProvider>
-    )
+      <Suspense fallback={<PageLoader />}>
+        <ResetPasswordProvider>
+          <ResetSuccess />
+        </ResetPasswordProvider>
+      </Suspense>
+    ),
   },
   {
     path: '/sitemap.xml',
-    element: <Sitemap />
-  }
+    element: S(Sitemap),
+  },
 ])

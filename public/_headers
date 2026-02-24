@@ -9,6 +9,32 @@
   Content-Type: text/plain; charset=utf-8
   Cache-Control: public, max-age=86400
 
+# Vite hashed assets — cache forever (filename changes on content change)
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Images in public folder — cache 30 days
+/*.jpg
+  Cache-Control: public, max-age=2592000
+/*.jpeg
+  Cache-Control: public, max-age=2592000
+/*.png
+  Cache-Control: public, max-age=2592000
+/*.webp
+  Cache-Control: public, max-age=2592000
+/*.svg
+  Cache-Control: public, max-age=2592000
+/*.ico
+  Cache-Control: public, max-age=2592000
+
+# JSON data files — 1 hour cache with stale-while-revalidate
+/*.json
+  Cache-Control: public, max-age=3600, stale-while-revalidate=86400
+
+# HTML — always revalidate to get latest SPA shell
+/*.html
+  Cache-Control: public, max-age=0, must-revalidate
+
 # Security headers for all pages
 /*
   X-Frame-Options: DENY

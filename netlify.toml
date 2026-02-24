@@ -1,8 +1,11 @@
 # Netlify configuration file
-# https://docs.netlify.com/configure-builds/file-based-configuration/
+# NOTE: This file is only used when Netlify performs the build.
+# Since we deploy by dragging the dist/ folder directly, the _headers
+# and _redirects files in public/ are the authoritative config.
+# This file is kept as a reference / fallback if CI/CD build is enabled later.
 
 [build]
-  # Build command
+  # Build command (only used if Netlify builds)
   command = "npm run build"
   # Output directory
   publish = "dist"
@@ -26,6 +29,55 @@
   [headers.values]
     Content-Type = "text/plain; charset=utf-8"
     Cache-Control = "public, max-age=86400"
+
+# Vite hashed assets (JS, CSS, fonts, images) — cache forever
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Images in public folder
+[[headers]]
+  for = "/*.jpg"
+  [headers.values]
+    Cache-Control = "public, max-age=2592000"
+
+[[headers]]
+  for = "/*.jpeg"
+  [headers.values]
+    Cache-Control = "public, max-age=2592000"
+
+[[headers]]
+  for = "/*.png"
+  [headers.values]
+    Cache-Control = "public, max-age=2592000"
+
+[[headers]]
+  for = "/*.webp"
+  [headers.values]
+    Cache-Control = "public, max-age=2592000"
+
+[[headers]]
+  for = "/*.svg"
+  [headers.values]
+    Cache-Control = "public, max-age=2592000"
+
+[[headers]]
+  for = "/*.ico"
+  [headers.values]
+    Cache-Control = "public, max-age=2592000"
+
+# JSON data files — shorter cache so updates propagate
+[[headers]]
+  for = "/*.json"
+  [headers.values]
+    Cache-Control = "public, max-age=3600, stale-while-revalidate=86400"
+
+# HTML pages — no cache to ensure users always get latest SPA shell
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
 
 # Security headers for all pages
 [[headers]]
