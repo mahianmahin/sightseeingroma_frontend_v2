@@ -37,7 +37,9 @@ const FeaturedToday = () => {
         badge_text, 
         discount_text, 
         desktop_image, 
-        mobile_image 
+        mobile_image,
+        desktop_image_webp,
+        mobile_image_webp 
     } = featuredData;
 
     const handleGetTickets = () => {
@@ -74,6 +76,8 @@ const FeaturedToday = () => {
                                 src={`${baseUrlHashless}${desktop_image}`}
                                 srcSmall={mobile_image ? `${baseUrlHashless}${mobile_image}` : undefined}
                                 srcLarge={`${baseUrlHashless}${desktop_image}`}
+                                srcSmallWebp={mobile_image_webp ? `${baseUrlHashless}${mobile_image_webp}` : undefined}
+                                srcLargeWebp={desktop_image_webp ? `${baseUrlHashless}${desktop_image_webp}` : undefined}
                                 alt={title}
                                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                                 wrapperClassName="w-full h-full"

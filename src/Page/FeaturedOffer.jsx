@@ -207,6 +207,7 @@ const FeaturedOffer = () => {
                   <div className="relative h-28 sm:h-36 md:h-48 overflow-hidden">
                     <OptimizedImage 
                       src={offer.offer_image_url ? `${baseUrlHashless}${offer.offer_image_url}` : (offer.package_thumbnail ? `${baseUrlHashless}${offer.package_thumbnail}` : '/placeholder.jpg')}
+                      srcWebp={offer.offer_image_webp_url ? `${baseUrlHashless}${offer.offer_image_webp_url}` : (offer.package_thumbnail_webp ? `${baseUrlHashless}${offer.package_thumbnail_webp}` : undefined)}
                       alt={offer.offer_title || offer.package_title}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       wrapperClassName="w-full h-full"

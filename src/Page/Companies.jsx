@@ -209,6 +209,8 @@ const Companies = () => {
                                 image={ticket.image_big}
                                 thumbnail_small={ticket.thumbnail_small}
                                 thumbnail_large={ticket.thumbnail_large}
+                                thumbnail_small_webp={ticket.thumbnail_small_webp}
+                                thumbnail_large_webp={ticket.thumbnail_large_webp}
                                 duration={ticket.duration}
                                 ticketCount={ticket.package_tag}
                                 price={ticket.adult_price}
@@ -261,6 +263,8 @@ const Companies = () => {
                                         image={ticket.image_big}
                                         thumbnail_small={ticket.thumbnail_small}
                                         thumbnail_large={ticket.thumbnail_large}
+                                        thumbnail_small_webp={ticket.thumbnail_small_webp}
+                                        thumbnail_large_webp={ticket.thumbnail_large_webp}
                                         duration={ticket.duration}
                                         ticketCount={ticket.package_tag}
                                         price={ticket.adult_price}

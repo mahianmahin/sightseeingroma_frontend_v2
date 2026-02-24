@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { useActiveOffers, getOfferForPackage } from "../../hooks/useActiveOffers";
 import OptimizedImage from "../OptimizedImage/OptimizedImage";
 
-const Card = ({ title, subtitle, image, duration, offPrice, ticketCount, price, price2, id, company, id1, thumbnail_small, thumbnail_large, thumbnail_small_alt, thumbnail_large_alt }) => {
+const Card = ({ title, subtitle, image, duration, offPrice, ticketCount, price, price2, id, company, id1, thumbnail_small, thumbnail_large, thumbnail_small_alt, thumbnail_large_alt, thumbnail_small_webp, thumbnail_large_webp }) => {
     const navigate = useNavigate();
     const { activeOffers } = useActiveOffers();
     
@@ -41,6 +41,8 @@ const Card = ({ title, subtitle, image, duration, offPrice, ticketCount, price, 
     const imgSmall = thumbnail_small ? `${baseUrl}${thumbnail_small}` : null;
     const imgLarge = thumbnail_large ? `${baseUrl}${thumbnail_large}` : null;
     const imgFallback = image ? `${baseUrl}${image}` : null;
+    const imgSmallWebp = thumbnail_small_webp ? `${baseUrl}${thumbnail_small_webp}` : null;
+    const imgLargeWebp = thumbnail_large_webp ? `${baseUrl}${thumbnail_large_webp}` : null;
 
     return (
         <div className={`group w-full bg-white shadow-lg hover:shadow-xl rounded-2xl overflow-hidden mx-auto h-full flex flex-col transition-all duration-300 transform hover:-translate-y-1 border ${activeOffer ? 'border-red-400 ring-2 ring-red-300 ring-opacity-50' : 'border-gray-100'}`}>
@@ -50,6 +52,8 @@ const Card = ({ title, subtitle, image, duration, offPrice, ticketCount, price, 
                     src={imgFallback}
                     srcSmall={imgSmall}
                     srcLarge={imgLarge}
+                    srcSmallWebp={imgSmallWebp}
+                    srcLargeWebp={imgLargeWebp}
                     alt={title}
                     altSmall={thumbnail_small_alt}
                     altLarge={thumbnail_large_alt}

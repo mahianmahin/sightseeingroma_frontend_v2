@@ -164,6 +164,7 @@ const FeaturedOffersPage = () => {
                                     <div className="relative aspect-[16/9] overflow-hidden">
                                         <OptimizedImage 
                                             src={offer.offer_image_url ? `${baseUrlHashless}${offer.offer_image_url}` : '/placeholder-offer.jpg'}
+                                            srcWebp={offer.offer_image_webp_url ? `${baseUrlHashless}${offer.offer_image_webp_url}` : undefined}
                                             alt={offer.offer_title}
                                             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                                             wrapperClassName="w-full h-full"

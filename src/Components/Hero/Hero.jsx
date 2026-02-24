@@ -13,6 +13,7 @@ const Hero = (props) => {
   // Get hero image from static content
   const heroImageData = props.getImageByTag ? props.getImageByTag('hero-image') : null;
   const heroImageUrl = heroImageData?.image?.file ? `${baseUrlHashless}${heroImageData.image.file}` : null;
+  const heroImageWebpUrl = heroImageData?.image?.file_webp ? `${baseUrlHashless}${heroImageData.image.file_webp}` : null;
 
   const handleBuyTickets = () => {
     const ticketsSection = document.getElementById('tickets');
@@ -34,6 +35,7 @@ const Hero = (props) => {
         {heroImageUrl ? (
             <OptimizedImage
               src={heroImageUrl}
+              srcWebp={heroImageWebpUrl}
               alt="Rome Sightseeing"
               className="w-full h-full object-cover"
               wrapperClassName="w-full h-full"

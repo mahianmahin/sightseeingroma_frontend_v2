@@ -35,6 +35,8 @@ const ImageCarousel = ({ images }) => {
           src={currentImage.src || currentImage}
           srcSmall={currentImage.srcSmall}
           srcLarge={currentImage.srcLarge || currentImage.src || currentImage}
+          srcSmallWebp={currentImage.srcSmallWebp}
+          srcLargeWebp={currentImage.srcLargeWebp}
           alt={currentImage.alt || `Slide ${currentIndex + 1}`}
           className="block h-[120px] w-[200px] md:w-full md:h-full object-cover cursor-pointer transition-all duration-300 hover:scale-105 rounded-lg md:rounded-none"
           wrapperClassName="w-full h-full flex items-center justify-center"

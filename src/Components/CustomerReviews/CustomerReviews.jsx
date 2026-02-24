@@ -71,6 +71,7 @@ const CustomerReviews = () => {
                            <div className="w-full aspect-[3/4] bg-gray-100 relative group flex-shrink-0">
                                 <OptimizedImage 
                                     src={review.image && review.image.startsWith('http') ? review.image : `${baseUrlHashless}${review.image}`} 
+                                    srcWebp={review.image_webp ? (review.image_webp.startsWith('http') ? review.image_webp : `${baseUrlHashless}${review.image_webp}`) : undefined}
                                     alt={`${review.name} - ${review.country}`}
                                     className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500"
                                     wrapperClassName="w-full h-full"

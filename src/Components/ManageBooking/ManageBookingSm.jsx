@@ -494,6 +494,8 @@ const ManageBookingSm = () => {
                     thumbnail_large={ticket.thumbnail_large}
                     thumbnail_small_alt={ticket.thumbnail_small_alt}
                     thumbnail_large_alt={ticket.thumbnail_large_alt}
+                    thumbnail_small_webp={ticket.thumbnail_small_webp}
+                    thumbnail_large_webp={ticket.thumbnail_large_webp}
                     duration={ticket.duration}
                     ticketCount={ticket.package_tag}
                     price={ticket.adult_price}

@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { useActiveOffers, getOfferForPackage } from "../../hooks/useActiveOffers";
 import OptimizedImage from "../OptimizedImage/OptimizedImage";
 
-const TicketCard = ({ title, subtitle, image, duration, offPrice, ticketCount, price, id , status, price2 , id1, thumbnail_small, thumbnail_large, thumbnail_small_alt, thumbnail_large_alt}) => {
+const TicketCard = ({ title, subtitle, image, duration, offPrice, ticketCount, price, id , status, price2 , id1, thumbnail_small, thumbnail_large, thumbnail_small_alt, thumbnail_large_alt, thumbnail_small_webp, thumbnail_large_webp}) => {
     const navigate = useNavigate();
     const { activeOffers } = useActiveOffers();
     
@@ -36,6 +36,8 @@ const TicketCard = ({ title, subtitle, image, duration, offPrice, ticketCount, p
     const imgSmall = thumbnail_small ? `${baseUrl}${thumbnail_small}` : null;
     const imgLarge = thumbnail_large ? `${baseUrl}${thumbnail_large}` : null;
     const imgFallback = image ? `${baseUrl}${image}` : null;
+    const imgSmallWebp = thumbnail_small_webp ? `${baseUrl}${thumbnail_small_webp}` : null;
+    const imgLargeWebp = thumbnail_large_webp ? `${baseUrl}${thumbnail_large_webp}` : null;
 
     return (
         <div className={`group w-full mb-4 md:mb-6 mx-auto bg-white rounded-2xl shadow-lg hover:shadow-xl overflow-hidden border ${activeOffer ? 'border-red-400 ring-2 ring-red-300 ring-opacity-50' : 'border-gray-100'} flex flex-col transition-all duration-300 transform hover:-translate-y-1`}>
@@ -45,6 +47,8 @@ const TicketCard = ({ title, subtitle, image, duration, offPrice, ticketCount, p
                     src={imgFallback}
                     srcSmall={imgSmall}
                     srcLarge={imgLarge}
+                    srcSmallWebp={imgSmallWebp}
+                    srcLargeWebp={imgLargeWebp}
                     alt={title}
                     altSmall={thumbnail_small_alt}
                     altLarge={thumbnail_large_alt}
@@ -144,6 +148,8 @@ TicketCard.propTypes = {
     thumbnail_large: PropTypes.string,
     thumbnail_small_alt: PropTypes.string,
     thumbnail_large_alt: PropTypes.string,
+    thumbnail_small_webp: PropTypes.string,
+    thumbnail_large_webp: PropTypes.string,
     offPrice: PropTypes.number,
 };
 
