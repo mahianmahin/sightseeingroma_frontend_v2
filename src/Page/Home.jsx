@@ -1,22 +1,22 @@
-import React from 'react';
-import Banner from '../Components/Banner/Banner';
-import Contact from '../Components/Contact/Contact';
+import React, { lazy, Suspense } from 'react';
 import Hero from '../Components/Hero/Hero';
-import HeroBottom from '../Components/Hero/HeroBottom';
-import Work from '../Components/How-Its-Work/Work';
-import Services from '../Components/Services/Services';
 import SectionNav from '../Components/SectionNav/SectionNav';
-import PromoBanner from '../Components/PromoBanner/PromoBanner';
 import HelmetWrapper from "../utilities/HelmetWrapper";
 import useEditorCheck from '../hooks/useEditorCheck';
 import EditPanelSheet from '../Components/EditPanel/EditPanelSheet';
 import useStaticContent from '../hooks/useStaticContent';
 import SEO from '../Components/SEO/SEO';
-import RecommendedServices from '../Components/RecommendedServices/RecommendedServices';
-import FeaturedToday from '../Components/FeaturedToday/FeaturedToday';
-import WhyBook from '../Components/WhyBook/WhyBook';
-import FinalCTA from '../Components/FinalCTA/FinalCTA';
-import CustomerReviews from '../Components/CustomerReviews/CustomerReviews';
+
+// Below-fold components — lazy-loaded for code splitting
+const FeaturedToday = lazy(() => import('../Components/FeaturedToday/FeaturedToday'));
+const WhyBook = lazy(() => import('../Components/WhyBook/WhyBook'));
+const FinalCTA = lazy(() => import('../Components/FinalCTA/FinalCTA'));
+const Services = lazy(() => import('../Components/Services/Services'));
+const CustomerReviews = lazy(() => import('../Components/CustomerReviews/CustomerReviews'));
+const PromoBanner = lazy(() => import('../Components/PromoBanner/PromoBanner'));
+const RecommendedServices = lazy(() => import('../Components/RecommendedServices/RecommendedServices'));
+const Work = lazy(() => import('../Components/How-Its-Work/Work'));
+const Contact = lazy(() => import('../Components/Contact/Contact'));
 
 const Home = () => {
     // Use the custom hook for editor check
@@ -36,6 +36,9 @@ const Home = () => {
 
                     {/* Section Navigation */}
                     <SectionNav />
+
+                    {/* Below-fold content — lazy-loaded */}
+                    <Suspense fallback={<div className="min-h-screen" />}>
 
                     {/* Featured Today Section */}
                     <FeaturedToday isEditor={isEditor} hasContent={hasContent} getContentByTag={getContentByTag} getImageByTag={getImageByTag} refreshContent={refreshContent} />
@@ -66,6 +69,8 @@ const Home = () => {
                     <div id="routes">
                         <Contact isEditor={isEditor} loading={loading} hasContent={hasContent} getContentByTag={getContentByTag} getImageByTag={getImageByTag} refreshContent={refreshContent}></Contact>
                     </div>
+
+                    </Suspense>
 
                 </div>
             </div>

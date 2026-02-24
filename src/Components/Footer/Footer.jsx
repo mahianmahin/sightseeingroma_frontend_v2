@@ -1,6 +1,6 @@
-import '@fortawesome/fontawesome-free/css/all.min.css';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { FaFacebookF, FaInstagram } from 'react-icons/fa';
 import logo from "../../assets/Logo.png";
 import scrollToTop, { baseUrl, baseUrlHashless } from '../../utilities/Utilities';
 import paymentMethods from '../../assets/payment_banners.png';
@@ -258,12 +258,12 @@ const Footer = () => {
                         </>
                     ) : (
                         <>
-                            <a href={socialLinks.facebook} target="_blank" rel="noopener noreferrer" className="hover:text-gray-400">
-                                <i className="fab fa-facebook-f"></i>
+                            <a href={socialLinks.facebook} target="_blank" rel="noopener noreferrer" className="hover:text-gray-400" aria-label="Facebook">
+                                <FaFacebookF />
                             </a>
                             {/* <a href="#" className="hover:text-gray-400"><i className="fab fa-youtube"></i></a> */}
-                            <a href={socialLinks.instagram} target="_blank" rel="noopener noreferrer" className="hover:text-gray-400">
-                                <i className="fab fa-instagram"></i>
+                            <a href={socialLinks.instagram} target="_blank" rel="noopener noreferrer" className="hover:text-gray-400" aria-label="Instagram">
+                                <FaInstagram />
                             </a>
                         </>
                     )}

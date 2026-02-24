@@ -14,7 +14,7 @@ dist
 
 #local files
 blogs/
-
+reports/
 # Environment variables
 .env
 .env.local
