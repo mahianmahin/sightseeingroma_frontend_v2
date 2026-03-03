@@ -7,6 +7,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Sightseeing Roma</title>
 
+  <!-- Preconnect to API for faster hero image + data loading -->
+  <link rel="preconnect" href="https://api.sightseeingroma.com" crossorigin />
+  <link rel="dns-prefetch" href="https://api.sightseeingroma.com" />
+
   <!-- Preconnect to Google Fonts for faster font loading -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -19,12 +23,45 @@
 
   <meta name="google-site-verification" content="TRkJt8R3GlrYMY7woPFKA0FNS7EXoPee3ZvfiJAH1rQ" />
 
-  <!-- Google Tag Manager -->
-  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-  })(window,document,'script','dataLayer','GTM-TR9XMH8W');</script>
+  <!-- Early hero image preload: fetch the API during HTML parsing to start image download before React boots -->
+  <script>
+    (function() {
+      var API = 'https://api.sightseeingroma.com';
+      fetch(API + '/static-content/home-page/')
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+          if (data.status !== 200 || !data.page_images) return;
+          var hero = data.page_images.find(function(img) { return img.unique_tag === 'hero-image'; });
+          if (!hero || !hero.image) return;
+          var url = hero.image.file_webp || hero.image.file;
+          if (!url) return;
+          // Make URL absolute
+          if (url.charAt(0) === '/') url = API + url;
+          var link = document.createElement('link');
+          link.rel = 'preload';
+          link.as = 'image';
+          link.type = hero.image.file_webp ? 'image/webp' : '';
+          link.href = url;
+          document.head.appendChild(link);
+          // Stash for React to reuse (avoids duplicate API call)
+          window.__HERO_PRELOAD = data;
+        })
+        .catch(function() {});
+    })();
+  </script>
+
+  <!-- Google Tag Manager (deferred until after page load) -->
+  <script>
+    window.addEventListener('load', function() {
+      setTimeout(function() {
+        (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+        })(window,document,'script','dataLayer','GTM-TR9XMH8W');
+      }, 100);
+    });
+  </script>
   <!-- End Google Tag Manager -->
 
 </head>

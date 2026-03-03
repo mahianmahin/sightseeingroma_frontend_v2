@@ -14,20 +14,30 @@ const useStaticContent = (pageSlug) => {
                 setLoading(true);
                 setError(null);
 
-                const response = await fetch(`${baseUrl}static-content/${pageSlug}/`);
-                
-                if (response.ok) {
-                    const data = await response.json();
+                // Reuse preloaded data from the inline <head> script if available
+                let data = null;
+                if (pageSlug === 'home-page' && window.__HERO_PRELOAD) {
+                    data = window.__HERO_PRELOAD;
+                    delete window.__HERO_PRELOAD; // consume once
+                }
+
+                if (!data) {
+                    const response = await fetch(`${baseUrl}static-content/${pageSlug}/`);
                     
-                    if (data.status === 200) {
-                        setPageData(data.page);
-                        setContentBlocks(data.content_blocks || []);
-                        setPageImages(data.page_images || []);
+                    if (response.ok) {
+                        data = await response.json();
                     } else {
-                        setError('Failed to fetch content');
+                        setError(`HTTP Error: ${response.status}`);
+                        return;
                     }
+                }
+                
+                if (data.status === 200) {
+                    setPageData(data.page);
+                    setContentBlocks(data.content_blocks || []);
+                    setPageImages(data.page_images || []);
                 } else {
-                    setError(`HTTP Error: ${response.status}`);
+                    setError('Failed to fetch content');
                 }
             } catch (error) {
                 console.error('Error fetching static content:', error);
