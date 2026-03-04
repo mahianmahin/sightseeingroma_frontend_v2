@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FaFacebookF, FaInstagram } from 'react-icons/fa';
-import logo from "../../assets/Logo.png";
+import logo from "../../assets/Logo.webp";
 import scrollToTop, { baseUrl, baseUrlHashless } from '../../utilities/Utilities';
 import paymentMethods from '../../assets/payment_banners.png';
 import useStaticContent from '../../hooks/useStaticContent';
@@ -128,6 +128,8 @@ const Footer = () => {
                         <Link to={'/'}>
                             <img 
                                 src={logoImageUrl} 
+                                width="320"
+                                height="170"
                                 className=" w-1/2  mx-auto md:mx-0" 
                                 alt={logoImageData?.image?.alt_text || "Sightseeing Roma Logo"} 
                             />
@@ -236,6 +238,8 @@ const Footer = () => {
                             <img 
                                 src={paymentImageUrl} 
                                 alt={paymentImageData?.image?.alt_text || "Payment Methods"} 
+                                width="331"
+                                height="33"
                                 className="h-6" 
                             />
                         </div>

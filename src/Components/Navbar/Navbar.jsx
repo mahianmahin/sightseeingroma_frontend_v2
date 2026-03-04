@@ -8,7 +8,7 @@ import { TbLogin2, TbLogout2 } from "react-icons/tb";
 import { HiOutlineLogout } from "react-icons/hi";
 import { FaUser, FaHistory } from "react-icons/fa";
 import { FiMenu, FiX } from "react-icons/fi";
-import logo from "../../assets/Logo.png";
+import logo from "../../assets/Logo.webp";
 import EditImageWrapper from "../Edit_Wrapper/EditImageWrapper";
 import useStaticContent from "../../hooks/useStaticContent";
 import useEditorCheck from "../../hooks/useEditorCheck";
@@ -92,7 +92,7 @@ const Navbar = () => {
                                         uniqueTag="navbar-logo"
                                         refreshContent={refreshContent}
                                     >
-                                        <img src={navbarLogoUrl} alt="Logo" className="w-24 h-auto sm:w-28 md:w-32 lg:w-36 xl:w-40 min-w-16 max-w-xs"/>
+                                        <img src={navbarLogoUrl} alt="Sightseeing Roma - Rome bus tours" width="160" height="85" className="w-24 h-auto sm:w-28 md:w-32 lg:w-36 xl:w-40 min-w-16 max-w-xs"/>
                                     </EditImageWrapper>
                                 </div>
 
@@ -184,7 +184,9 @@ const Navbar = () => {
                             >
                                 <img
                                     src={navbarLogoUrl}
-                                    alt="Logo"
+                                    alt="Sightseeing Roma - Rome bus tours"
+                                    width="160"
+                                    height="85"
                                     className="w-16 md:w-36 pl-0 md:pl-5"
                                 />
                             </EditImageWrapper>
