@@ -78,6 +78,8 @@ const Navbar = () => {
                             <div
                                 tabIndex={0}
                                 role="button"
+                                aria-label="Open navigation menu"
+                                aria-expanded={isOpen}
                                 onClick={() => setIsOpen(!isOpen)} // Toggle Dropdown
                                 className="btn btn-ghost lg:hidden hover:bg-white/10 transition-colors duration-200"
                             >
@@ -92,7 +94,7 @@ const Navbar = () => {
                                         uniqueTag="navbar-logo"
                                         refreshContent={refreshContent}
                                     >
-                                        <img src={navbarLogoUrl} alt="Sightseeing Roma - Rome bus tours" width="160" height="85" className="w-24 h-auto sm:w-28 md:w-32 lg:w-36 xl:w-40 min-w-16 max-w-xs"/>
+                                        <img src={navbarLogoUrl} alt="Sightseeing Roma - Rome tour booking" width="160" height="85" className="w-24 h-auto sm:w-28 md:w-32 lg:w-36 xl:w-40 min-w-16 max-w-xs"/>
                                     </EditImageWrapper>
                                 </div>
 
@@ -103,11 +105,12 @@ const Navbar = () => {
                         {isOpen && (
                             <ul
                                 tabIndex={0}
+                                aria-label="Navigation menu"
                                 className="menu menu-sm dropdown-content space-y-2 bg-white text-black text-lg rounded-xl z-[1] mt-3 w-64 p-4 shadow-xl border border-gray-100"
                             >
                                 {/* Home link for both logged in and out */}
                                 <li onClick={() => handleMenuClick("/")}>
-                                    <a className="text-base font-semibold pt-3 hover:bg-gray-50 rounded-lg px-3 py-2 transition-colors duration-200">
+                                    <a role="button" tabIndex={0} className="text-base font-semibold pt-3 hover:bg-gray-50 rounded-lg px-3 py-2 transition-colors duration-200">
                                         <LuHome className="text-blue-600" /> Home
                                     </a>
                                 </li>
@@ -116,17 +119,17 @@ const Navbar = () => {
                                 {isLoggedIn ? (
                                     <>
                                         <li onClick={() => handleMenuClick("/yourticket")}>
-                                            <a className="text-base font-semibold hover:bg-gray-50 rounded-lg px-3 py-2 transition-colors duration-200">
+                                            <a role="button" tabIndex={0} className="text-base font-semibold hover:bg-gray-50 rounded-lg px-3 py-2 transition-colors duration-200">
                                                 <FaHistory className="text-green-600" /> Purchase History
                                             </a>
                                         </li>
                                         <li onClick={() => handleMenuClick("/agentPoints")}>
-                                            <a className="text-base font-semibold hover:bg-gray-50 rounded-lg px-3 py-2 transition-colors duration-200">
+                                            <a role="button" tabIndex={0} className="text-base font-semibold hover:bg-gray-50 rounded-lg px-3 py-2 transition-colors duration-200">
                                                 <MdOutlineLocationOn className="text-orange-600" /> Agent Points
                                             </a>
                                         </li>
                                         <li onClick={() => handleMenuClick("/profile")}>
-                                            <a className="text-base font-semibold hover:bg-gray-50 rounded-lg px-3 py-2 transition-colors duration-200">
+                                            <a role="button" tabIndex={0} className="text-base font-semibold hover:bg-gray-50 rounded-lg px-3 py-2 transition-colors duration-200">
                                                 <FaUser className="text-purple-600" /> Profile
                                             </a>
                                         </li>
@@ -134,12 +137,12 @@ const Navbar = () => {
                                 ) : (
                                     <>
                                         <li onClick={() => handleMenuClick("/about-us")}>
-                                            <a className="text-base font-semibold hover:bg-gray-50 rounded-lg px-3 py-2 transition-colors duration-200">
+                                            <a role="button" tabIndex={0} className="text-base font-semibold hover:bg-gray-50 rounded-lg px-3 py-2 transition-colors duration-200">
                                                 <BsInfoCircle className="text-blue-600" /> About Us
                                             </a>
                                         </li>
                                         <li onClick={() => handleMenuClick("/agentPoints")}>
-                                            <a className="text-base font-semibold hover:bg-gray-50 rounded-lg px-3 py-2 transition-colors duration-200">
+                                            <a role="button" tabIndex={0} className="text-base font-semibold hover:bg-gray-50 rounded-lg px-3 py-2 transition-colors duration-200">
                                                 <MdOutlineLocationOn className="text-orange-600" /> Agent Points
                                             </a>
                                         </li>
@@ -148,7 +151,7 @@ const Navbar = () => {
 
                                 {/* Blog link - available for all users */}
                                 <li onClick={() => handleMenuClick("/blogs")}>
-                                    <a className="text-base font-semibold hover:bg-gray-50 rounded-lg px-3 py-2 transition-colors duration-200">
+                                    <a role="button" tabIndex={0} className="text-base font-semibold hover:bg-gray-50 rounded-lg px-3 py-2 transition-colors duration-200">
                                         <HiOutlineNewspaper className="text-indigo-600" /> Blog
                                     </a>
                                 </li>
@@ -158,13 +161,13 @@ const Navbar = () => {
                                 {/* Authentication button */}
                                 {isLoggedIn ? (
                                     <li onClick={logout}>
-                                        <a className="text-base font-semibold hover:bg-red-50 text-red-600 rounded-lg px-3 py-2 transition-colors duration-200">
+                                        <a role="button" tabIndex={0} className="text-base font-semibold hover:bg-red-50 text-red-600 rounded-lg px-3 py-2 transition-colors duration-200">
                                             <TbLogout2 className="text-red-600" /> Log Out
                                         </a>
                                     </li>
                                 ) : (
                                     <li onClick={() => handleMenuClick("/login")}>
-                                        <a className="text-base font-semibold bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-lg px-3 py-2 transition-colors duration-200">
+                                        <a role="button" tabIndex={0} className="text-base font-semibold bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-lg px-3 py-2 transition-colors duration-200">
                                             <TbLogin2 className="text-blue-600" /> Log In
                                         </a>
                                     </li>
@@ -184,7 +187,7 @@ const Navbar = () => {
                             >
                                 <img
                                     src={navbarLogoUrl}
-                                    alt="Sightseeing Roma - Rome bus tours"
+                                    alt="Sightseeing Roma - Rome tour booking"
                                     width="160"
                                     height="85"
                                     className="w-16 md:w-36 pl-0 md:pl-5"
@@ -195,10 +198,10 @@ const Navbar = () => {
 
                     {/* Navbar for large screens */}
                     <div className="navbar-end flex items-center lg:flex lg:w-full">
-                        <ul className="menu menu-horizontal px-1 font-medium text-lg text-white hidden lg:flex items-center space-x-2">
+                        <ul className="menu menu-horizontal px-1 font-medium text-lg text-white hidden lg:flex items-center space-x-2" aria-label="Main navigation">
                             {/* Home link for both logged in and out */}
                             <li onClick={() => handleMenuClick("/")}>
-                                <a className="hover:bg-white/10 rounded-lg px-4 py-2 transition-all duration-200 flex items-center gap-2">
+                                <a role="button" tabIndex={0} className="hover:bg-white/10 rounded-lg px-4 py-2 transition-all duration-200 flex items-center gap-2">
                                     <LuHome className="text-lg" /> Home
                                 </a>
                             </li>
@@ -207,17 +210,17 @@ const Navbar = () => {
                             {isLoggedIn ? (
                                 <>
                                     <li onClick={() => handleMenuClick("/yourticket")}>
-                                        <a className="hover:bg-white/10 rounded-lg px-4 py-2 transition-all duration-200 flex items-center gap-2">
+                                        <a role="button" tabIndex={0} className="hover:bg-white/10 rounded-lg px-4 py-2 transition-all duration-200 flex items-center gap-2">
                                             <FaHistory className="text-lg" /> Purchase History
                                         </a>
                                     </li>
                                     <li onClick={() => handleMenuClick("/agentPoints")}>
-                                        <a className="hover:bg-white/10 rounded-lg px-4 py-2 transition-all duration-200 flex items-center gap-2">
+                                        <a role="button" tabIndex={0} className="hover:bg-white/10 rounded-lg px-4 py-2 transition-all duration-200 flex items-center gap-2">
                                             <MdOutlineLocationOn className="text-lg" /> Agent Points
                                         </a>
                                     </li>
                                     <li onClick={() => handleMenuClick("/profile")}>
-                                        <a className="hover:bg-white/10 rounded-lg px-4 py-2 transition-all duration-200 flex items-center gap-2">
+                                        <a role="button" tabIndex={0} className="hover:bg-white/10 rounded-lg px-4 py-2 transition-all duration-200 flex items-center gap-2">
                                             <FaUser className="text-lg" /> Profile
                                         </a>
                                     </li>
@@ -225,12 +228,12 @@ const Navbar = () => {
                             ) : (
                                 <>
                                     <li onClick={() => handleMenuClick("/about-us")}>
-                                        <a className="hover:bg-white/10 rounded-lg px-4 py-2 transition-all duration-200 flex items-center gap-2">
+                                        <a role="button" tabIndex={0} className="hover:bg-white/10 rounded-lg px-4 py-2 transition-all duration-200 flex items-center gap-2">
                                             <BsInfoCircle className="text-lg" /> About Us
                                         </a>
                                     </li>
                                     <li onClick={() => handleMenuClick("/agentPoints")}>
-                                        <a className="hover:bg-white/10 rounded-lg px-4 py-2 transition-all duration-200 flex items-center gap-2">
+                                        <a role="button" tabIndex={0} className="hover:bg-white/10 rounded-lg px-4 py-2 transition-all duration-200 flex items-center gap-2">
                                             <MdOutlineLocationOn className="text-lg" /> Agent Points
                                         </a>
                                     </li>
@@ -239,7 +242,7 @@ const Navbar = () => {
 
                             {/* Blog link - available for all users */}
                             <li onClick={() => handleMenuClick("/blogs")}>
-                                <a className="hover:bg-white/10 rounded-lg px-4 py-2 transition-all duration-200 flex items-center gap-2">
+                                <a role="button" tabIndex={0} className="hover:bg-white/10 rounded-lg px-4 py-2 transition-all duration-200 flex items-center gap-2">
                                     <HiOutlineNewspaper className="text-lg" /> Blog
                                 </a>
                             </li>
@@ -282,7 +285,7 @@ const Navbar = () => {
 
                 <div className="flex items-center space-x-3 lg:hidden">
                     {/* Buy Tickets Button - Mobile (Icon Only) */}
-                    <button className="font-bold bg-1 hover:bg-yellow-600 rounded-lg p-2.5 transition-colors duration-200">
+                    <button aria-label="Buy tickets" className="font-bold bg-1 hover:bg-yellow-600 rounded-lg p-2.5 transition-colors duration-200">
                         <Link to={"/compare-tickets"} className="flex items-center hover:text-inherit">
                             <LuTicket size={18} />
                         </Link>
@@ -290,11 +293,12 @@ const Navbar = () => {
 
                     {isLoggedIn && (
                         <>
-                            <Link to={"/profile"} className="text-white hover:text-gray-300 transition-colors duration-200">
+                            <Link to={"/profile"} aria-label="View profile" className="text-white hover:text-gray-300 transition-colors duration-200">
                                 <FaUser size={18} />
                             </Link>
                             <button
                                 onClick={logout}
+                                aria-label="Log out"
                                 className="text-white hover:text-red-300 transition-colors duration-200 p-1"
                             >
                                 <HiOutlineLogout size={20} />

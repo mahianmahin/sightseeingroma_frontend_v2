@@ -7,9 +7,9 @@ const PromoBanner = ({
     buttonText = "BUY NOW", 
     link = "/compare-tickets",
     images = [
-        "/CitySightseeeing/sh-1.png",
-        "/CitySightseeeing/sh-2.png",
-        "/CitySightseeeing/sh-3.png"
+        "/CitySightseeeing/sh-1.webp",
+        "/CitySightseeeing/sh-2.webp",
+        "/CitySightseeeing/sh-3.webp"
     ]
 }) => {
     const navigate = useNavigate();
@@ -28,7 +28,7 @@ const PromoBanner = ({
                                     key={index} 
                                     className={`relative w-16 h-16 transform ${index === 0 ? '-rotate-12' : 'rotate-6 translate-y-1'} z-${10-index} rounded-sm`}
                                 >
-                                    <img src={img} alt="Promo" className="w-full h-full object-cover" />
+                                    <img src={img} alt="Rome sightseeing tour promotion" width="280" height="168" loading="lazy" className="w-full h-full object-cover" />
                                 </div>
                             ))}
                         </div>
@@ -94,7 +94,7 @@ const PromoBanner = ({
                                             rounded-sm border border-gray-100
                                         `}
                                     >
-                                        <img src={img} alt="Promo" className="w-full h-full object-cover" />
+                                        <img src={img} alt="Rome sightseeing tour promotion" width="280" height="168" loading="lazy" className="w-full h-full object-cover" />
                                         {/* Tape effect */}
                                         <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-12 h-4 bg-white/30 backdrop-blur-sm rotate-2 shadow-sm"></div>
                                     </div>

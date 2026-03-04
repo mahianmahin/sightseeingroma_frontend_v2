@@ -138,7 +138,7 @@ const Contact = (props) => {
                             >
                                 <img 
                                     src={contactImageUrl} 
-                                    alt="Contact Us" 
+                                    alt="Get in touch with Sightseeing Roma" 
                                     width="800"
                                     height="520"
                                     className="w-full h-auto object-cover" 
