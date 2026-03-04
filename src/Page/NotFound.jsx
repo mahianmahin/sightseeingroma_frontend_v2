@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import Banner2 from '../Components/Banner2/Banner2';
-import PageNotFoundImage from '../assets/new/Page-Not-Found-Hero-Image.jpg';
+import PageNotFoundImage from '../assets/new/Page-Not-Found-Hero-Image.webp';
 
 const NotFound = () => {
     return (

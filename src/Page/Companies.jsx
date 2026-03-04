@@ -4,10 +4,10 @@ import { FaArrowLeftLong } from "react-icons/fa6";
 import TicketCard from "../Components/TicketCard/TicketCard";
 import HelmetWrapper from "../utilities/HelmetWrapper";
 import scrollToTop, { baseUrl, baseUrlHashless } from '../utilities/Utilities';
-import BigBusImage from "../assets/new/Big-Bus-Page-Hero-Image.jpg";
-import ILoveRomeImage from "../assets/new/I-Love-Rome-Bus-Hero-Image.jpg";
-import GreenLineImage from "../assets/new/GreenLine-Bus-Hero-Image.jpg";
-import CitySightseeingImage from "../assets/new/CitySightSeeing-Bus-Hero-Image.jpg";
+import BigBusImage from "../assets/new/Big-Bus-Page-Hero-Image.webp";
+import ILoveRomeImage from "../assets/new/I-Love-Rome-Bus-Hero-Image.webp";
+import GreenLineImage from "../assets/new/GreenLine-Bus-Hero-Image.webp";
+import CitySightseeingImage from "../assets/new/CitySightSeeing-Bus-Hero-Image.webp";
 import { useParams } from "react-router-dom";
 import useStaticContent from "../hooks/useStaticContent";
 import EditWrapper from "../Components/Edit_Wrapper/EditWrapper";
@@ -146,6 +146,8 @@ const Companies = () => {
                             <img
                                 src={bannerImageSrc}
                                 alt={bannerAltText}
+                                width="1280"
+                                height="504"
                                 className={`w-full h-96 object-cover transition-opacity duration-500 ${
                                     imageLoaded ? 'opacity-100' : 'opacity-0'
                                 }`}
@@ -166,6 +168,8 @@ const Companies = () => {
                             <img
                                 src={bannerImageSrc}
                                 alt={bannerAltText}
+                                width="1280"
+                                height="504"
                                 className={`w-full h-64 object-cover transition-opacity duration-500 ${
                                     imageLoaded ? 'opacity-100' : 'opacity-0'
                                 }`}

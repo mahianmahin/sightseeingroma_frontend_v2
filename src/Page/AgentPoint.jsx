@@ -25,7 +25,7 @@ import EditPanelSheet from "../Components/EditPanel/EditPanelSheet";
 import renderContent from "../utilities/renderContent.jsx";
 import { baseUrlHashless } from "../utilities/Utilities";
 import SEO from "../Components/SEO/SEO";
-import AgentPointHeroImage from "../assets/new/Agent-Point-Hero-Section.jpg";
+import AgentPointHeroImage from "../assets/new/Agent-Point-Hero-Section.webp";
 
 /* ──────────────────────────────────────────────
    Agent Point Data

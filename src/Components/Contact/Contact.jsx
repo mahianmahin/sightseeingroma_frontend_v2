@@ -1,7 +1,7 @@
 import { FaPhoneAlt, FaMapMarkerAlt, FaEnvelope } from "react-icons/fa";
 import { useState, useEffect } from "react";
 import { baseUrl, baseUrlHashless } from "../../utilities/Utilities";
-import GetInTouch from '../../assets/new/Get-in-Touch.jpg';
+import GetInTouch from '../../assets/new/Get-in-Touch.webp';
 import EditWrapper from "../Edit_Wrapper/EditWrapper";
 import EditImageWrapper from "../Edit_Wrapper/EditImageWrapper";
 import renderContent from "../../utilities/renderContent.jsx";
@@ -139,6 +139,8 @@ const Contact = (props) => {
                                 <img 
                                     src={contactImageUrl} 
                                     alt="Contact Us" 
+                                    width="800"
+                                    height="520"
                                     className="w-full h-auto object-cover" 
                                 />
                             </EditImageWrapper>
