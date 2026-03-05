@@ -182,6 +182,14 @@ export default function criticalCSSPlugin() {
           }
         }
 
+        // Remove modulepreload for heavy chunks that are not needed on initial page load
+        // (Monaco editor is only used on admin/editing pages)
+        html = html.replace(/<link\s+rel="modulepreload"\s+crossorigin\s+href="\/assets\/vendor-monaco[^"]*\.js"\s*>\n?\s*/g, '');
+
+        // Remove modulepreload for other heavy admin-only chunks
+        html = html.replace(/<link\s+rel="modulepreload"\s+crossorigin\s+href="\/assets\/vendor-charts[^"]*\.js"\s*>\n?\s*/g, '');
+        html = html.replace(/<link\s+rel="modulepreload"\s+crossorigin\s+href="\/assets\/vendor-syntax[^"]*\.js"\s*>\n?\s*/g, '');
+
         return html;
       },
     },

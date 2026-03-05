@@ -1,7 +1,7 @@
 import { FaRegClock, FaStar, FaTag } from "react-icons/fa";
 import { HiOutlineTicket } from "react-icons/hi";
 import { FiMapPin } from "react-icons/fi";
-import { baseUrl } from "../../utilities/Utilities";
+import { baseUrlHashless } from "../../utilities/Utilities";
 import { useNavigate } from "react-router-dom";
 import { useActiveOffers, getOfferForPackage } from "../../hooks/useActiveOffers";
 import OptimizedImage from "../OptimizedImage/OptimizedImage";
@@ -38,11 +38,11 @@ const Card = ({ title, subtitle, image, duration, offPrice, ticketCount, price, 
     };
 
     // Build image URLs
-    const imgSmall = thumbnail_small ? `${baseUrl}${thumbnail_small}` : null;
-    const imgLarge = thumbnail_large ? `${baseUrl}${thumbnail_large}` : null;
-    const imgFallback = image ? `${baseUrl}${image}` : null;
-    const imgSmallWebp = thumbnail_small_webp ? `${baseUrl}${thumbnail_small_webp}` : null;
-    const imgLargeWebp = thumbnail_large_webp ? `${baseUrl}${thumbnail_large_webp}` : null;
+    const imgSmall = thumbnail_small ? `${baseUrlHashless}${thumbnail_small}` : null;
+    const imgLarge = thumbnail_large ? `${baseUrlHashless}${thumbnail_large}` : null;
+    const imgFallback = image ? `${baseUrlHashless}${image}` : null;
+    const imgSmallWebp = thumbnail_small_webp ? `${baseUrlHashless}${thumbnail_small_webp}` : null;
+    const imgLargeWebp = thumbnail_large_webp ? `${baseUrlHashless}${thumbnail_large_webp}` : null;
 
     return (
         <div className={`group w-full bg-white shadow-lg hover:shadow-xl rounded-2xl overflow-hidden mx-auto h-full flex flex-col transition-all duration-300 transform hover:-translate-y-1 border ${activeOffer ? 'border-red-400 ring-2 ring-red-300 ring-opacity-50' : 'border-gray-100'}`}>

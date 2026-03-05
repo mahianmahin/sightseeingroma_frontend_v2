@@ -11,6 +11,9 @@
   <link rel="preconnect" href="https://api.sightseeingroma.com" crossorigin />
   <link rel="dns-prefetch" href="https://api.sightseeingroma.com" />
 
+  <!-- Preload the home-page API response so it starts immediately during HTML parse -->
+  <link rel="preload" href="https://api.sightseeingroma.com/static-content/home-page/" as="fetch" crossorigin />
+
   <!-- DNS prefetch for Google Fonts (lightweight, no unused-preconnect warning) -->
   <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
   <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
@@ -23,27 +26,28 @@
 
   <meta name="google-site-verification" content="TRkJt8R3GlrYMY7woPFKA0FNS7EXoPee3ZvfiJAH1rQ" />
 
-  <!-- Early hero image preload: fetch the API during HTML parsing to start image download before React boots -->
+  <!-- Early hero image preload: uses the <link rel="preload"> response to start image download before React boots -->
   <script>
     (function() {
       var API = 'https://api.sightseeingroma.com';
-      fetch(API + '/static-content/home-page/')
+      var url = API + '/static-content/home-page/';
+      // The browser is already fetching this URL via <link rel="preload" as="fetch">.
+      // This fetch() reuses that in-flight/cached response (same URL = de-duped).
+      fetch(url)
         .then(function(r) { return r.json(); })
         .then(function(data) {
           if (data.status !== 200 || !data.page_images) return;
           var hero = data.page_images.find(function(img) { return img.unique_tag === 'hero-image'; });
           if (!hero || !hero.image) return;
-          var url = hero.image.file_webp || hero.image.file;
-          if (!url) return;
-          // Make URL absolute
-          if (url.charAt(0) === '/') url = API + url;
+          var src = hero.image.file_webp || hero.image.file;
+          if (!src) return;
+          if (src.charAt(0) === '/') src = API + src;
           var link = document.createElement('link');
           link.rel = 'preload';
           link.as = 'image';
           link.type = hero.image.file_webp ? 'image/webp' : '';
-          link.href = url;
+          link.href = src;
           document.head.appendChild(link);
-          // Stash for React to reuse (avoids duplicate API call)
           window.__HERO_PRELOAD = data;
         })
         .catch(function() {});
