@@ -52,12 +52,14 @@ const OptimizedImage = ({
 }) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [hasError, setHasError] = useState(false);
+  const [useOriginal, setUseOriginal] = useState(false);
   const imgRef = useRef(null);
 
-  // Prefer WebP URLs when available (smaller files, all modern browsers support WebP)
-  const bestSmall = srcSmallWebp || srcSmall;
-  const bestLarge = srcLargeWebp || srcLarge;
-  const bestSingle = srcWebp || src;
+  // When useOriginal is false, prefer WebP URLs if available
+  // When useOriginal is true (WebP failed), use original format URLs
+  const bestSmall = useOriginal ? srcSmall : (srcSmallWebp || srcSmall);
+  const bestLarge = useOriginal ? srcLarge : (srcLargeWebp || srcLarge);
+  const bestSingle = useOriginal ? src : (srcWebp || src);
 
   // The src attribute (used as ultimate fallback)
   const effectiveSrc = bestLarge || bestSmall || bestSingle;
@@ -70,29 +72,50 @@ const OptimizedImage = ({
     ? sizes || "(max-width: 768px) 100vw, 50vw"
     : undefined;
 
+  // Check if we're currently using a WebP URL (so we know if we can fall back)
+  const isUsingWebpUrl = !useOriginal && (
+    (srcSmallWebp && bestSmall === srcSmallWebp) ||
+    (srcLargeWebp && bestLarge === srcLargeWebp) ||
+    (srcWebp && bestSingle === srcWebp)
+  );
+  // Check if there are original (non-WebP) URLs to fall back to
+  const hasOriginalFallback = src || srcSmall || srcLarge;
+
   // Reset loaded/error state when the image source changes
   useEffect(() => {
     setIsLoaded(false);
     setHasError(false);
+    setUseOriginal(false);
 
     // If the image is already cached/complete, mark loaded immediately
     const img = imgRef.current;
     if (img && img.complete && img.naturalWidth > 0) {
       setIsLoaded(true);
     }
-  }, [effectiveSrc, srcSet]);
+  }, [src, srcSmall, srcLarge, srcWebp, srcSmallWebp, srcLargeWebp]);
 
   const handleLoad = () => {
     setIsLoaded(true);
   };
 
   const handleError = (e) => {
-    setHasError(true);
     if (onError) {
       onError(e);
-    } else {
-      e.target.src = fallbackSrc;
+      return;
     }
+
+    // If we were using a WebP URL and there are original format URLs to fall back to,
+    // switch to original format instead of going straight to placeholder
+    if (isUsingWebpUrl && hasOriginalFallback) {
+      setUseOriginal(true);
+      setHasError(false);
+      setIsLoaded(false);
+      return;
+    }
+
+    // Final fallback — use placeholder
+    setHasError(true);
+    e.target.src = fallbackSrc;
   };
 
   return (
