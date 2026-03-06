@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { FaStar, FaCheckCircle, FaShieldAlt, FaCreditCard, FaTag, FaClock, FaBus, FaTicketAlt } from 'react-icons/fa';
 import GlobalSEO from '../Components/GlobalSEO';
 import FeaturedOffersManager from '../Components/EditPanel/FeaturedOffersManager';
@@ -13,20 +13,49 @@ import OptimizedImage from '../Components/OptimizedImage/OptimizedImage';
 
 const FeaturedOffer = () => {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const highlightId = searchParams.get('highlight');
   const { isEditor } = useEditorCheck();
   const staticContentData = useStaticContent('featured-offers');
   const { refreshContent } = staticContentData;
   const [offers, setOffers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isHighlightActive, setIsHighlightActive] = useState(!!highlightId);
+  const highlightRef = useRef(null);
 
   useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
+    // Only scroll to top if there's no highlight (normal page visit)
+    if (!highlightId) {
+      window.scrollTo(0, 0);
+    }
+  }, [highlightId]);
 
   useEffect(() => {
     fetchOffers();
   }, []);
+
+  // Scroll to highlighted card once offers are loaded and the element exists
+  useEffect(() => {
+    if (highlightId && !loading && offers.length > 0 && highlightRef.current) {
+      // Small delay to ensure DOM is painted
+      const timer = setTimeout(() => {
+        highlightRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 300);
+
+      // Remove the highlight glow after 4 seconds
+      const fadeTimer = setTimeout(() => {
+        setIsHighlightActive(false);
+        // Clean up the query param so refreshing doesn't re-trigger
+        setSearchParams({}, { replace: true });
+      }, 4000);
+
+      return () => {
+        clearTimeout(timer);
+        clearTimeout(fadeTimer);
+      };
+    }
+  }, [highlightId, loading, offers]);
 
   const fetchOffers = async () => {
     try {
@@ -197,10 +226,15 @@ const FeaturedOffer = () => {
             </div>
           ) : (
             <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 max-w-6xl mx-auto">
-              {offers.map((offer) => (
+              {offers.map((offer) => {
+                const isThisHighlighted = isHighlightActive && highlightId === String(offer.id);
+                return (
                 <div 
-                  key={offer.id} 
-                  className="bg-white rounded-xl md:rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 group cursor-pointer"
+                  key={offer.id}
+                  ref={highlightId === String(offer.id) ? highlightRef : undefined}
+                  className={`bg-white rounded-xl md:rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 group cursor-pointer ${
+                    isThisHighlighted ? 'ring-4 ring-[#FAD502] shadow-[0_0_25px_rgba(250,213,2,0.6)] animate-highlight-glow scale-[1.02]' : ''
+                  }`}
                   onClick={() => handleBookNow(offer)}
                 >
                   {/* Image Section */}
@@ -290,7 +324,8 @@ const FeaturedOffer = () => {
                     </button>
                   </div>
                 </div>
-              ))}
+              );
+              })}
             </div>
           )}
         </div>

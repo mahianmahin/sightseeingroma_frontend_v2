@@ -62,10 +62,15 @@ export default {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
+        "highlight-glow": {
+          "0%, 100%": { boxShadow: "0 0 15px 3px rgba(250, 213, 2, 0.4)" },
+          "50%": { boxShadow: "0 0 30px 8px rgba(250, 213, 2, 0.7)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        "highlight-glow": "highlight-glow 1.5s ease-in-out infinite",
       },
     },
   },
