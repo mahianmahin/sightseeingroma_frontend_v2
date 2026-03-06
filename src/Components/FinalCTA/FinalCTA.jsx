@@ -12,18 +12,6 @@ const FinalCTA = ({ isEditor = false, getImageByTag = null, loading = false }) =
     // default button link (can be changed by editor via bgUrl input control)
     const [buttonLink, setButtonLink] = useState('/company-packages/big-bus');
 
-    useEffect(() => {
-        if (!loading && getImageByTag) {
-            const data = getImageByTag('final-cta-bg');
-            if (data && data.image && data.image.file) {
-                setBgUrl(`${baseUrlHashless}${data.image.file}`);
-                return;
-            }
-        }
-        // fallback local background (optional)
-        setBgUrl(null);
-    }, [getImageByTag, loading]);
-
     const handleClick = () => {
         if (buttonLink) navigate(buttonLink);
     };
@@ -33,7 +21,7 @@ const FinalCTA = ({ isEditor = false, getImageByTag = null, loading = false }) =
             {/* Background layer */}
             <div className="absolute inset-0 -z-0">
                 {bgUrl ? (
-                    <div className="w-full h-full bg-center bg-cover" style={{ backgroundImage: `url(${bgUrl})`, opacity: bgOpacity }} />
+                    <div className="w-full h-full bg-center bg-cover" style={{ opacity: bgOpacity }} />
                 ) : (
                     <div className="w-full h-full bg-[#930B31]" style={{ opacity: 1 }} />
                 )}
@@ -58,27 +46,6 @@ const FinalCTA = ({ isEditor = false, getImageByTag = null, loading = false }) =
                             </button>
                         </div>
                     </div>
-
-                    {/* Editor controls */}
-                    {isEditor && (
-                        <div className="mt-4 flex flex-col md:flex-row items-center gap-3 text-sm text-gray-800">
-                            <div className="flex items-center gap-2">
-                                <label className="whitespace-nowrap">Background opacity</label>
-                                <input type="range" min={0} max={1} step={0.05} value={bgOpacity} onChange={(e) => setBgOpacity(parseFloat(e.target.value))} className="w-36" />
-                                <span>{Math.round(bgOpacity * 100)}%</span>
-                            </div>
-
-                            <div className="flex items-center gap-2">
-                                <label className="whitespace-nowrap">Background image URL</label>
-                                <input className="px-2 py-1 border rounded w-64" value={bgUrl || ''} onChange={(e) => setBgUrl(e.target.value)} placeholder="https://..." />
-                            </div>
-
-                            <div className="flex items-center gap-2">
-                                <label className="whitespace-nowrap">Button link</label>
-                                <input className="px-2 py-1 border rounded w-48" value={buttonLink} onChange={(e) => setButtonLink(e.target.value)} placeholder="/company-packages" />
-                            </div>
-                        </div>
-                    )}
                 </div>
             </div>
         </section>

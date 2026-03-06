@@ -27,11 +27,6 @@ const Navbar = () => {
 
     // Static content and editor hooks
     const { isEditor } = useEditorCheck();
-    const { getImageByTag, refreshContent } = useStaticContent('navbar');
-
-    // Get navbar logo from static content or fallback to imported logo
-    const navbarLogoData = getImageByTag ? getImageByTag('navbar-logo') : null;
-    const navbarLogoUrl = navbarLogoData?.image?.file ? `${baseUrlHashless}${navbarLogoData.image.file}` : logo;
 
     // Logout function
     async function logout() {
@@ -89,13 +84,7 @@ const Navbar = () => {
                             <Link to={"/"}>
                                 
                                 <div className="w-full flex justify-center items-center">
-                                    <EditImageWrapper
-                                        isEditor={isEditor}
-                                        uniqueTag="navbar-logo"
-                                        refreshContent={refreshContent}
-                                    >
-                                        <img src={navbarLogoUrl} alt="Sightseeing Roma - Rome tour booking" width="160" height="85" className="w-24 h-auto sm:w-28 md:w-32 lg:w-36 xl:w-40 min-w-16 max-w-xs"/>
-                                    </EditImageWrapper>
+                                    <img src={logo} alt="Sightseeing Roma - Rome tour booking" width="160" height="85" className="w-24 h-auto sm:w-28 md:w-32 lg:w-36 xl:w-40 min-w-16 max-w-xs"/>
                                 </div>
 
                                 
@@ -180,19 +169,7 @@ const Navbar = () => {
                 <div className="container mx-auto w-full">
                     <div className="md:hidden hidden lg:block">
                         <Link to={"/"}>
-                            <EditImageWrapper
-                                isEditor={isEditor}
-                                uniqueTag="navbar-logo"
-                                refreshContent={refreshContent}
-                            >
-                                <img
-                                    src={navbarLogoUrl}
-                                    alt="Sightseeing Roma - Rome tour booking"
-                                    width="160"
-                                    height="85"
-                                    className="w-16 md:w-36 pl-0 md:pl-5"
-                                />
-                            </EditImageWrapper>
+                            <img src={logo} alt="Sightseeing Roma - Rome tour booking" width="160" height="85" className="w-16 md:w-36 pl-0 md:pl-5"/>
                         </Link>
                     </div>
 

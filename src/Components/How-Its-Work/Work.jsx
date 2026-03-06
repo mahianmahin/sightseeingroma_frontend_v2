@@ -1,15 +1,7 @@
 import { FaCreditCard, FaQrcode, FaMapMarkerAlt } from "react-icons/fa";
-import processImage from "../../assets/process_image.png";
-import EditImageWrapper from "../Edit_Wrapper/EditImageWrapper";
-import EditWrapper from "../Edit_Wrapper/EditWrapper";
-import { baseUrlHashless } from "../../utilities/Utilities";
-import renderContent from "../../utilities/renderContent";
+import processImage from "../../assets/process_image.webp";
 
-const Work = (props) => {
-    // Get process image from static content or fallback to imported image
-    const processImageData = props.getImageByTag ? props.getImageByTag('process') : null;
-    const processImageUrl = processImageData?.image?.file ? `${baseUrlHashless}${processImageData.image.file}` : processImage;
-    
+const Work = () => {
     const steps = [
         {
             icon: <FaCreditCard className="text-xl md:text-2xl" />,
@@ -38,19 +30,9 @@ const Work = (props) => {
         <div className="relative w-full overflow-hidden">
             {/* Background for Desktop */}
             <div className="absolute inset-0 hidden lg:block">
-                 <EditImageWrapper
-                    isEditor={props.isEditor}
-                    uniqueTag="process"
-                    refreshContent={props.refreshContent}
-                    className="w-full h-full"
-                >
-                    <div 
-                        className="w-full h-full bg-cover bg-center"
-                        style={{ backgroundImage: `url(${processImageUrl})` }}
-                    >
-                        <div className="absolute inset-0 bg-gradient-to-r from-[#930B31]/95 to-[#930B31]/80"></div>
-                    </div>
-                </EditImageWrapper>
+                <div className="w-full h-full bg-cover bg-center" style={{ backgroundImage: `url(${processImage})` }}>
+                <div className="absolute inset-0 bg-gradient-to-r from-[#930B31]/95 to-[#930B31]/80"></div>
+            </div>
             </div>
 
             {/* Background for Mobile */}
@@ -62,9 +44,7 @@ const Work = (props) => {
                     {/* Header Section */}
                     <div className="w-full lg:w-1/4 text-center lg:text-left">
                         <h2 className="text-2xl lg:text-4xl font-bold text-white mb-2">
-                            <EditWrapper isEditor={props.isEditor} contentTag="work-main-title" refreshContent={props.refreshContent}>
-                                {renderContent('work-main-title', props.hasContent, props.getContentByTag, 'The Process')}
-                            </EditWrapper>
+                            The Process
                         </h2>
                         <div className="w-16 h-1 bg-[#FAD502] mx-auto lg:mx-0 rounded-full mb-2 lg:mb-4"></div>
                     </div>
@@ -79,14 +59,10 @@ const Work = (props) => {
                                     </div>
                                     <div className="flex-1 min-w-0">
                                         <h3 className="text-base md:text-xl font-bold text-white mb-0.5 md:mb-2 truncate">
-                                            <EditWrapper isEditor={props.isEditor} contentTag={step.titleTag} refreshContent={props.refreshContent}>
-                                                {renderContent(step.titleTag, props.hasContent, props.getContentByTag, step.defaultTitle)}
-                                            </EditWrapper>
+                                            {step.defaultTitle}
                                         </h3>
                                         <div className="text-white/90 text-xs md:text-sm leading-tight md:leading-relaxed">
-                                            <EditWrapper isEditor={props.isEditor} contentTag={step.descTag} refreshContent={props.refreshContent}>
-                                                {renderContent(step.descTag, props.hasContent, props.getContentByTag, step.defaultDesc)}
-                                            </EditWrapper>
+                                            {step.defaultDesc}
                                         </div>
                                     </div>
                                 </div>

@@ -1,44 +1,27 @@
-import React, { useState, useEffect } from 'react';
+import React, { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaTag, FaArrowRight, FaClock } from 'react-icons/fa';
-import { baseUrl, baseUrlHashless } from '../../utilities/Utilities';
+import { baseUrlHashless } from '../../utilities/Utilities';
 import OptimizedImage from '../OptimizedImage/OptimizedImage';
 
-const FeaturedToday = () => {
+const FeaturedToday = ({ offersData }) => {
     const navigate = useNavigate();
-    const [bestOffer, setBestOffer] = useState(null);
-    const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        fetch(`${baseUrl}featured-offers/`)
-            .then(res => {
-                if (res.ok) return res.json();
-                throw new Error('Failed to fetch offers');
-            })
-            .then(data => {
-                if (data.status === 200 && data.data && data.data.length > 0) {
-                    // Pick the offer with the highest discount percentage
-                    const withDiscount = data.data
-                        .filter(o => o.original_adult_price && o.offer_adult_price && parseFloat(o.original_adult_price) > parseFloat(o.offer_adult_price))
-                        .map(o => ({
-                            ...o,
-                            discountPct: Math.round(((parseFloat(o.original_adult_price) - parseFloat(o.offer_adult_price)) / parseFloat(o.original_adult_price)) * 100)
-                        }));
+    const bestOffer = useMemo(() => {
+        if (!offersData || !offersData.length) return null;
+        const withDiscount = offersData
+            .filter(o => o.original_adult_price && o.offer_adult_price && parseFloat(o.original_adult_price) > parseFloat(o.offer_adult_price))
+            .map(o => ({
+                ...o,
+                discountPct: Math.round(((parseFloat(o.original_adult_price) - parseFloat(o.offer_adult_price)) / parseFloat(o.original_adult_price)) * 100)
+            }));
+        if (!withDiscount.length) return null;
+        withDiscount.sort((a, b) => b.discountPct - a.discountPct);
+        return withDiscount[0];
+    }, [offersData]);
 
-                    if (withDiscount.length > 0) {
-                        withDiscount.sort((a, b) => b.discountPct - a.discountPct);
-                        setBestOffer(withDiscount[0]);
-                    }
-                }
-                setLoading(false);
-            })
-            .catch(() => {
-                setLoading(false);
-            });
-    }, []);
-
-    // Don't render anything if there are no active offers with a discount
-    if (loading) return null;
+    // offersData === null means still loading; [] means loaded but empty
+    if (offersData === null) return null;
     if (!bestOffer) return null;
 
     const {

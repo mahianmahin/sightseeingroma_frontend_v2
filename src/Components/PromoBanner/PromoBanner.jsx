@@ -1,18 +1,42 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const PromoBanner = ({ 
-    title = "Looking for a BIG deal? Save 20% now!", 
-    subtitle = "Adult tickets from €21.00", 
-    buttonText = "BUY NOW", 
-    link = "/compare-tickets",
-    images = [
-        "/CitySightseeeing/sh-1.webp",
-        "/CitySightseeeing/sh-2.webp",
-        "/CitySightseeeing/sh-3.webp"
-    ]
-}) => {
+const IMAGES = [
+    "/CitySightseeeing/sh-1.webp",
+    "/CitySightseeeing/sh-2.webp",
+    "/CitySightseeeing/sh-3.webp"
+];
+
+const PromoBanner = ({ offersData }) => {
     const navigate = useNavigate();
+
+    const bestOffer = useMemo(() => {
+        if (!offersData || !offersData.length) return null;
+        let best = null;
+        let bestPct = 0;
+        for (const offer of offersData) {
+            const original = parseFloat(offer.original_adult_price);
+            const discounted = parseFloat(offer.offer_adult_price);
+            if (original > 0 && discounted > 0 && original > discounted) {
+                const pct = Math.round(((original - discounted) / original) * 100);
+                if (pct > bestPct) {
+                    bestPct = pct;
+                    best = { ...offer, discountPct: pct };
+                }
+            }
+        }
+        return best;
+    }, [offersData]);
+
+    // offersData === null means still loading; don't flash the banner
+    if (offersData === null) return null;
+    // Don't render anything if there are no active offers with a discount
+    if (!bestOffer) return null;
+
+    const title = `Looking for a BIG deal? Save ${bestOffer.discountPct}% now!`;
+    const subtitle = `Adult tickets from €${bestOffer.offer_adult_price}`;
+    const link = '/featured-offers';
+    const buttonText = 'BUY NOW';
 
     return (
         <div className="w-full max-w-6xl mx-auto px-0 md:px-4 my-4 md:my-20">
@@ -23,7 +47,7 @@ const PromoBanner = ({
                     <div className="md:hidden w-full flex items-center justify-between relative">
                         {/* Images Group - Left Side */}
                         <div className="flex -space-x-6 absolute -left-2 top-1/2 -translate-y-1/2 z-10">
-                            {images.slice(0, 2).map((img, index) => (
+                            {IMAGES.slice(0, 2).map((img, index) => (
                                 <div 
                                     key={index} 
                                     className={`relative w-16 h-16 transform ${index === 0 ? '-rotate-12' : 'rotate-6 translate-y-1'} z-${10-index} rounded-sm`}
@@ -82,7 +106,7 @@ const PromoBanner = ({
                         {/* Right: Images overlapping edge */}
                         <div className="flex-1 flex justify-end relative h-full min-h-[140px]">
                             <div className="flex -space-x-12 absolute -right-12 top-1/2 -translate-y-1/2 perspective-1000">
-                                {images.map((img, index) => (
+                                {IMAGES.map((img, index) => (
                                     <div 
                                         key={index} 
                                         className={`

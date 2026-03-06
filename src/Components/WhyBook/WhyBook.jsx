@@ -2,22 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { FaLandmark, FaHandshake, FaTag, FaHeadset } from 'react-icons/fa';
 import { baseUrlHashless } from '../../utilities/Utilities';
 
-const WhyBook = ({ isEditor = false, getImageByTag = null, loading = false }) => {
-    // State to control background opacity and image URL
-    const [bgOpacity, setBgOpacity] = useState(0.25);
-    const [bgUrl, setBgUrl] = useState(null);
-
-    useEffect(() => {
-        if (!loading && getImageByTag) {
-            const data = getImageByTag('why-book-bg');
-            if (data && data.image && data.image.file) {
-                setBgUrl(`${baseUrlHashless}${data.image.file}`);
-                return;
-            }
-        }
-        // fallback (optional local image path)
-        setBgUrl('/Banner/Background.jpg');
-    }, [getImageByTag, loading]);
+const WhyBook = () => {
 
     const boxes = [
         {
@@ -48,7 +33,7 @@ const WhyBook = ({ isEditor = false, getImageByTag = null, loading = false }) =>
             <div className="absolute inset-0 -z-0">
                 <div
                     className="w-full h-full bg-center bg-cover"
-                    style={{ backgroundImage: `url(${bgUrl})`, opacity: bgOpacity }}
+                    style={{ backgroundImage: `url('/Banner/Background.jpg')`}}
                 />
                 <div className="absolute inset-0 bg-white/75 md:bg-white/50"></div>
             </div>
@@ -72,35 +57,6 @@ const WhyBook = ({ isEditor = false, getImageByTag = null, loading = false }) =>
                         </div>
                     ))}
                 </div>
-
-                {/* Editor-only controls */}
-                {isEditor && (
-                    <div className="mt-4 md:mt-6 flex flex-col md:flex-row items-center gap-3 justify-center">
-                        <div className="flex items-center gap-3">
-                            <label className="text-sm text-gray-700">Background opacity</label>
-                            <input
-                                type="range"
-                                min={0}
-                                max={1}
-                                step={0.05}
-                                value={bgOpacity}
-                                onChange={(e) => setBgOpacity(parseFloat(e.target.value))}
-                                className="w-40"
-                            />
-                            <span className="text-sm text-gray-700">{Math.round(bgOpacity * 100)}%</span>
-                        </div>
-
-                        <div className="flex items-center gap-3">
-                            <label className="text-sm text-gray-700">Background image URL</label>
-                            <input
-                                type="text"
-                                value={bgUrl || ''}
-                                onChange={(e) => setBgUrl(e.target.value)}
-                                className="rounded-md border border-gray-200 px-3 py-1 text-sm w-60"
-                            />
-                        </div>
-                    </div>
-                )}
             </div>
         </section>
     );

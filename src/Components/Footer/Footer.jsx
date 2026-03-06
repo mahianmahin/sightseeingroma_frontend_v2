@@ -5,10 +5,8 @@ import logo from "../../assets/Logo.webp";
 import scrollToTop, { baseUrl, baseUrlHashless } from '../../utilities/Utilities';
 import paymentMethods from '../../assets/payment_banners.png';
 import useStaticContent from '../../hooks/useStaticContent';
-import EditWrapper from '../Edit_Wrapper/EditWrapper';
-import EditImageWrapper from '../Edit_Wrapper/EditImageWrapper';
 import useEditorCheck from '../../hooks/useEditorCheck';
-import renderContent from '../../utilities/renderContent.jsx';
+
 
 const Footer = () => {
     const [folders, setFolders] = useState([]);
@@ -103,42 +101,17 @@ const Footer = () => {
         }
     };
 
-    const { isEditor } = useEditorCheck();
-    const { getContentByTag, getImageByTag, hasContent, refreshContent } = useStaticContent('footer');
-
-    // Get footer images from static content or fallback to imported images
-    const logoImageData = getImageByTag ? getImageByTag('footer-logo') : null;
-    const logoImageUrl = logoImageData?.image?.file ? `${baseUrlHashless}${logoImageData.image.file}` : logo;
-    
-    const paymentImageData = getImageByTag ? getImageByTag('footer-payment-methods') : null;
-    const paymentImageUrl = paymentImageData?.image?.file ? `${baseUrlHashless}${paymentImageData.image.file}` : paymentMethods;
-
     return (
         <div className="bg-black font-color-1 py-10 px-2 md:px-4">
             <div className="container mx-auto px-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
 
                 {/* Logo and Description */}
                 <div className="space-y-4  md:text-left">
+                    <Link to={'/'}>
+                        <img src={logo} width="320" height="170" className=" w-1/2  mx-auto md:mx-0" alt={"Sightseeing Roma Logo"} />
+                    </Link>
 
-                    <EditImageWrapper
-                        isEditor={isEditor}
-                        uniqueTag="footer-logo"
-                        refreshContent={refreshContent}
-                    >
-                        <Link to={'/'}>
-                            <img 
-                                src={logoImageUrl} 
-                                width="320"
-                                height="170"
-                                className=" w-1/2  mx-auto md:mx-0" 
-                                alt={logoImageData?.image?.alt_text || "Sightseeing Roma Logo"} 
-                            />
-                        </Link>
-                    </EditImageWrapper>
-
-                    <EditWrapper isEditor={isEditor} contentTag={"footer-text"} refreshContent={refreshContent}>
-                      {renderContent('footer-text', hasContent, getContentByTag, 'Your trusted partner for exploring Rome')}
-                    </EditWrapper>
+                    <p class="text-sm">At Sightseeing Roma, we believe that every traveler deserves to explore the majestic beauty and rich history of Rome with ease and comfort. Established with a passion for delivering unforgettable experiences, we are your gateway to the heart of this ancient city.</p>
                 
                 </div>
 
@@ -146,10 +119,7 @@ const Footer = () => {
                 <div className="grid grid-cols-2 gap-8">
                     {/* Bus Services */}
                     <div className=" md:text-left">
-
-                        <EditWrapper isEditor={isEditor} contentTag={"footer-bus-services-title"} refreshContent={refreshContent}>
-                            {renderContent('footer-bus-services-title', hasContent, getContentByTag, 'Bus Services')}
-                        </EditWrapper>
+                        <h3 class="font-semibold pb-4 text-lg">Bus Services</h3>
 
                         <ul className="flex flex-col space-y-2 text-sm">
                             {loading ? (
@@ -168,10 +138,8 @@ const Footer = () => {
 
                     {/* About */}
                     <div className=" md:text-left">
-                        
-                        <EditWrapper isEditor={isEditor} contentTag={"footer-about-title"} refreshContent={refreshContent}>
-                            {renderContent('footer-about-title', hasContent, getContentByTag, 'About')}
-                        </EditWrapper>
+                    
+                        <h3 class="font-semibold pb-4 text-lg">About</h3>
                         
                         <ul className="flex flex-col space-y-2 text-sm">
                             <Link to={'/about-us'}><li>About Us</li></Link>
@@ -187,13 +155,8 @@ const Footer = () => {
                 {/* Newsletter */}
                 <div className=" md:text-left">
                     
-                    <EditWrapper isEditor={isEditor} contentTag={"footer-newsletter-title"} refreshContent={refreshContent}>
-                        {renderContent('footer-newsletter-title', hasContent, getContentByTag, 'Newsletter')}
-                    </EditWrapper>
-
-                    <EditWrapper isEditor={isEditor} contentTag={"footer-newsletter-text"} refreshContent={refreshContent}>
-                        {renderContent('footer-newsletter-text', hasContent, getContentByTag, 'Subscribe to get updates on our latest offers')}
-                    </EditWrapper>
+                    <h3 class="font-semibold pb-4 text-lg">Stay Updated</h3>
+                    <p class="text-sm mb-4">Sign up to receive exclusive offers, travel tips, and the latest bus routes directly to your inbox.</p>
                     
                     <form className="flex justify-start items-center w-full max-w-md " onSubmit={handleNewsletterSubmit}>
                         <input
@@ -225,25 +188,11 @@ const Footer = () => {
 
                     {/* Payment Methods */}
                     
-                    <EditWrapper isEditor={isEditor} contentTag={"footer-payment-methods-title"} refreshContent={refreshContent}>
-                        {renderContent('footer-payment-methods-title', hasContent, getContentByTag, 'Payment Methods')}
-                    </EditWrapper>
+                    <h1 class='font-bold mt-10 mb-5'>Payment Methods</h1>
                     
-                    <EditImageWrapper
-                        isEditor={isEditor}
-                        uniqueTag="footer-payment-methods"
-                        refreshContent={refreshContent}
-                    >
-                        <div className="flex space-x-4">
-                            <img 
-                                src={paymentImageUrl} 
-                                alt={paymentImageData?.image?.alt_text || "Payment Methods"} 
-                                width="331"
-                                height="33"
-                                className="h-6" 
-                            />
-                        </div>
-                    </EditImageWrapper>
+                    <div className="flex space-x-4">
+                        <img src={paymentMethods} alt={"Available Payment Methods"} width="331" height="33" className="h-6" />
+                    </div>
                 </div>
             </div>
 

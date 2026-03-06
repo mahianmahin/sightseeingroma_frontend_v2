@@ -230,13 +230,9 @@ export default function ProcessTicketsV2() {
                                             <span className="text-gray-900">{data.data.user}</span>
                                         </div>
                                         <div className="flex justify-between py-2 border-b border-gray-100">
-                                            <span className="font-semibold text-gray-700">Total Price:</span>
-                                            <span className="text-gray-900 font-bold">€{data.data.total_price}</span>
-                                        </div>
-                                        <div className="flex justify-between py-2 border-b border-gray-100">
                                             <span className="font-semibold text-gray-700">Payment Status:</span>
                                             <span className={`font-medium ${data.data.paid ? 'text-green-600' : 'text-red-600'}`}>
-                                                {data.data.paid ? "✓ Paid" : "✗ Unpaid"}
+                                                {data.data.paid ? "✓ PAID" : "✗ Unpaid"}
                                             </span>
                                         </div>
                                         <div className="flex justify-between py-2 border-b border-gray-100">

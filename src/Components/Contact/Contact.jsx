@@ -2,9 +2,6 @@ import { FaPhoneAlt, FaMapMarkerAlt, FaEnvelope } from "react-icons/fa";
 import { useState, useEffect } from "react";
 import { baseUrl, baseUrlHashless } from "../../utilities/Utilities";
 import GetInTouch from '../../assets/new/Get-in-Touch.webp';
-import EditWrapper from "../Edit_Wrapper/EditWrapper";
-import EditImageWrapper from "../Edit_Wrapper/EditImageWrapper";
-import renderContent from "../../utilities/renderContent.jsx";
 
 const Contact = (props) => {
     const [contactData, setContactData] = useState({
@@ -78,19 +75,15 @@ const Contact = (props) => {
                     <div className="w-full lg:w-1/2">
                         <div className="text-center lg:text-left mb-8">
                             <h4 className="text-[#FAD502] font-bold uppercase tracking-wider mb-2 text-sm md:text-base">
-                                <EditWrapper isEditor={props.isEditor} contentTag={"get-in-touch-label"} refreshContent={props.refreshContent}>
-                                    {renderContent('get-in-touch-label', props.hasContent, props.getContentByTag, 'Contact Us')}
-                                </EditWrapper>
+                                <p class="py-2 my-4 text-2xl font-bold border-b-4 border-yellow-500 inline-block text-yellow-500">Get In Touch</p>           
                             </h4>
+
                             <h2 className="text-3xl lg:text-5xl font-bold text-[#930B31] mb-4">
-                                <EditWrapper isEditor={props.isEditor} contentTag={"get-in-touch-title"} refreshContent={props.refreshContent}>
-                                    {renderContent('get-in-touch-title', props.hasContent, props.getContentByTag, 'Get in Touch')}
-                                </EditWrapper>
+                                <h2 class=" text-lg md:text-3xl font-bold mb-2">From Comfort to Budget, Explore Ticket Options for Every Traveler</h2>
                             </h2>
+
                             <div className="text-gray-600 text-base lg:text-lg leading-relaxed">
-                                <EditWrapper isEditor={props.isEditor} contentTag={"get-in-touch-subtitle"} refreshContent={props.refreshContent}>
-                                    {renderContent('get-in-touch-subtitle', props.hasContent, props.getContentByTag, 'We are here to help you with any questions you may have.')}
-                                </EditWrapper>
+                                <p class="text-gray-600 mb-4">Seamless booking, diverse routes, and flexible schedules at your fingertips</p>
                             </div>
                         </div>
 
@@ -130,20 +123,7 @@ const Contact = (props) => {
                     {/* Image Section */}
                     <div className="w-full lg:w-1/2">
                         <div className="overflow-hidden">
-                            <EditImageWrapper 
-                                isEditor={props.isEditor} 
-                                uniqueTag="get-in-touch" 
-                                refreshContent={props.refreshContent} 
-                                className="w-full"
-                            >
-                                <img 
-                                    src={contactImageUrl} 
-                                    alt="Get in touch with Sightseeing Roma" 
-                                    width="800"
-                                    height="520"
-                                    className="w-full h-auto object-cover" 
-                                />
-                            </EditImageWrapper>
+                            <img src={GetInTouch} alt="Get in touch with Sightseeing Roma" width="800" height="520" className="w-full h-auto object-cover" />
                         </div>
                     </div>
                 </div>

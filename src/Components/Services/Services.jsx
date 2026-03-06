@@ -1,11 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { FaBus, FaMapMarkedAlt, FaTicketAlt, FaRoute, FaFilter, FaChevronDown, FaTimes } from "react-icons/fa";
 import { baseUrl } from "../../utilities/Utilities";
 import Card from "./Card";
-import EditWrapper from "../Edit_Wrapper/EditWrapper";
-import renderContent from "../../utilities/renderContent.jsx";
-import RecommendedServices from "../RecommendedServices/RecommendedServices";
-import PromoBanner from "../PromoBanner/PromoBanner.jsx";
+
 
 const Services = (props) => {
   const [activeTab, setActiveTab] = useState(0);
@@ -213,45 +209,14 @@ const Services = (props) => {
   return (
     <div className="bg-[#F2F2F7] py-8 md:py-16">
       <div className="container mx-auto px-4 md:px-8">
-        {/* Hero Section */}
-        {/* <div className="text-center mb-8 md:mb-16"> */}
-          {/* services title */}
-          {/* <EditWrapper isEditor={props.isEditor} contentTag={"services-title"} refreshContent={props.refreshContent}>
-            {renderContent('services-title', props.hasContent, props.getContentByTag, 'Our Bus Services')}
-          </EditWrapper> */}
-          
-          {/* servies subtitle */}
-          {/* <EditWrapper isEditor={props.isEditor} contentTag={"services-subtitle"} refreshContent={props.refreshContent}>
-            {renderContent('services-subtitle', props.hasContent, props.getContentByTag, 'Reserve your seat from available bus rides. From comfort to budget, explore ticket options for every traveler.')}
-          </EditWrapper> */}
-          
-          {/* Stats Section */}
-          {/* <EditWrapper isEditor={props.isEditor} contentTag={"service-cards"} refreshContent={props.refreshContent}>
-            {renderContent('service-cards', props.hasContent, props.getContentByTag)}
-          </EditWrapper> */}
-
-          {/* <div class="grid grid-cols-3 md:grid-cols-3 gap-4 max-w-3xl mx-auto" /> */}
-        
-        {/* </div> */}
-
-        {/* Recommended Services Section */}
-        {/* <RecommendedServices /> */}
-
-        
-
-        
-
         {/* Service Selection */}
         <div className="bg-white rounded-2xl shadow-lg p-6 md:p-8 mb-8">
           <div className="text-center mb-8">
-            
-            <EditWrapper isEditor={props.isEditor} contentTag={"select-service-title"} refreshContent={props.refreshContent}>
-              {renderContent('select-service-title', props.hasContent, props.getContentByTag, 'Select Your Service')}
-            </EditWrapper>
+            {/* Title */}
+            <h2 class="text-xl md:text-2xl font-bold text-gray-800 mb-2">Hop on Your Perfect Rome Bus Tour</h2>
 
-            <EditWrapper isEditor={props.isEditor} contentTag={"select-service-subtitle"} refreshContent={props.refreshContent}>
-              {renderContent('select-service-subtitle', props.hasContent, props.getContentByTag, 'Choose from our available bus services')}
-            </EditWrapper>
+            {/* Subtitle */}
+            <p class="text-gray-600">Choose from our premium bus service providers</p>
 
           </div>
 
@@ -367,20 +332,6 @@ const Services = (props) => {
                   <option value="60+">€60+</option>
                 </select>
               </div>
-
-              {/* Availability Filter */}
-              {/* <div className="relative">
-                <label className="block text-sm font-medium text-gray-700 mb-2">Availability</label>
-                <select 
-                  value={filters.availability}
-                  onChange={(e) => handleFilterChange('availability', e.target.value)}
-                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-[#930B31] focus:border-[#930B31] transition-colors"
-                >
-                  <option value="">All Tickets</option>
-                  <option value="available">Available Now</option>
-                  <option value="featured">Featured</option>
-                </select>
-              </div> */}
 
               {/* Sort By */}
               <div className="relative">

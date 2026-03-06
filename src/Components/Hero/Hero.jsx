@@ -2,8 +2,6 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaStar, FaCheckCircle, FaShieldAlt, FaBolt, FaLandmark, FaBus, FaTicketAlt } from "react-icons/fa";
 import { baseUrlHashless } from "../../utilities/Utilities";
-import EditWrapper from "../Edit_Wrapper/EditWrapper";
-import renderContent from "../../utilities/renderContent.jsx";
 import OptimizedImage from "../OptimizedImage/OptimizedImage";
 
 const Hero = (props) => {
@@ -14,6 +12,8 @@ const Hero = (props) => {
   const heroImageData = props.getImageByTag ? props.getImageByTag('hero-image') : null;
   const heroImageUrl = heroImageData?.image?.file ? `${baseUrlHashless}${heroImageData.image.file}` : null;
   const heroImageWebpUrl = heroImageData?.image?.file_webp ? `${baseUrlHashless}${heroImageData.image.file_webp}` : null;
+
+  console.log("Hero image URL:", heroImageUrl);
 
   const handleBuyTickets = () => {
     const ticketsSection = document.getElementById('tickets');
@@ -60,16 +60,12 @@ const Hero = (props) => {
                 
                 {/* H1 Heading */}
                 <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-[1.2] mb-6 drop-shadow-lg">
-                    <EditWrapper isEditor={props.isEditor} contentTag={"hero-new-title"} refreshContent={props.refreshContent}>
-                        {renderContent('hero-new-title', props.hasContent, props.getContentByTag, 'Book Rome Sightseeing Tickets With Confidence')}
-                    </EditWrapper>
+                    Book Rome Sightseeing Tickets With Confidence
                 </h1>
 
                 {/* Subheading */}
                 <div className="text-base sm:text-lg md:text-xl text-gray-100 mb-8 max-w-2xl mx-auto lg:mx-0 font-medium drop-shadow-md">
-                    <EditWrapper isEditor={props.isEditor} contentTag={"hero-new-subtitle"} refreshContent={props.refreshContent}>
-                        {renderContent('hero-new-subtitle', props.hasContent, props.getContentByTag, 'Hop-on hop-off buses, Vatican & Colosseum tickets, and top Rome experiences — all from trusted operators.')}
-                    </EditWrapper>
+                    Hop-on hop-off buses, Vatican & Colosseum tickets, and top Rome experiences — all from trusted operators.
                 </div>
 
                 {/* Trust Signals */}

@@ -1,16 +1,16 @@
-import { InfoIcon } from 'lucide-react';
+import { FaHeart, FaCompass } from 'react-icons/fa';
 import { useState, useEffect, useRef } from 'react';
-import { FaStar, FaTicketAlt, FaRoute } from 'react-icons/fa';
+import { FaTicketAlt } from 'react-icons/fa';
 
 const SectionNav = () => {
-    const [activeSection, setActiveSection] = useState('features');
+    const [activeSection, setActiveSection] = useState('why-us');
     const [isSticky, setIsSticky] = useState(false);
     const sectionNavRef = useRef(null);
 
     const sections = [
+        { id: 'why-us', label: 'WHY US', icon: FaHeart },
         { id: 'tickets', label: 'TICKETS', icon: FaTicketAlt },
-        { id: 'features', label: 'FEATURES', icon: FaStar },
-        { id: 'routes', label: 'GUIDE', icon: FaRoute }
+        { id: 'explore', label: 'EXPLORE', icon: FaCompass }
     ];
 
     // Scroll to section
