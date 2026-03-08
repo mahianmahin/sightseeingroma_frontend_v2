@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, lazy, Suspense } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { LuHome, LuTicket } from "react-icons/lu";
 import { MdOutlineLocationOn } from "react-icons/md";
@@ -6,19 +6,24 @@ import { BsInfoCircle } from "react-icons/bs";
 import { HiOutlineNewspaper } from "react-icons/hi";
 import { TbLogin2, TbLogout2 } from "react-icons/tb";
 import { HiOutlineLogout } from "react-icons/hi";
-import { FaUser, FaHistory } from "react-icons/fa";
-import { FiMenu, FiX } from "react-icons/fi";
+import { FaTicketAlt, FaUser, FaSignOutAlt, FaSignInAlt, FaUserPlus, FaInfoCircle, FaMapMarkerAlt, FaChevronDown, FaHistory, FaUserCircle } from "react-icons/fa";
+import useStaticContent from "../../hooks/useStaticContent";
 import logo from "../../assets/Logo.webp";
 import EditImageWrapper from "../Edit_Wrapper/EditImageWrapper";
-import useStaticContent from "../../hooks/useStaticContent";
 import useEditorCheck from "../../hooks/useEditorCheck";
 import useAuthenticate from "../../hooks/seAuthenticate";
 import { trackUserActivity, ACTIVITY_TYPES } from '../../utilities/activityTracker';
 import { baseUrlHashless } from "../../utilities/Utilities";
+import { FiMenu, FiX } from "react-icons/fi";
+
+// Lazy-load EditPanelSheet — it pulls in Monaco + shadcn Button (23+ KiB)
+// Only admins use this, no need to load on every page
+const EditPanelSheet = lazy(() => import("../EditPanel/EditPanelSheet"));
 
 const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [isEditPanelOpen, setIsEditPanelOpen] = useState(false); // State to control EditPanelSheet
     const navigate = useNavigate();
     const dropdownRef = useRef(null);  // Reference to the dropdown menu
 
@@ -284,6 +289,16 @@ const Navbar = () => {
                     )}
                 </div>
             </div>
+
+            {/* Edit Panel - only rendered for admins, lazy-loaded */}
+            {isEditPanelOpen && (
+              <Suspense fallback={null}>
+                <EditPanelSheet
+                  isOpen={isEditPanelOpen}
+                  onClose={() => setIsEditPanelOpen(false)}
+                />
+              </Suspense>
+            )}
         </div>
     );
 };

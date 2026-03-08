@@ -1,11 +1,75 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import path from 'path'
+import fs from 'fs'
 import criticalCSSPlugin from './plugins/vite-plugin-critical-css.js'
+
+// Appends Link: preload headers for critical JS chunks to dist/_headers.
+// Only the entry chunk + vendor-react + vendor-router are preloaded:
+// these are the only files needed before the first React render.
+// Lazy-loaded chunks (Services, FeaturedToday, Contact, Monaco, Stripe etc.)
+// are intentionally excluded — preloading them would defeat lazy loading and
+// starve the LCP hero image of bandwidth on slow mobile connections.
+function netlifyHeadersPlugin() {
+  return {
+    name: 'netlify-headers',
+    closeBundle() {
+      const assetsDir = path.resolve(__dirname, 'dist/assets')
+      const files = fs.readdirSync(assetsDir)
+
+      // Critical chunks needed for first render — preload these
+      const criticalPrefixes = ['index-', 'vendor-react-', 'vendor-router-']
+      const criticalFiles = criticalPrefixes
+        .map(prefix => files.find(f => f.startsWith(prefix) && f.endsWith('.js')))
+        .filter(Boolean)
+
+      if (!criticalFiles.length) return
+
+      // Append to the existing _headers file that Vite copied from public/_headers
+      const headersPath = path.resolve(__dirname, 'dist/_headers')
+      const linkHeaders = criticalFiles
+        .map(f => `  Link: </assets/${f}>; rel=preload; as=script`)
+        .join('\n')
+      const preloadEntry = `\n# Preload critical JS chunks for faster FCP/LCP\n/\n${linkHeaders}\n`
+      fs.appendFileSync(headersPath, preloadEntry)
+      console.log(`✅ _headers: preload hints added for:\n  ${criticalFiles.join('\n  ')}`)
+    },
+  }
+}
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react(), criticalCSSPlugin()],
+  plugins: [
+    react(),
+    criticalCSSPlugin(),
+    netlifyHeadersPlugin(),
+    {
+      // Automatically injects a <link rel="modulepreload"> for the main entry chunk
+      // into index.html so the browser starts fetching it during HTML parse.
+      name: 'auto-preload-main-chunk',
+      apply: 'build',
+      transformIndexHtml: {
+        order: 'pre',
+        handler: (html, ctx) => {
+          if (!ctx.bundle) return html
+
+          const mainChunk = Object.values(ctx.bundle).find(
+            (chunk) =>
+              chunk.type === 'chunk' &&
+              chunk.isEntry &&
+              chunk.fileName.startsWith('index-') &&
+              chunk.fileName.endsWith('.js')
+          )
+
+          if (!mainChunk) return html
+
+          const preloadLink = `<link rel="modulepreload" href="/${mainChunk.fileName}" fetchpriority="high" crossorigin="anonymous">\n    `
+
+          return html.replace('</head>', preloadLink + '</head>')
+        },
+      },
+    },
+  ],
   base: '/',
   resolve: {
     alias: {
@@ -15,6 +79,9 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     assetsDir: 'assets',
+    modulePreload: {
+      polyfill: true, // ensures modulepreload works on older browsers too
+    },
     rollupOptions: {
       output: {
         manualChunks(id) {

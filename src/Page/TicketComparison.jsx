@@ -94,7 +94,7 @@ const TicketComparison = () => {
             {/* Comparison Table Section */}
             <div className="container mx-auto px-4 py-12">
                 <h2 className="text-2xl md:text-3xl font-bold text-center mb-8 text-gray-800">
-                    Ticket Comparison
+                    Tickets At A Glance
                 </h2>
 
                 {/* Desktop Table View */}
@@ -168,41 +168,81 @@ const TicketComparison = () => {
                     </table>
                 </div>
 
-                {/* Mobile Grid View */}
-                <div className="lg:hidden grid grid-cols-3 gap-3">
-                    {filteredPackages.map((pkg) => (
-                        <div key={pkg.id} className="bg-white rounded-lg shadow-md p-3 border border-gray-200 flex flex-col">
-                            {/* Ticket Name */}
-                            <h3 className="font-bold text-gray-900 text-sm mb-2 line-clamp-2 min-h-[40px]">
-                                {pkg.title}
-                            </h3>
-                            
-                            {/* Duration */}
-                            <div className="mb-2">
-                                <p className="text-xs text-gray-500 mb-1">Duration</p>
-                                <p className="font-semibold text-[#930B31] text-sm uppercase">{pkg.duration}</p>
-                            </div>
+                {/* Mobile Table View */}
+                <div className="lg:hidden overflow-x-auto bg-white rounded-lg shadow-lg">
+                    {(() => {
+                        // Group packages by company
+                        const byCompany = filteredPackages.reduce((acc, pkg) => {
+                            const key = pkg.company || 'Other';
+                            if (!acc[key]) acc[key] = [];
+                            acc[key].push(pkg);
+                            return acc;
+                        }, {});
 
-                            {/* Price */}
-                            <div className="mb-3 flex-grow">
-                                <p className="text-xs text-gray-500 mb-1">Price</p>
-                                <div className="flex flex-col">
-                                    <span className="text-xl font-bold text-gray-900">€{pkg.adult_price}</span>
-                                    {pkg.off_price > pkg.adult_price && (
-                                        <span className="text-xs text-gray-400 line-through">€{pkg.off_price}</span>
-                                    )}
-                                </div>
-                            </div>
-
-                            {/* View Button */}
-                            <button
-                                onClick={() => handleViewTicket(pkg.package_tag)}
-                                className="w-full bg-[#930B31] text-white py-2 rounded-md text-sm font-semibold hover:bg-red-800 transition-colors"
-                            >
-                                View
-                            </button>
-                        </div>
-                    ))}
+                        return (
+                            <table className="w-full text-left border-collapse">
+                                <thead className="bg-[#930B31] text-white sticky top-0">
+                                    <tr>
+                                        <th className="px-2 py-2 text-[10px] font-semibold uppercase tracking-wide">Ticket</th>
+                                        <th className="px-2 py-2 text-[10px] font-semibold uppercase tracking-wide text-center">Dur.</th>
+                                        <th className="px-2 py-2 text-[10px] font-semibold uppercase tracking-wide text-center">Adult</th>
+                                        <th className="px-2 py-2 text-[10px] font-semibold uppercase tracking-wide text-center">Youth</th>
+                                        <th className="px-2 py-2 text-[10px] font-semibold uppercase tracking-wide text-center">Buy</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {Object.entries(byCompany).map(([company, pkgs]) => (
+                                        <>
+                                            {/* Company header row */}
+                                            <tr key={`company-${company}`} className="bg-[#FAD502]/20 border-t-2 border-[#930B31]">
+                                                <td colSpan={5} className="px-2 py-1.5">
+                                                    <span className="text-[10px] font-bold text-[#930B31] uppercase tracking-widest">
+                                                        {company}
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                            {/* Ticket rows */}
+                                            {pkgs.map((pkg, i) => (
+                                                <tr
+                                                    key={pkg.id}
+                                                    className={`${i % 2 === 0 ? 'bg-white' : 'bg-gray-50'} border-b border-gray-100`}
+                                                >
+                                                    <td className="px-2 py-2 max-w-[120px]">
+                                                        <p className="text-[11px] font-semibold text-gray-900 leading-tight line-clamp-2">{pkg.title}</p>
+                                                        {pkg.is_featured && (
+                                                            <span className="inline-block mt-0.5 bg-[#FAD502] text-[#930B31] text-[8px] font-bold px-1 rounded leading-tight">
+                                                                FEATURED
+                                                            </span>
+                                                        )}
+                                                    </td>
+                                                    <td className="px-2 py-2 text-center whitespace-nowrap">
+                                                        <span className="text-[10px] font-semibold text-[#930B31]">{pkg.duration}</span>
+                                                    </td>
+                                                    <td className="px-2 py-2 text-center">
+                                                        <span className="text-[11px] font-bold text-gray-900">€{pkg.adult_price}</span>
+                                                        {pkg.off_price > pkg.adult_price && (
+                                                            <span className="block text-[9px] text-gray-400 line-through">€{pkg.off_price}</span>
+                                                        )}
+                                                    </td>
+                                                    <td className="px-2 py-2 text-center">
+                                                        <span className="text-[11px] font-bold text-gray-900">€{pkg.youth_price}</span>
+                                                    </td>
+                                                    <td className="px-2 py-2 text-center">
+                                                        <button
+                                                            onClick={() => handleViewTicket(pkg.package_tag)}
+                                                            className="bg-[#930B31] text-white px-2 py-1 rounded text-[10px] font-semibold hover:bg-red-800 transition-colors whitespace-nowrap"
+                                                        >
+                                                            View
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </>
+                                    ))}
+                                </tbody>
+                            </table>
+                        );
+                    })()}
                 </div>
             </div>
 
