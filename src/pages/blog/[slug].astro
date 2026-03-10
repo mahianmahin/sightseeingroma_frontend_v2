@@ -1,0 +1,209 @@
+---
+/**
+ * /blog/[slug] — Blog detail page
+ *
+ * Strategy: SSR (prerender = false) — SEO-critical dynamic content.
+ * The entire article is rendered server-side. Only a tiny blog-tracking
+ * script runs on the client.
+ */
+export const prerender = false;
+
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { API_URL } from '@/lib/constants';
+
+const { slug } = Astro.params;
+const mediaBase = API_URL;
+
+// ── Fetch blog post ──
+let post: any = null;
+let relatedPosts: any[] = [];
+
+try {
+  const res = await fetch(`${API_URL}/blog/posts/${slug}/`);
+  if (res.ok) {
+    const data = await res.json();
+    if (data.status === 200) {
+      post = data.data;
+      relatedPosts = data.related_posts || [];
+    }
+  }
+} catch (e) {
+  console.error('[BlogDetail] fetch error:', e);
+}
+
+// ── 404 if not found ──
+if (!post) {
+  return Astro.redirect('/404');
+}
+
+// ── Helpers ──
+function stripHtml(html: string): string {
+  return html?.replace(/<[^>]*>/g, '').trim() || '';
+}
+
+function formatDate(dateString: string): string {
+  return new Date(dateString).toLocaleDateString('en-US', {
+    year: 'numeric', month: 'long', day: 'numeric',
+  });
+}
+
+// ── SEO ──
+const title = post.meta_title || `${stripHtml(post.title)} - SightseeingRoma Blog`;
+const description = post.meta_description || post.excerpt || stripHtml(post.title);
+const ogImage = post.featured_image_url ? `${mediaBase}${post.featured_image_url}` : undefined;
+const canonicalUrl = `https://www.sightseeingroma.com/blog/${post.slug}`;
+
+const schemaJson = post.schema_json || {
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  headline: stripHtml(post.title),
+  description: post.meta_description || post.excerpt,
+  image: ogImage,
+  author: { "@type": "Person", name: post.author_name || "SightseeingRoma" },
+  publisher: {
+    "@type": "Organization",
+    name: "SightseeingRoma",
+    logo: { "@type": "ImageObject", url: "https://www.sightseeingroma.com/Logo.webp" },
+  },
+  datePublished: post.published_at,
+  dateModified: post.updated_at,
+  mainEntityOfPage: { "@type": "WebPage", "@id": canonicalUrl },
+};
+
+// Process content — fix className → class
+const processedContent = (post.content || '')
+  .replace(/className=/g, 'class=')
+  .replace(/htmlFor=/g, 'for=');
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  ogImage={ogImage}
+  canonicalUrl={canonicalUrl}
+  headExtra={`
+    <meta property="og:type" content="article" />
+    <meta property="article:published_time" content="${post.published_at}" />
+    <meta property="article:modified_time" content="${post.updated_at}" />
+    ${post.meta_keywords ? `<meta name="keywords" content="${post.meta_keywords}" />` : ''}
+    <script type="application/ld+json">${JSON.stringify(schemaJson)}</script>
+  `}
+>
+  <!-- Hero with featured image -->
+  <div class="relative w-full h-[400px] md:h-[500px] overflow-hidden">
+    {post.featured_image_url ? (
+      <Fragment>
+        <img
+          src={post.featured_image_webp_url
+            ? `${mediaBase}${post.featured_image_webp_url}`
+            : `${mediaBase}${post.featured_image_url}`}
+          alt={post.featured_image_alt || stripHtml(post.title)}
+          class="w-full h-full object-cover"
+          width="1200"
+          height="500"
+          fetchpriority="high"
+        />
+        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
+      </Fragment>
+    ) : (
+      <div class="w-full h-full bg-gradient-to-br from-[#930B31] to-[#7a0926]"></div>
+    )}
+
+    <!-- Title overlay -->
+    <div class="absolute bottom-0 left-0 right-0 p-6 md:p-8 lg:p-12">
+      <div class="container mx-auto max-w-5xl">
+        <h1
+          class="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4 leading-tight drop-shadow-lg"
+          set:html={post.title}
+        />
+        <div class="flex flex-wrap items-center gap-4 md:gap-6 text-sm text-white/90">
+          <div class="flex items-center gap-2">
+            <svg class="w-4 h-4 text-[#FAD502]" fill="currentColor" viewBox="0 0 448 512"><path d="M152 24c0-13.3-10.7-24-24-24s-24 10.7-24 24V64H64C28.7 64 0 92.7 0 128v16 48V448c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V192 144 128c0-35.3-28.7-64-64-64H344V24c0-13.3-10.7-24-24-24s-24 10.7-24 24V64H152V24z"/></svg>
+            <span>{formatDate(post.updated_at)}</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <svg class="w-4 h-4 text-[#FAD502]" fill="currentColor" viewBox="0 0 512 512"><path d="M256 0a256 256 0 1 1 0 512A256 256 0 1 1 256 0zM232 120V256c0 8 4 15.5 10.7 20l96 64c11 7.4 25.9 4.4 33.3-6.7s4.4-25.9-6.7-33.3L280 243.2V120c0-13.3-10.7-24-24-24s-24 10.7-24 24z"/></svg>
+            <span>{post.read_time}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Article -->
+  <article class="bg-white">
+    <div class="container mx-auto px-4 py-8 md:py-12">
+      <div class="max-w-4xl mx-auto">
+
+        <!-- Back button -->
+        <a
+          href="/blogs"
+          class="flex items-center gap-2 text-[#930B31] hover:text-[#7a0926] mb-8 transition-colors text-sm md:text-base"
+        >
+          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 448 512"><path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288 416 288c17.7 0 32-14.3 32-32s-14.3-32-32-32l-306.7 0L214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg>
+          <span>Back to Blogs</span>
+        </a>
+
+        <!-- Blog content -->
+        <div
+          class="prose prose-lg max-w-none mb-12"
+          style="font-size:1.125rem;line-height:1.75;color:#374151"
+          set:html={processedContent}
+        />
+
+        <!-- Related posts -->
+        {relatedPosts.length > 0 && (
+          <div class="border-t border-gray-200 pt-12 mt-12">
+            <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-6">Related Articles</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {relatedPosts.map((rp: any) => (
+                <a
+                  href={`/blog/${rp.slug}`}
+                  class="bg-white border border-gray-200 rounded-xl overflow-hidden hover:shadow-lg transition-all duration-300 group flex flex-col h-full"
+                >
+                  {rp.featured_image_url ? (
+                    <div class="w-full h-40 overflow-hidden">
+                      <img
+                        src={rp.featured_image_webp_url
+                          ? `${mediaBase}${rp.featured_image_webp_url}`
+                          : `${mediaBase}${rp.featured_image_url}`}
+                        alt={rp.featured_image_alt || stripHtml(rp.title)}
+                        class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                        loading="lazy"
+                        width="400"
+                        height="160"
+                      />
+                    </div>
+                  ) : (
+                    <div class="w-full h-40 bg-gradient-to-br from-[#930B31] to-[#FAD502]"></div>
+                  )}
+                  <div class="p-4 flex flex-col flex-grow">
+                    <h3 class="font-bold text-gray-900 mb-2 line-clamp-2 text-sm md:text-base group-hover:text-[#930B31] transition-colors">
+                      {stripHtml(rp.title || '')}
+                    </h3>
+                    <p class="text-gray-600 text-xs md:text-sm line-clamp-3 mb-4 flex-grow">
+                      {rp.excerpt ? stripHtml(rp.excerpt) : ''}
+                    </p>
+                    <p class="text-xs text-gray-500 mt-auto">{formatDate(rp.published_at)}</p>
+                  </div>
+                </a>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  </article>
+
+  <!-- Blog visit tracking (tiny inline script) -->
+  <script is:inline define:vars={{ slug, apiUrl: API_URL }}>
+    // Fire-and-forget blog visit tracking
+    try {
+      fetch(`${apiUrl}/blog/track-visit/`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ slug, referrer: document.referrer || '' }),
+      }).catch(() => {});
+    } catch (_) {}
+  </script>
+</BaseLayout>

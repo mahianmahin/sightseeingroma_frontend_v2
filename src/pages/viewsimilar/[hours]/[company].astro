@@ -1,0 +1,167 @@
+---
+/**
+ * /viewsimilar/[hours]/[company] — View more packages by company + similar
+ *
+ * Strategy: SSR (prerender = false) — fetches live package data.
+ * Renders company packages + similar duration packages from other companies.
+ */
+export const prerender = false;
+
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageBanner from '@/components/PageBanner.astro';
+import { API_URL } from '@/lib/constants';
+
+const { hours, company } = Astro.params;
+const mediaBase = API_URL;
+
+// Decode URL-encoded params
+const companyDecoded = decodeURIComponent(company || '');
+const hoursDecoded = decodeURIComponent(hours || '');
+
+// ── Fetch all packages ──
+let allPackages: any[] = [];
+try {
+  const res = await fetch(`${API_URL}/packages/`);
+  if (res.ok) {
+    const data = await res.json();
+    allPackages = data.bus_data || [];
+  }
+} catch (e) {
+  console.error('[ViewSimilar] fetch error:', e);
+}
+
+// ── Filter: company packages + similar ──
+const companyPackages = allPackages.filter(
+  (pkg: any) => pkg.company?.toLowerCase() === companyDecoded.toLowerCase()
+);
+const similarPackages = allPackages.filter(
+  (pkg: any) => pkg.duration === hoursDecoded && pkg.company?.toLowerCase() !== companyDecoded.toLowerCase()
+);
+
+const companyDisplay = companyDecoded.replace(/\b\w/g, (c: string) => c.toUpperCase());
+---
+
+<BaseLayout
+  title={`${companyDisplay} Packages & Similar Options | Sightseeing Roma`}
+  description={`Browse ${companyDisplay} bus tour packages and compare similar ${hoursDecoded} options from other companies in Rome.`}
+>
+  <PageBanner imageMd="/Banner/b8.png" imageSm="/Banner/b7.png">
+    <h1 class="text-3xl md:text-5xl font-bold text-white drop-shadow-lg mb-2">View More</h1>
+    <p class="text-white/90 text-sm md:text-lg">Discover amazing experiences</p>
+  </PageBanner>
+
+  <!-- Same Company Packages -->
+  <div class="container mx-auto px-4 md:px-8">
+    <div class="py-7 md:py-10">
+      <h2 class="text-xl md:text-2xl font-bold text-gray-900">
+        {companyDisplay} Packages
+      </h2>
+    </div>
+
+    {companyPackages.length > 0 ? (
+      <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-6">
+        {companyPackages.map((pkg: any) => (
+          <a
+            href={`/manageBookings/E9/${pkg.package_tag}`}
+            class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 group block no-underline"
+          >
+            <div class="relative overflow-hidden h-32 md:h-48">
+              {pkg.thumbnail_large_webp ? (
+                <img
+                  src={`${mediaBase}${pkg.thumbnail_large_webp}`}
+                  alt={pkg.thumbnail_large_alt || pkg.title}
+                  class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                  loading="lazy"
+                  width="400"
+                  height="250"
+                />
+              ) : pkg.thumbnail_large ? (
+                <img
+                  src={`${mediaBase}${pkg.thumbnail_large}`}
+                  alt={pkg.thumbnail_large_alt || pkg.title}
+                  class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                  loading="lazy"
+                  width="400"
+                  height="250"
+                />
+              ) : (
+                <div class="w-full h-full bg-gradient-to-br from-[#930B31] to-[#FAD502]"></div>
+              )}
+            </div>
+            <div class="p-3 md:p-4">
+              <h3 class="font-bold text-gray-900 text-sm md:text-base mb-1 line-clamp-2">{pkg.title}</h3>
+              <p class="text-xs text-gray-500 mb-2">{pkg.type} · {pkg.duration}</p>
+              <div class="flex items-center gap-2">
+                <span class="text-base md:text-lg font-bold text-[#930B31]">€{pkg.adult_price}</span>
+                {pkg.off_price > pkg.adult_price && (
+                  <span class="text-sm text-gray-400 line-through">€{pkg.off_price}</span>
+                )}
+                <span class="text-xs text-gray-500">/ €{pkg.youth_price} youth</span>
+              </div>
+            </div>
+          </a>
+        ))}
+      </div>
+    ) : (
+      <p class="text-center text-gray-500 py-8">No packages available for this category.</p>
+    )}
+  </div>
+
+  <!-- Similar Options from Other Companies -->
+  <div class="container mx-auto px-4 md:px-8 pb-12">
+    <div class="py-7 md:py-10">
+      <h2 class="text-xl md:text-2xl font-bold text-gray-900">
+        Similar {hoursDecoded} Options
+      </h2>
+    </div>
+
+    {similarPackages.length > 0 ? (
+      <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-6">
+        {similarPackages.map((pkg: any) => (
+          <a
+            href={`/manageBookings/E9/${pkg.package_tag}`}
+            class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 group block no-underline"
+          >
+            <div class="relative overflow-hidden h-32 md:h-48">
+              {pkg.thumbnail_large_webp ? (
+                <img
+                  src={`${mediaBase}${pkg.thumbnail_large_webp}`}
+                  alt={pkg.thumbnail_large_alt || pkg.title}
+                  class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                  loading="lazy"
+                  width="400"
+                  height="250"
+                />
+              ) : pkg.thumbnail_large ? (
+                <img
+                  src={`${mediaBase}${pkg.thumbnail_large}`}
+                  alt={pkg.thumbnail_large_alt || pkg.title}
+                  class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                  loading="lazy"
+                  width="400"
+                  height="250"
+                />
+              ) : (
+                <div class="w-full h-full bg-gradient-to-br from-[#930B31] to-[#FAD502]"></div>
+              )}
+              <span class="absolute top-2 left-2 bg-white/90 text-gray-700 text-xs font-medium px-2 py-1 rounded capitalize">{pkg.company}</span>
+            </div>
+            <div class="p-3 md:p-4">
+              <h3 class="font-bold text-gray-900 text-sm md:text-base mb-1 line-clamp-2">{pkg.title}</h3>
+              <p class="text-xs text-gray-500 mb-2">{pkg.type} · {pkg.duration}</p>
+              <div class="flex items-center gap-2">
+                <span class="text-base md:text-lg font-bold text-[#930B31]">€{pkg.adult_price}</span>
+                {pkg.off_price > pkg.adult_price && (
+                  <span class="text-sm text-gray-400 line-through">€{pkg.off_price}</span>
+                )}
+                <span class="text-xs text-gray-500">/ €{pkg.youth_price} youth</span>
+              </div>
+            </div>
+          </a>
+        ))}
+      </div>
+    ) : (
+      <p class="text-center text-gray-500 py-8">No similar options available.</p>
+    )}
+  </div>
+</BaseLayout>

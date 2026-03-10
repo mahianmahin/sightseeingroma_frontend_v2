@@ -1,0 +1,229 @@
+---
+/**
+ * /blogs — Blog listing page
+ *
+ * Strategy: SSR (prerender = false) because it has search + pagination via query params.
+ * The listing is rendered server-side for SEO; search & pagination use full-page navigation
+ * (query params) rather than client-side state — zero JS for the listing itself.
+ */
+export const prerender = false;
+
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { API_URL } from '@/lib/constants';
+
+// ── Parse query params ──
+const url = new URL(Astro.request.url);
+const page = parseInt(url.searchParams.get('page') || '1');
+const pageSize = 12;
+const search = url.searchParams.get('search') || '';
+
+// ── Fetch blog posts ──
+let posts: any[] = [];
+let pagination = { page: 1, page_size: pageSize, total_count: 0, total_pages: 0 };
+
+try {
+  const params = new URLSearchParams();
+  params.set('page', page.toString());
+  params.set('page_size', pageSize.toString());
+  if (search) params.set('search', search);
+
+  const res = await fetch(`${API_URL}/blog/posts/?${params}`);
+  if (res.ok) {
+    const data = await res.json();
+    if (data.status === 200) {
+      posts = data.data || [];
+      pagination = data.pagination || pagination;
+    }
+  }
+} catch (e) {
+  console.error('[Blogs] fetch error:', e);
+}
+
+// ── Helpers ──
+function stripHtml(html: string): string {
+  return html?.replace(/<[^>]*>/g, '').trim() || '';
+}
+
+function cleanTitleHtml(html: string): string {
+  if (!html) return '';
+  return html
+    .replace(/<!--[\s\S]*?-->/g, '')
+    .replace(/text-white/g, 'text-gray-800')
+    .replace(/text-4xl/g, 'text-base')
+    .replace(/text-3xl/g, 'text-base')
+    .replace(/text-2xl/g, 'text-base')
+    .replace(/text-xl/g, 'text-sm')
+    .replace(/text-lg/g, 'text-sm')
+    .trim();
+}
+
+function formatDate(dateString: string): string {
+  return new Date(dateString).toLocaleDateString('en-US', {
+    year: 'numeric', month: 'long', day: 'numeric',
+  });
+}
+
+const mediaBase = API_URL;
+
+// ── Pagination helpers (pre-computed in frontmatter) ──
+function pageUrl(p: number): string {
+  const params = new URLSearchParams();
+  if (p > 1) params.set('page', p.toString());
+  if (search) params.set('search', search);
+  const qs = params.toString();
+  return qs ? `/blogs?${qs}` : '/blogs';
+}
+
+type PaginationItem = { type: 'page'; num: number; href: string; active: boolean } | { type: 'ellipsis'; num: number; href: string; active: boolean };
+const paginationItems: PaginationItem[] = [];
+
+if (pagination.total_pages > 1) {
+  for (let p = 1; p <= pagination.total_pages; p++) {
+    const show = p === 1 || p === pagination.total_pages || (p >= page - 1 && p <= page + 1);
+    if (show) {
+      paginationItems.push({ type: 'page', num: p, href: pageUrl(p), active: p === page });
+    } else if (p === page - 2 || p === page + 2) {
+      paginationItems.push({ type: 'ellipsis', num: 0, href: '', active: false });
+    }
+  }
+}
+
+function postImageSrc(post: any): string {
+  if (post.featured_image_webp_url) return mediaBase + post.featured_image_webp_url;
+  if (post.featured_image_url) return mediaBase + post.featured_image_url;
+  return '';
+}
+---
+
+<BaseLayout
+  title="Blog - SightseeingRoma"
+  description="Discover Rome through our blog. Travel tips, guides, and stories about the Eternal City."
+>
+  <div class="min-h-screen bg-gray-50 pt-20">
+    <!-- Hero -->
+    <div class="bg-[#930B31] text-white py-12 md:py-16">
+      <div class="container mx-auto px-4">
+        <h1 class="text-3xl md:text-5xl font-bold text-center mb-4">Our Blog</h1>
+        <p class="text-center text-white/90 text-base md:text-lg max-w-2xl mx-auto">
+          Discover Rome through our stories, guides, and travel tips
+        </p>
+      </div>
+    </div>
+
+    <div class="container mx-auto px-4 py-8 md:py-12">
+      <div class="flex flex-col lg:flex-row gap-8">
+
+        <!-- Sidebar -->
+        <div class="w-full lg:w-1/4">
+          <div class="bg-white rounded-xl shadow-md p-4 md:p-6 sticky top-24">
+            <form method="get" action="/blogs" class="mb-6">
+              <label class="text-sm font-bold text-gray-700 mb-2 block" for="blog-search">Search</label>
+              <div class="relative">
+                <input
+                  id="blog-search"
+                  type="text"
+                  name="search"
+                  value={search}
+                  placeholder="Search articles..."
+                  class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#930B31] focus:border-transparent text-sm"
+                />
+                <svg class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" fill="currentColor" viewBox="0 0 512 512"><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/></svg>
+              </div>
+            </form>
+
+            <div>
+              <h3 class="text-sm md:text-base font-bold text-gray-800 mb-3">About Our Blog</h3>
+              <p class="text-gray-600 text-sm">
+                Discover travel tips, guides, and stories about Rome. Your essential resource for exploring the Eternal City.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="w-full lg:w-3/4">
+          {posts.length === 0 && (
+            <div class="bg-white rounded-xl shadow-md p-12 text-center">
+              <p class="text-gray-500 text-lg">No blog posts found</p>
+            </div>
+          )}
+
+          {posts.length > 0 && (
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {posts.map((post: any) => (
+                <a
+                  href={`/blog/${post.slug}`}
+                  class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 group block"
+                >
+                  <div class="relative overflow-hidden h-48">
+                    {postImageSrc(post) ? (
+                      <img
+                        src={postImageSrc(post)}
+                        alt={post.featured_image_alt || stripHtml(post.title)}
+                        class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                        loading="lazy"
+                        width="600"
+                        height="300"
+                      />
+                    ) : (
+                      <div class="w-full h-full bg-gradient-to-br from-[#930B31] to-[#FAD502] flex items-center justify-center">
+                        <span class="text-white text-2xl font-bold opacity-50">No Image</span>
+                      </div>
+                    )}
+                  </div>
+
+                  <div class="p-5">
+                    <div
+                      class="mb-2 group-hover:text-[#930B31] transition-colors line-clamp-2"
+                      set:html={cleanTitleHtml(post.title)}
+                    />
+                    <p class="text-gray-600 text-sm mb-4 line-clamp-3">{post.excerpt}</p>
+                    <div class="flex flex-wrap items-center gap-4 text-xs text-gray-500">
+                      <div class="flex items-center gap-1">
+                        <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 448 512"><path d="M152 24c0-13.3-10.7-24-24-24s-24 10.7-24 24V64H64C28.7 64 0 92.7 0 128v16 48V448c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V192 144 128c0-35.3-28.7-64-64-64H344V24c0-13.3-10.7-24-24-24s-24 10.7-24 24V64H152V24z"/></svg>
+                        <span>{formatDate(post.created_at)}</span>
+                      </div>
+                      <div class="flex items-center gap-1">
+                        <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 512 512"><path d="M256 0a256 256 0 1 1 0 512A256 256 0 1 1 256 0zM232 120V256c0 8 4 15.5 10.7 20l96 64c11 7.4 25.9 4.4 33.3-6.7s4.4-25.9-6.7-33.3L280 243.2V120c0-13.3-10.7-24-24-24s-24 10.7-24 24z"/></svg>
+                        <span>{post.read_time}</span>
+                      </div>
+                    </div>
+                  </div>
+                </a>
+              ))}
+            </div>
+          )}
+
+          <!-- Pagination -->
+          {paginationItems.length > 0 && (
+            <nav class="flex justify-center items-center gap-2 mt-8" aria-label="Blog pagination">
+              {page > 1 ? (
+                <a href={pageUrl(page - 1)} class="px-4 py-2 rounded-lg bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors text-sm">Previous</a>
+              ) : (
+                <span class="px-4 py-2 rounded-lg bg-white border border-gray-300 text-gray-400 cursor-not-allowed text-sm">Previous</span>
+              )}
+
+              <div class="flex gap-2">
+                {paginationItems.map((item) =>
+                  item.type === 'ellipsis' ? (
+                    <span class="w-10 h-10 flex items-center justify-center text-gray-400">…</span>
+                  ) : item.active ? (
+                    <span class="w-10 h-10 rounded-lg text-sm bg-[#930B31] text-white flex items-center justify-center">{item.num}</span>
+                  ) : (
+                    <a href={item.href} class="w-10 h-10 rounded-lg text-sm bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 flex items-center justify-center transition-colors">{item.num}</a>
+                  )
+                )}
+              </div>
+
+              {page < pagination.total_pages ? (
+                <a href={pageUrl(page + 1)} class="px-4 py-2 rounded-lg bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors text-sm">Next</a>
+              ) : (
+                <span class="px-4 py-2 rounded-lg bg-white border border-gray-300 text-gray-400 cursor-not-allowed text-sm">Next</span>
+              )}
+            </nav>
+          )}
+        </div>
+      </div>
+    </div>
+  </div>
+</BaseLayout>

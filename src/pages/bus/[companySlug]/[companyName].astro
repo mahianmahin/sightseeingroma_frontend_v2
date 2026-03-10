@@ -1,0 +1,207 @@
+---
+/**
+ * /bus/[companySlug]/[companyName] — Bus company page
+ *
+ * Strategy: SSR — renders page structure + banner server-side,
+ * loads TicketCard grid as a React island for interactivity.
+ */
+export const prerender = false;
+
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { API_URL } from '@/lib/constants';
+
+const { companySlug, companyName } = Astro.params;
+
+if (!companySlug || !companyName) {
+  return Astro.redirect('/404');
+}
+
+const mediaBase = API_URL;
+
+// ── Fetch data in parallel ──
+let busPackages: any[] = [];
+let unfilteredPackages: any[] = [];
+let pageData: any = null;
+let contentBlocks: any[] = [];
+let pageImages: any[] = [];
+
+try {
+  const [packagesRes, contentRes] = await Promise.all([
+    fetch(`${API_URL}/packages/`),
+    fetch(`${API_URL}/static-content/${companySlug}/`),
+  ]);
+
+  if (packagesRes.ok) {
+    const data = await packagesRes.json();
+    const allPackages = data.bus_data || [];
+    unfilteredPackages = allPackages;
+    busPackages = allPackages
+      .filter((item: any) => item.company.toLowerCase() === companyName.toLowerCase())
+      .sort((a: any, b: any) => a.package_order - b.package_order);
+  }
+
+  if (contentRes.ok) {
+    const data = await contentRes.json();
+    if (data.status === 200) {
+      pageData = data.page ?? null;
+      contentBlocks = data.content_blocks ?? [];
+      pageImages = data.page_images ?? [];
+    }
+  }
+} catch (e) {
+  console.error('[Companies] fetch error:', e);
+}
+
+// ── Helpers ──
+function getContent(tag: string, fallback = ''): string {
+  const block = contentBlocks.find((b: any) => b.unique_tag === tag && b.is_active);
+  return block?.block_content?.replace(/className=/g, 'class=').replace(/htmlFor=/g, 'for=') ?? fallback;
+}
+
+function getImageUrl(tag: string): string | null {
+  const img = pageImages.find((i: any) => i.unique_tag === tag);
+  if (img?.image?.file) return img.image.file.startsWith('http') ? img.image.file : `${mediaBase}${img.image.file}`;
+  return null;
+}
+
+// ── Banner image fallbacks ──
+const bannerFallbacks: Record<string, string> = {
+  'big-bus': '/images/about-us-banner.jpg', // reuse or add dedicated images later
+  'i-love-rome': '/images/about-us-banner.jpg',
+  'green-line': '/images/about-us-banner.jpg',
+  'city-sightseeing': '/images/about-us-banner.jpg',
+};
+const bannerImage = getImageUrl(`${companySlug}-banner-image`) || bannerFallbacks[companySlug ?? ''] || '/images/about-us-banner.jpg';
+
+// ── SEO ──
+const title = pageData?.meta_title || `Explore Rome with ${companyName} | Sightseeing Roma`;
+const description = pageData?.meta_description || `Book ${companyName} hop-on hop-off bus tickets in Rome.`;
+const titleSubtitleHtml = getContent(`${companySlug}-page-title-subtitle`, `<h1 class="text-2xl md:text-4xl font-bold text-gray-800">${companyName}</h1>`);
+const similarHtml = getContent(`${companySlug}-page-similar`, '');
+
+// ── Similar packages ──
+const currentDurations = [...new Set(busPackages.map((p: any) => p.duration))];
+const similarPackages = unfilteredPackages
+  .filter((pkg: any) => pkg.company.toLowerCase() !== companyName?.toLowerCase() && currentDurations.includes(pkg.duration))
+  .sort((a: any, b: any) => a.package_order - b.package_order);
+---
+
+<BaseLayout title={title} description={description}>
+  <div class="container mx-auto">
+    <!-- Banner Image -->
+    <div class="relative">
+      <div class="hidden md:block">
+        <img
+          src={bannerImage}
+          alt={companyName}
+          width="1280"
+          height="504"
+          class="w-full h-96 object-cover"
+          fetchpriority="high"
+        />
+      </div>
+      <div class="block md:hidden">
+        <img
+          src={bannerImage}
+          alt={companyName}
+          width="640"
+          height="256"
+          class="w-full h-64 object-cover"
+          fetchpriority="high"
+        />
+      </div>
+    </div>
+
+    <div class="px-4 md:px-8">
+      <!-- Title & subtitle from CMS -->
+      <div class="py-7 md:py-10">
+        <Fragment set:html={titleSubtitleHtml} />
+        <p class="bg-yellow-300 px-4 py-2 my-5 w-fit font-bold rounded-md text-red-700 text-xs">
+          {companyName?.toUpperCase()} SERVICES
+        </p>
+      </div>
+
+      <!-- Ticket Cards Grid (React island for interactivity) -->
+      {busPackages.length > 0 && (
+        <div id="ticket-grid">
+          <Fragment set:html={`
+            <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-10">
+              ${busPackages.map((ticket: any) => `
+                <a href="/manageBookings/${ticket.duration ? 'E9' : 'E8'}/${ticket.package_tag}" class="group w-full mb-4 md:mb-6 mx-auto bg-white rounded-2xl shadow-lg hover:shadow-xl overflow-hidden border border-gray-100 flex flex-col transition-all duration-300 transform hover:-translate-y-1">
+                  <div class="relative overflow-hidden">
+                    <img
+                      src="${ticket.thumbnail_large_webp ? `${mediaBase}${ticket.thumbnail_large_webp}` : ticket.thumbnail_large ? `${mediaBase}${ticket.thumbnail_large}` : `${mediaBase}${ticket.image_big}`}"
+                      alt="${ticket.title}"
+                      class="w-full h-[140px] md:h-[180px] object-cover transition-transform duration-500 group-hover:scale-110"
+                      loading="lazy"
+                      width="400"
+                      height="180"
+                    />
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  </div>
+                  <div class="p-3 md:p-5 flex flex-col flex-grow">
+                    <span class="inline-flex items-center gap-1 text-[10px] md:text-xs font-medium text-[#930B31] bg-red-50 px-2 py-1 md:px-3 md:py-1.5 rounded-full w-fit mb-2">
+                      ${ticket.type}
+                    </span>
+                    <h2 class="text-xs md:text-lg font-bold text-gray-800 leading-tight mb-2 md:mb-3 line-clamp-2 group-hover:text-[#930B31] transition-colors duration-200">${ticket.title}</h2>
+                    <div class="flex items-center gap-1 text-[10px] md:text-sm text-gray-500 bg-gray-50 px-2 py-1 md:px-3 md:py-1.5 rounded-lg w-fit mb-3">
+                      <span class="font-medium">#${ticket.id}</span>
+                    </div>
+                    ${ticket.duration ? `<div class="flex items-center gap-1 text-[10px] md:text-sm text-gray-500 mb-3"><span>${ticket.duration}</span></div>` : ''}
+                    <div class="mt-auto">
+                      <div class="flex items-baseline gap-2">
+                        ${ticket.off_price ? `<span class="text-gray-400 line-through text-xs md:text-sm">€${ticket.off_price}</span>` : ''}
+                        <span class="text-lg md:text-2xl font-bold text-[#930B31]">€${ticket.adult_price}</span>
+                      </div>
+                      <span class="text-[10px] md:text-xs text-gray-500">per adult</span>
+                    </div>
+                  </div>
+                </a>
+              `).join('')}
+            </div>
+          `} />
+        </div>
+      )}
+    </div>
+
+    <!-- Similar Packages -->
+    {similarPackages.length > 0 && (
+      <div class="px-4 md:px-8">
+        <div class="py-7 md:py-10">
+          {similarHtml ? <Fragment set:html={similarHtml} /> : <h2 class="text-xl md:text-2xl font-bold text-gray-800">Similar Options from Other Companies</h2>}
+        </div>
+        <Fragment set:html={`
+          <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-10 mb-12">
+            ${similarPackages.map((ticket: any) => `
+              <a href="/manageBookings/${ticket.duration ? 'E9' : 'E8'}/${ticket.package_tag}" class="group w-full mb-4 md:mb-6 mx-auto bg-white rounded-2xl shadow-lg hover:shadow-xl overflow-hidden border border-gray-100 flex flex-col transition-all duration-300 transform hover:-translate-y-1">
+                <div class="relative overflow-hidden">
+                  <img
+                    src="${ticket.thumbnail_large_webp ? `${mediaBase}${ticket.thumbnail_large_webp}` : ticket.thumbnail_large ? `${mediaBase}${ticket.thumbnail_large}` : `${mediaBase}${ticket.image_big}`}"
+                    alt="${ticket.title}"
+                    class="w-full h-[140px] md:h-[180px] object-cover transition-transform duration-500 group-hover:scale-110"
+                    loading="lazy"
+                    width="400"
+                    height="180"
+                  />
+                </div>
+                <div class="p-3 md:p-5 flex flex-col flex-grow">
+                  <span class="inline-flex items-center gap-1 text-[10px] md:text-xs font-medium text-[#930B31] bg-red-50 px-2 py-1 md:px-3 md:py-1.5 rounded-full w-fit mb-2">
+                    ${ticket.type}
+                  </span>
+                  <h2 class="text-xs md:text-lg font-bold text-gray-800 leading-tight mb-2 md:mb-3 line-clamp-2 group-hover:text-[#930B31] transition-colors">${ticket.title}</h2>
+                  <div class="mt-auto">
+                    <div class="flex items-baseline gap-2">
+                      ${ticket.off_price ? `<span class="text-gray-400 line-through text-xs md:text-sm">€${ticket.off_price}</span>` : ''}
+                      <span class="text-lg md:text-2xl font-bold text-[#930B31]">€${ticket.adult_price}</span>
+                    </div>
+                    <span class="text-[10px] md:text-xs text-gray-500">per adult</span>
+                  </div>
+                </div>
+              </a>
+            `).join('')}
+          </div>
+        `} />
+      </div>
+    )}
+  </div>
+</BaseLayout>

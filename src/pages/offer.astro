@@ -1,0 +1,113 @@
+---
+/**
+ * /offer — Offers page
+ *
+ * Strategy: SSR (prerender = false) — fetches live package data.
+ * Renders offer cards server-side with zero client JS.
+ */
+export const prerender = false;
+
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { API_URL } from '@/lib/constants';
+
+const mediaBase = API_URL;
+
+// ── Fetch packages from API ──
+let packages: any[] = [];
+try {
+  const res = await fetch(`${API_URL}/packages/`);
+  if (res.ok) {
+    const data = await res.json();
+    packages = data.bus_data || [];
+  }
+} catch (e) {
+  console.error('[Offer] fetch error:', e);
+}
+
+// ── Fetch page meta from CMS ──
+let pageMeta: any = null;
+try {
+  const res = await fetch(`${API_URL}/static-content/offer/`);
+  if (res.ok) {
+    const data = await res.json();
+    if (data.status === 200) pageMeta = data.page;
+  }
+} catch (_) {}
+
+const title = pageMeta?.meta_title || 'Exclusive Offers | Sightseeing Roma';
+const description = pageMeta?.meta_description || 'Save big on your next trip with our exclusive promotions on hop-on hop-off bus tours in Rome.';
+---
+
+<BaseLayout title={title} description={description}>
+  <!-- Banner -->
+  <div
+    class="relative bg-cover bg-center bg-[url('/Offer/os.png')] md:bg-[url('/Offer/om.png')] text-white p-6 md:p-10 lg:p-20 flex flex-col md:flex-row items-center justify-center"
+  >
+    <!-- Overlay image for medium+ screens -->
+    <div
+      class="absolute top-1/4 hidden md:block w-full h-40 bg-no-repeat bg-left bg-contain"
+      style="background-image: url('/Offer/omm.png'); left: calc(33.333% - 130px);"
+    ></div>
+
+    <!-- Text Section -->
+    <div class="relative z-10 mt-6 py-0 md:py-28 text-center md:text-left md:pl-10">
+      <h1 class="text-lg md:text-2xl lg:text-3xl font-semibold">
+        Up to <span class="text-4xl md:text-5xl lg:text-6xl px-2 font-bold">50%</span>
+        <span class="text-xl md:text-2xl font-semibold">OFF</span>
+      </h1>
+      <p class="mt-2 text-sm md:text-lg lg:text-xl font-semibold">
+        Unlock Exclusive Travel Deals
+      </p>
+    </div>
+  </div>
+
+  <div class="container mx-auto px-4 md:px-10">
+    <div class="py-4 md:py-14">
+      <h2 class="text-2xl md:text-3xl font-bold">Exciting Deals Just for You!</h2>
+      <p class="text-gray-600">Save big on your next trip with our exclusive promotions</p>
+    </div>
+
+    <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-10 pb-12">
+      {packages.map((pkg: any) => (
+        <a
+          href={`/manageBookings/E9/${pkg.package_tag}`}
+          class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 group block no-underline"
+        >
+          <div class="relative overflow-hidden h-28 md:h-44">
+            {pkg.thumbnail_large_webp ? (
+              <img
+                src={`${mediaBase}${pkg.thumbnail_large_webp}`}
+                alt={pkg.thumbnail_large_alt || pkg.title}
+                class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                loading="lazy"
+                width="400"
+                height="250"
+              />
+            ) : pkg.thumbnail_large ? (
+              <img
+                src={`${mediaBase}${pkg.thumbnail_large}`}
+                alt={pkg.thumbnail_large_alt || pkg.title}
+                class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                loading="lazy"
+                width="400"
+                height="250"
+              />
+            ) : (
+              <div class="w-full h-full bg-gradient-to-br from-[#930B31] to-[#FAD502]"></div>
+            )}
+          </div>
+          <div class="p-3 md:p-4">
+            <h3 class="font-bold text-gray-900 text-xs md:text-sm mb-1 line-clamp-2">{pkg.title}</h3>
+            <p class="text-[10px] md:text-xs text-gray-500 mb-1">{pkg.type} · {pkg.duration}</p>
+            <div class="flex items-center gap-1">
+              <span class="text-sm md:text-lg font-bold text-[#930B31]">€{pkg.adult_price}</span>
+              {pkg.off_price > pkg.adult_price && (
+                <span class="text-xs text-gray-400 line-through">€{pkg.off_price}</span>
+              )}
+            </div>
+          </div>
+        </a>
+      ))}
+    </div>
+  </div>
+</BaseLayout>

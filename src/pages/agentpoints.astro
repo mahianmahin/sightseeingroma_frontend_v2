@@ -1,0 +1,433 @@
+---
+/**
+ * /agentpoints — Agent Point locations page
+ *
+ * Strategy: Static (prerender = true, default).
+ * All data is hardcoded. Zero-JS except a tiny inline script for
+ * filter pills (filter=query param), map toggle, and smooth scroll.
+ */
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { API_URL } from '@/lib/constants';
+
+// ── Agent Point Data ──
+const AGENT_POINTS = [
+  {
+    id: 1,
+    title: "Main Agent Point – Piazza d'Aracoeli",
+    shortName: "Piazza d'Aracoeli",
+    address: "Piazza d'Aracoeli, 8, Rome",
+    type: "main-office",
+    description: "Located in the heart of Rome, our main agent point at Piazza d'Aracoeli offers full-service assistance for sightseeing tours, ticket bookings, and tourist guidance. Just steps away from iconic attractions like Capitoline Hill, this central hub is perfect for travelers looking to start their Rome adventure smoothly.",
+    highlights: ["Central Rome location", "Full customer support", "Tour recommendations"],
+    coordinates: { lat: 41.8938, lng: 12.4803 },
+    imageAlt: "Sightseeing Roma main agent point near Piazza d'Aracoeli in Rome",
+    googleMapsUrl: "https://www.google.com/maps/dir/?api=1&destination=41.8938,12.4803",
+  },
+  {
+    id: 2,
+    title: "Largo Arenula Ticket Point",
+    shortName: "Largo Arenula",
+    address: "Largo Arenula, 12, Rome",
+    type: "ticket-pickup",
+    description: "Conveniently located near the historic center, our Largo Arenula agent point is ideal for quick ticket pickup and travel assistance. This location serves tourists exploring Rome's most famous landmarks, offering easy access to sightseeing buses and city tours.",
+    highlights: ["Quick ticket pickup", "Close to major attractions", "Friendly assistance"],
+    coordinates: { lat: 41.8945, lng: 12.4746 },
+    imageAlt: "Sightseeing Roma ticket pickup point at Largo Arenula in Rome",
+    googleMapsUrl: "https://www.google.com/maps/dir/?api=1&destination=41.8945,12.4746",
+  },
+  {
+    id: 3,
+    title: "Torre Argentina Area Point",
+    shortName: "Torre Argentina",
+    address: "Largo di Torre Argentina 13, Rome",
+    type: "ticket-pickup",
+    description: "Situated near the famous Torre Argentina ruins, this agent point is perfect for travelers interested in combining history with convenience. Easily access sightseeing tours, hop-on hop-off buses, and expert recommendations from our team.",
+    highlights: ["Historic surroundings", "Easy transport access", "Ideal for first-time visitors"],
+    coordinates: { lat: 41.8955, lng: 12.4762 },
+    imageAlt: "Sightseeing Roma agent point near Torre Argentina ruins in Rome",
+    googleMapsUrl: "https://www.google.com/maps/dir/?api=1&destination=41.8955,12.4762",
+  },
+  {
+    id: 4,
+    title: "Lungotevere de' Cenci Point",
+    shortName: "Lungotevere de' Cenci",
+    address: "Lungotevere de' Cenci, 3, Rome",
+    type: "ticket-pickup",
+    description: "Our Lungotevere de' Cenci agent point provides a scenic and convenient stop along the Tiber River. Perfect for travelers walking through Rome's picturesque routes, this location offers quick access to tickets, sightseeing passes, and helpful travel support.",
+    highlights: ["Riverside location", "Quick service", "Easy walking access"],
+    coordinates: { lat: 41.8911, lng: 12.4748 },
+    imageAlt: "Sightseeing Roma agent point along Lungotevere de' Cenci by Tiber River in Rome",
+    googleMapsUrl: "https://www.google.com/maps/dir/?api=1&destination=41.8911,12.4748",
+  },
+  {
+    id: 5,
+    title: "Secondary Arenula Support Point",
+    shortName: "Arenula Edicola",
+    address: "Largo Arenula, 12 (Edicola), Rome",
+    type: "main-office",
+    description: "This secondary support point at Largo Arenula (Edicola) is designed for fast and efficient tourist assistance. Ideal for travelers on tight schedules, it provides quick ticket validation and basic guidance.",
+    highlights: ["Fast support", "Ticket validation", "Convenient stop"],
+    coordinates: { lat: 41.8944, lng: 12.4748 },
+    imageAlt: "Sightseeing Roma secondary support point at Largo Arenula Edicola in Rome",
+    googleMapsUrl: "https://www.google.com/maps/dir/?api=1&destination=41.8944,12.4748",
+  },
+];
+
+// ── Schema markup ──
+const schemaJson = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "TouristInformationCenter",
+      name: "Sightseeing Roma",
+      description: "Official ticket and assistance points in Rome for hop-on hop-off bus tours, skip-the-line tickets, and sightseeing experiences.",
+      url: "https://sightseeingroma.com/agentpoints",
+    },
+    ...AGENT_POINTS.map((ap) => ({
+      "@type": "LocalBusiness",
+      name: ap.title,
+      address: {
+        "@type": "PostalAddress",
+        streetAddress: ap.address.replace(", Rome", ""),
+        addressLocality: "Rome",
+        addressRegion: "Lazio",
+        addressCountry: "IT",
+      },
+      geo: { "@type": "GeoCoordinates", latitude: ap.coordinates.lat, longitude: ap.coordinates.lng },
+      description: ap.description,
+      parentOrganization: { "@type": "Organization", name: "Sightseeing Roma", url: "https://sightseeingroma.com" },
+    })),
+  ],
+};
+
+// ── Fetch CMS content (if available) ──
+let cmsBody = '';
+try {
+  const res = await fetch(`${API_URL}/static-content/agent-point/`);
+  if (res.ok) {
+    const data = await res.json();
+    if (data.status === 200) {
+      const bodyBlock = (data.content_blocks || []).find((b: any) => b.unique_tag === 'agent-point-body' && b.is_active);
+      if (bodyBlock) cmsBody = bodyBlock.block_content;
+    }
+  }
+} catch (_) {}
+
+const FILTER_OPTIONS = [
+  { value: "all", label: "All Locations", count: AGENT_POINTS.length },
+  { value: "main-office", label: "Main Office", count: AGENT_POINTS.filter(p => p.type === "main-office").length },
+  { value: "ticket-pickup", label: "Ticket Pickup", count: AGENT_POINTS.filter(p => p.type === "ticket-pickup").length },
+];
+---
+
+<BaseLayout
+  title="Sightseeing Roma Agent Points – Official Ticket & Assistance Locations in Rome"
+  description="Find your nearest Sightseeing Roma agent point in Rome for hop-on hop-off bus tickets, tour support, and sightseeing guidance. 5 convenient locations."
+  headExtra={`<script type="application/ld+json">${JSON.stringify(schemaJson)}</script>`}
+>
+  <!-- HERO SECTION -->
+  <section class="relative min-h-[70vh] md:min-h-[80vh] flex items-center overflow-hidden">
+    <div class="absolute inset-0">
+      <img
+        src="/images/agent-point-hero.webp"
+        alt="Sightseeing Roma agent points in Rome city center"
+        class="w-full h-full object-cover"
+        width="1600"
+        height="900"
+        fetchpriority="high"
+      />
+      <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/70 to-black/40"></div>
+    </div>
+
+    <div class="relative z-10 container mx-auto px-4 py-20 md:py-28">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-2 text-[#FAD502] text-sm font-semibold mb-4 uppercase tracking-wider">
+          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 384 512"><path d="M215.7 499.2C267 435 384 279.4 384 192C384 86 298 0 192 0S0 86 0 192c0 87.4 117 243 168.3 307.2c12.3 15.3 35.1 15.3 47.4 0zM192 128a64 64 0 1 1 0 128 64 64 0 1 1 0-128z"/></svg>
+          <span>Official Locations</span>
+        </div>
+
+        <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight mb-6 drop-shadow-lg">
+          Official Ticket &amp; Assistance Points in Rome
+        </h1>
+
+        <p class="text-lg md:text-xl text-gray-200 mb-8 max-w-2xl font-medium drop-shadow-md">
+          Find your nearest Sightseeing Roma agent point for tickets, support, and tour guidance.
+        </p>
+
+        <!-- Trust badges -->
+        <div class="flex flex-wrap items-center gap-4 mb-8 text-sm text-gray-200">
+          <div class="flex items-center gap-2">
+            <div class="flex text-[#FAD502]">
+              {[1,2,3,4].map(() => <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 576 512"><path d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L searching338.2 329l104.2-103.1c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"/></svg>)}
+            </div>
+            <span>Trusted by 10,000+ travelers</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <svg class="w-4 h-4 text-[#FAD502]" fill="currentColor" viewBox="0 0 512 512"><path d="M256 0c4.6 0 9.2 1 13.4 2.9L457.7 82.8c22 9.3 38.4 31 38.3 57.2c-.5 99.2-41.3 280.7-213.6 363.2c-16.7 8-36.1 8-52.8 0C57.3 420.7 16.5 239.2 16 140c-.1-26.2 16.3-47.9 38.3-57.2L242.7 2.9C246.8 1 251.4 0 256 0z"/></svg>
+            <span>Verified Operators</span>
+          </div>
+        </div>
+
+        <!-- CTAs -->
+        <div class="flex flex-col sm:flex-row gap-4">
+          <a href="#map-section" class="bg-[#930B31] hover:bg-[#7a0926] text-white font-bold py-3.5 px-8 rounded-lg transition-all shadow-lg text-base md:text-lg flex items-center justify-center gap-2 no-underline">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 384 512"><path d="M215.7 499.2C267 435 384 279.4 384 192C384 86 298 0 192 0S0 86 0 192c0 87.4 117 243 168.3 307.2c12.3 15.3 35.1 15.3 47.4 0zM192 128a64 64 0 1 1 0 128 64 64 0 1 1 0-128z"/></svg>
+            Find Nearest Agent
+          </a>
+          <a href="#agent-locations" class="bg-white/10 backdrop-blur-sm border-2 border-white/30 hover:bg-white/20 text-white font-bold py-3.5 px-8 rounded-lg transition-all text-base md:text-lg flex items-center justify-center gap-2 no-underline">
+            View All Locations
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TRUST BAR -->
+  <section class="bg-gray-50 border-b border-gray-200">
+    <div class="container mx-auto px-4 py-4">
+      <div class="flex flex-wrap items-center justify-center gap-6 md:gap-10 text-sm text-gray-600">
+        <div class="flex items-center gap-2">
+          <svg class="w-5 h-5 text-[#930B31]" fill="currentColor" viewBox="0 0 640 512"><path d="M144 0a80 80 0 1 1 0 160A80 80 0 1 1 144 0zM512 0a80 80 0 1 1 0 160A80 80 0 1 1 512 0zM0 298.7C0 239.8 47.8 192 106.7 192h42.7c15.9 0 31 3.5 44.6 9.7c-1.3 7.2-1.9 14.7-1.9 22.3c0 38.2 16.8 72.5 43.3 96H21.3C9.6 320 0 310.4 0 298.7zM405.3 320H234.7c-1.9 0-3.7-.1-5.6-.2c-3.8 1.3-7.5 2.8-11.1 4.5c-10.5 5-20 12.3-28 22.5C177.6 363 168 388.6 168 420.5V448c0 35.3 28.7 64 64 64H408c35.3 0 64-28.7 64-64V420.5c0-31.9-9.6-57.5-22-73.7c-8-10.2-17.5-17.5-28-22.5c-3.6-1.7-7.3-3.2-11.1-4.5c-1.9 .1-3.7 .2-5.6 .2zM64 256c0-28.3 3.8-55.8 10.9-81.9C49.3 172.2 24.6 192 6.5 221.2C2.3 228.4 0 236.3 0 244.4V264c0 22.1 17.9 40 40 40H68.6c-3-15.4-4.6-31.4-4.6-48zm576 48V244.4c0-8.1-2.3-16-6.5-23.2c-18.1-29.2-42.8-49-68.4-47.1c7.1 26.1 10.9 53.6 10.9 81.9c0 16.6-1.6 32.6-4.6 48H600c22.1 0 40-17.9 40-40zM320 128a80 80 0 1 0 0-160 80 80 0 1 0 0 160z"/></svg>
+          <span class="font-medium">10,000+ Happy Travelers</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <svg class="w-5 h-5 text-[#930B31]" fill="currentColor" viewBox="0 0 512 512"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM369 209L241 337c-9.4 9.4-24.6 9.4-33.9 0l-64-64c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l47 47L335 175c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9z"/></svg>
+          <span class="font-medium">Official Partner</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <svg class="w-5 h-5 text-[#930B31]" fill="currentColor" viewBox="0 0 576 512"><path d="M64 64C28.7 64 0 92.7 0 128V384c0 35.3 28.7 64 64 64H512c35.3 0 64-28.7 64-64V128c0-35.3-28.7-64-64-64H64zm64 320H64V320c35.3 0 64 28.7 64 64zM64 192V128h64c0 35.3-28.7 64-64 64zM448 384c0-35.3 28.7-64 64-64v64H448zm64-192c-35.3 0-64-28.7-64-64h64v64zM288 160a96 96 0 1 1 0 192 96 96 0 1 1 0-192z"/></svg>
+          <span class="font-medium">Instant Tickets</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- INTERACTIVE MAP -->
+  <section id="map-section" class="bg-white py-10 md:py-16">
+    <div class="container mx-auto px-4">
+      <div class="text-center mb-8">
+        <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-3">Find Us on the Map</h2>
+        <p class="text-gray-600 max-w-xl mx-auto">
+          All our agent points are located in Rome's historic center, within walking distance of major attractions.
+        </p>
+      </div>
+
+      <!-- Map embed -->
+      <div class="w-full overflow-hidden rounded-2xl relative h-[480px]">
+        <iframe
+          src="https://www.google.com/maps/d/u/0/embed?mid=1P0UrlCLUfEB_xT4TmrzdMK0aYOvBSaI&ehbc=2E312F&noprof=1"
+          width="100%"
+          class="w-full absolute left-0"
+          style="border:0;top:-62px;height:calc(100% + 62px)"
+          title="Sightseeing Roma agent points map"
+          loading="lazy"
+          allowfullscreen
+        ></iframe>
+        <div class="absolute bottom-0 left-0 right-0 h-6 bg-gradient-to-t from-white to-transparent pointer-events-none z-10"></div>
+      </div>
+
+      <!-- Quick location pills -->
+      <div class="flex flex-wrap justify-center gap-2 mt-5">
+        {AGENT_POINTS.map((point) => (
+          <a
+            href={`#point-${point.id}`}
+            class="px-4 py-2 rounded-full text-xs font-medium transition-all border bg-white text-gray-600 border-gray-200 hover:border-[#930B31] hover:text-[#930B31] no-underline flex items-center gap-1"
+          >
+            <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 384 512"><path d="M215.7 499.2C267 435 384 279.4 384 192C384 86 298 0 192 0S0 86 0 192c0 87.4 117 243 168.3 307.2c12.3 15.3 35.1 15.3 47.4 0zM192 128a64 64 0 1 1 0 128 64 64 0 1 1 0-128z"/></svg>
+            {point.shortName}
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA BANNER -->
+  <section class="bg-gradient-to-r from-[#930B31] to-[#7a0926] py-8">
+    <div class="container mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-4">
+      <div class="text-white text-center md:text-left">
+        <h3 class="text-xl md:text-2xl font-bold mb-1">Ready to Explore Rome?</h3>
+        <p class="text-white/80 text-sm md:text-base">Book your hop-on hop-off bus tour or sightseeing tickets today.</p>
+      </div>
+      <a href="/company-packages/big-bus" class="bg-[#FAD502] text-[#930B31] font-bold py-3 px-8 rounded-lg hover:bg-yellow-300 transition-all shadow-lg text-base whitespace-nowrap no-underline">
+        Book Your Tour Now
+      </a>
+    </div>
+  </section>
+
+  <!-- AGENT POINT LIST -->
+  <section id="agent-locations" class="bg-gray-50 py-12 md:py-20">
+    <div class="container mx-auto px-4">
+      <div class="text-center mb-12">
+        <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-3">Our Agent Locations in Rome</h2>
+        <p class="text-gray-600 max-w-2xl mx-auto">
+          Visit any of our {AGENT_POINTS.length} agent points across Rome for tickets, assistance, and expert tour guidance.
+        </p>
+      </div>
+
+      <!-- Filter pills -->
+      <div class="flex flex-wrap items-center justify-center gap-3 mb-8">
+        {FILTER_OPTIONS.map((opt) => (
+          <a
+            href={opt.value === 'all' ? '#agent-locations' : `#agent-locations`}
+            data-filter={opt.value}
+            class={`filter-pill px-5 py-2.5 rounded-full text-sm font-semibold transition-all duration-200 no-underline ${
+              opt.value === 'all'
+                ? 'bg-[#930B31] text-white shadow-lg'
+                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+            }`}
+          >
+            {opt.label} <span class="ml-1.5 text-xs opacity-75">({opt.count})</span>
+          </a>
+        ))}
+      </div>
+
+      <!-- Agent Point Cards -->
+      <div class="space-y-8 max-w-5xl mx-auto">
+        {AGENT_POINTS.map((point, index) => (
+          <article
+            id={`point-${point.id}`}
+            data-type={point.type}
+            class="agent-card bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border-2 border-transparent scroll-mt-24"
+          >
+            <div class="flex flex-col md:flex-row">
+              <!-- Image placeholder -->
+              <div class="w-full md:w-2/5 relative overflow-hidden group">
+                <div class="h-56 md:h-full min-h-[250px] bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
+                  <div class="text-center text-gray-500 p-6">
+                    <svg class="w-12 h-12 mx-auto mb-3 text-[#930B31]/40 group-hover:text-[#930B31]/70 transition-colors" fill="currentColor" viewBox="0 0 384 512"><path d="M215.7 499.2C267 435 384 279.4 384 192C384 86 298 0 192 0S0 86 0 192c0 87.4 117 243 168.3 307.2c12.3 15.3 35.1 15.3 47.4 0zM192 128a64 64 0 1 1 0 128 64 64 0 1 1 0-128z"/></svg>
+                    <p class="text-sm font-medium">{point.imageAlt}</p>
+                  </div>
+                </div>
+                <!-- Type badge -->
+                <div class="absolute top-4 left-4">
+                  <span class={`px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider shadow-md ${
+                    point.type === 'main-office'
+                      ? 'bg-[#930B31] text-white'
+                      : 'bg-[#FAD502] text-[#930B31]'
+                  }`}>
+                    {point.type === 'main-office' ? 'Main Office' : 'Ticket Point'}
+                  </span>
+                </div>
+                <!-- Number -->
+                <div class="absolute bottom-4 right-4 w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg">
+                  <span class="text-[#930B31] font-bold text-lg">{index + 1}</span>
+                </div>
+              </div>
+
+              <!-- Content -->
+              <div class="w-full md:w-3/5 p-6 md:p-8 flex flex-col justify-between">
+                <div>
+                  <h3 class="text-xl md:text-2xl font-bold text-gray-900 mb-2">{point.title}</h3>
+                  <div class="flex items-center gap-2 text-gray-500 text-sm mb-4">
+                    <svg class="w-4 h-4 text-[#930B31] flex-shrink-0" fill="currentColor" viewBox="0 0 384 512"><path d="M215.7 499.2C267 435 384 279.4 384 192C384 86 298 0 192 0S0 86 0 192c0 87.4 117 243 168.3 307.2c12.3 15.3 35.1 15.3 47.4 0zM192 128a64 64 0 1 1 0 128 64 64 0 1 1 0-128z"/></svg>
+                    <address class="not-italic">{point.address}</address>
+                  </div>
+                  <p class="text-gray-600 leading-relaxed mb-5 text-sm md:text-base">{point.description}</p>
+                  <ul class="grid grid-cols-1 sm:grid-cols-3 gap-2 mb-6">
+                    {point.highlights.map((h) => (
+                      <li class="flex items-center gap-2 text-sm text-gray-700">
+                        <svg class="w-3 h-3 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 512 512"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM369 209L241 337c-9.4 9.4-24.6 9.4-33.9 0l-64-64c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l47 47L335 175c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9z"/></svg>
+                        <span>{h}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <div class="flex flex-col sm:flex-row gap-3">
+                  <a
+                    href={point.googleMapsUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="inline-flex items-center justify-center gap-2 bg-[#930B31] hover:bg-[#7a0926] text-white font-semibold py-2.5 px-6 rounded-lg transition-all hover:shadow-lg text-sm no-underline"
+                  >
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 512 512"><path d="M502.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-128-128c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L402.7 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l370.7 0-73.4 73.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l128-128z"/></svg>
+                    Get Directions
+                  </a>
+                </div>
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- SECOND CTA -->
+  <section class="bg-gradient-to-r from-[#930B31] to-[#7a0926] py-10">
+    <div class="container mx-auto px-4 text-center">
+      <h3 class="text-2xl md:text-3xl font-bold text-white mb-3">Can't Visit in Person?</h3>
+      <p class="text-white/80 max-w-xl mx-auto mb-6">
+        Book your Rome sightseeing tickets online and skip the queue. Instant digital tickets delivered to your email.
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="/" class="bg-[#FAD502] text-[#930B31] font-bold py-3.5 px-8 rounded-lg hover:bg-yellow-300 transition-all shadow-lg text-base no-underline">Browse All Tours</a>
+        <a href="/company-packages/big-bus" class="bg-white/10 backdrop-blur-sm border-2 border-white/30 hover:bg-white/20 text-white font-bold py-3.5 px-8 rounded-lg transition-all text-base no-underline">Hop-on Hop-off Rome</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CMS body content -->
+  {cmsBody && (
+    <section class="bg-white py-10 md:py-16">
+      <div class="container mx-auto px-4 max-w-4xl prose prose-lg max-w-none" set:html={cmsBody} />
+    </section>
+  )}
+
+  <!-- SEO internal links -->
+  <section class="bg-gray-50 border-t border-gray-200 py-10">
+    <div class="container mx-auto px-4">
+      <div class="max-w-4xl mx-auto">
+        <h3 class="text-lg font-bold text-gray-900 mb-4">Explore More Sightseeing Roma Services</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+          <a href="/" class="flex items-center gap-3 bg-white p-4 rounded-xl shadow-sm hover:shadow-md transition-all border border-gray-100 group no-underline">
+            <div class="bg-[#930B31]/10 p-2.5 rounded-lg group-hover:bg-[#930B31] transition-colors">
+              <svg class="w-5 h-5 text-[#930B31] group-hover:text-white transition-colors" fill="currentColor" viewBox="0 0 576 512"><path d="M288 0C422.4 0 512 35.2 512 80V96l0 32c17.7 0 32 14.3 32 32v64c0 17.7-14.3 32-32 32l0 160c0 17.7-14.3 32-32 32v32c0 17.7-14.3 32-32 32H416c-17.7 0-32-14.3-32-32V448H192v32c0 17.7-14.3 32-32 32H128c-17.7 0-32-14.3-32-32l0-32c-17.7 0-32-14.3-32-32l0-160c-17.7 0-32-14.3-32-32V160c0-17.7 14.3-32 32-32h0V96l0-16C64 35.2 153.6 0 288 0z"/></svg>
+            </div>
+            <div>
+              <span class="font-semibold text-gray-800 text-sm">Sightseeing Tours in Rome</span>
+              <p class="text-xs text-gray-500">Explore all options</p>
+            </div>
+          </a>
+          <a href="/company-packages/big-bus" class="flex items-center gap-3 bg-white p-4 rounded-xl shadow-sm hover:shadow-md transition-all border border-gray-100 group no-underline">
+            <div class="bg-[#930B31]/10 p-2.5 rounded-lg group-hover:bg-[#930B31] transition-colors">
+              <svg class="w-5 h-5 text-[#930B31] group-hover:text-white transition-colors" fill="currentColor" viewBox="0 0 576 512"><path d="M64 64C28.7 64 0 92.7 0 128V384c0 35.3 28.7 64 64 64H512c35.3 0 64-28.7 64-64V128c0-35.3-28.7-64-64-64H64zm64 320H64V320c35.3 0 64 28.7 64 64zM64 192V128h64c0 35.3-28.7 64-64 64zM448 384c0-35.3 28.7-64 64-64v64H448zm64-192c-35.3 0-64-28.7-64-64h64v64z"/></svg>
+            </div>
+            <div>
+              <span class="font-semibold text-gray-800 text-sm">Hop-on Hop-off Bus Rome</span>
+              <p class="text-xs text-gray-500">Big Bus Tours</p>
+            </div>
+          </a>
+          <a href="/featured-offers" class="flex items-center gap-3 bg-white p-4 rounded-xl shadow-sm hover:shadow-md transition-all border border-gray-100 group no-underline">
+            <div class="bg-[#930B31]/10 p-2.5 rounded-lg group-hover:bg-[#930B31] transition-colors">
+              <svg class="w-5 h-5 text-[#930B31] group-hover:text-white transition-colors" fill="currentColor" viewBox="0 0 576 512"><path d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L338.2 329l104.2-103.1c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"/></svg>
+            </div>
+            <div>
+              <span class="font-semibold text-gray-800 text-sm">Featured Offers</span>
+              <p class="text-xs text-gray-500">Today's deals</p>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Tiny filter script (inline, ~300 bytes) -->
+  <script is:inline>
+    document.querySelectorAll('.filter-pill').forEach(function(pill) {
+      pill.addEventListener('click', function(e) {
+        e.preventDefault();
+        var filter = this.dataset.filter;
+        // Update active pill
+        document.querySelectorAll('.filter-pill').forEach(function(p) {
+          p.classList.remove('bg-[#930B31]','text-white','shadow-lg');
+          p.classList.add('bg-gray-100','text-gray-700');
+        });
+        this.classList.remove('bg-gray-100','text-gray-700');
+        this.classList.add('bg-[#930B31]','text-white','shadow-lg');
+        // Filter cards
+        document.querySelectorAll('.agent-card').forEach(function(card) {
+          card.style.display = (filter === 'all' || card.dataset.type === filter) ? '' : 'none';
+        });
+      });
+    });
+  </script>
+</BaseLayout>

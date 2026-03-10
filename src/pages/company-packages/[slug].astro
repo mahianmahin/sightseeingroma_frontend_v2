@@ -1,0 +1,197 @@
+---
+/**
+ * /company-packages/[slug] — Company packages page (via card navigation)
+ *
+ * Strategy: SSR — renders company header, company selector, ticket grid all server-side.
+ * "Book Now" buttons use plain <a> links.
+ */
+export const prerender = false;
+
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { API_URL } from '@/lib/constants';
+
+const { slug: companySlug } = Astro.params;
+if (!companySlug) return Astro.redirect('/404');
+
+const mediaBase = API_URL;
+
+// ── Fetch data in parallel ──
+let tickets: any[] = [];
+let companyInfo: any = null;
+let allCompanies: any[] = [];
+let pageData: any = null;
+
+try {
+  const pageSlug = `company-packages-${companySlug}`;
+  const [packagesRes, cardsRes, contentRes] = await Promise.all([
+    fetch(`${API_URL}/packages/`),
+    fetch(`${API_URL}/api/cards/`).catch(() => null),
+    fetch(`${API_URL}/static-content/${pageSlug}/`).catch(() => null),
+  ]);
+
+  if (packagesRes.ok) {
+    const data = await packagesRes.json();
+    const allPackages = data.bus_data || [];
+    tickets = allPackages
+      .filter((t: any) => t.company.toLowerCase().replace(/\s+/g, '-') === companySlug)
+      .sort((a: any, b: any) => a.package_order - b.package_order);
+  }
+
+  if (cardsRes?.ok) {
+    const cardsData = await cardsRes.json();
+    allCompanies = cardsData.cards?.filter((c: any) => c.card_active) || [];
+    companyInfo = allCompanies.find((c: any) => c.company_slug === companySlug) || null;
+  }
+
+  if (contentRes?.ok) {
+    const data = await contentRes.json();
+    if (data.status === 200) pageData = data.page ?? null;
+  }
+} catch (e) {
+  console.error('[CompanyPackages] fetch error:', e);
+}
+
+// ── SEO ──
+const title = pageData?.meta_title || companyInfo?.card_title || `${companySlug} Tickets | Sightseeing Roma`;
+const description = pageData?.meta_description || companyInfo?.card_subtitle || `Book ${companySlug} bus tickets in Rome.`;
+const features = companyInfo?.card_features?.split(',').map((f: string) => f.trim()) || [];
+---
+
+<BaseLayout title={title} description={description}>
+  <div class="min-h-screen bg-gray-50">
+
+    {/* Company Header */}
+    {companyInfo && (
+      <div class="pt-20 bg-gradient-to-r from-[#930B31] to-red-700 text-white">
+        <div class="container mx-auto px-4 py-5 md:py-8">
+          <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6">
+            <div class="flex-1">
+              <h1 class="text-2xl sm:text-3xl font-bold mb-2">{companyInfo.card_title}</h1>
+              <p class="text-lg text-yellow-200 font-medium mb-2">{companyInfo.card_subtitle}</p>
+              {features.length > 0 && (
+                <div class="flex flex-wrap gap-2">
+                  {features.map((feature: string) => (
+                    <span class="bg-white/20 backdrop-blur-sm text-white px-3 py-1 rounded-full text-xs sm:text-sm font-medium border border-white/30">
+                      {feature}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    )}
+
+    {/* Company Selector */}
+    {allCompanies.length > 0 && (
+      <div class="bg-white border-b">
+        <div class="container mx-auto px-4 py-6">
+          <h2 class="text-lg font-semibold text-gray-900 mb-4">Choose Bus Company</h2>
+          <div class="flex gap-3 overflow-x-auto pb-2" style="scrollbar-width:none;-ms-overflow-style:none">
+            {allCompanies.map((company: any) => (
+              <a
+                href={`/company-packages/${company.company_slug}`}
+                class={`flex-shrink-0 transition-all duration-300 ${company.company_slug !== companySlug ? 'hover:scale-105 hover:shadow-lg' : ''}`}
+              >
+                <div class="w-30 h-20 sm:w-40 sm:h-24 rounded-xl overflow-hidden shadow-md">
+                  <img
+                    src={`${mediaBase}${company.image}`}
+                    alt={company.card_title}
+                    class="w-full h-full object-cover"
+                    loading="lazy"
+                    width="160"
+                    height="96"
+                  />
+                </div>
+                <p class={`text-center text-xs sm:text-sm mt-2 font-medium max-w-40 truncate ${company.company_slug === companySlug ? 'text-[#930B31]' : 'text-gray-700'}`}>
+                  {company.card_title}
+                </p>
+              </a>
+            ))}
+          </div>
+        </div>
+      </div>
+    )}
+
+    {/* Tickets Grid */}
+    <div class="container mx-auto px-4 py-6 sm:py-8">
+      <div class="mb-6">
+        <h2 class="text-xl sm:text-2xl font-bold text-gray-900 mb-2">Available Tickets</h2>
+        <p class="text-gray-600 text-sm sm:text-base">Choose from the available options</p>
+      </div>
+
+      {tickets.length > 0 ? (
+        <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 lg:gap-6">
+          {tickets.map((ticket: any) => (
+            <div class="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 overflow-hidden">
+              {/* Card Header */}
+              <div class="bg-gradient-to-r from-[#930B31] to-red-700 p-4 text-white relative">
+                {ticket.is_featured && (
+                  <div class="absolute top-1.5 left-3.25 md:top-2 animate-pulse">
+                    <span class="bg-white text-black px-2 py-1 rounded-full text-xs font-bold">⭐ Featured</span>
+                  </div>
+                )}
+                <h3 class={`font-bold ${ticket.is_featured ? 'mt-5' : ''} text-sm lg:text-base mb-2 leading-tight`}>
+                  {ticket.title}
+                </h3>
+                <div class="flex flex-wrap gap-1 mb-3">
+                  <span class="bg-white/20 backdrop-blur-sm px-2 py-1 rounded-full text-xs">{ticket.duration}</span>
+                </div>
+                <div class="text-center">
+                  <div class="text-xs text-gray-200">Starting From</div>
+                  {ticket.off_price && ticket.off_price > ticket.adult_price && (
+                    <span class="text-sm text-gray-200 line-through block">€{ticket.off_price}</span>
+                  )}
+                  <div class="text-xl lg:text-3xl font-bold">€{ticket.youth_price}</div>
+                </div>
+              </div>
+
+              {/* Card Body */}
+              <div class="p-4">
+                <div class="space-y-3 mb-4">
+                  <div class="bg-gray-50 p-3 rounded-lg">
+                    <h4 class="font-semibold text-xs text-gray-900 mb-2">Pricing</h4>
+                    <div class="space-y-1 text-xs">
+                      <div class="flex justify-between">
+                        <span class="text-gray-600">Adult:</span>
+                        <span class="font-bold text-[#930B31]">€{ticket.adult_price}</span>
+                      </div>
+                      {ticket.youth_price > 0 && (
+                        <div class="flex justify-between">
+                          <span class="text-gray-600">Youth:</span>
+                          <span class="font-medium">€{ticket.youth_price}</span>
+                        </div>
+                      )}
+                      <div class="flex justify-between">
+                        <span class="text-gray-600">Child (0-5):</span>
+                        <span class="font-medium text-green-600">FREE</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <a
+                  href={`/manageBookings/E9/${ticket.package_tag}`}
+                  class="block w-full bg-gradient-to-r from-[#930B31] to-red-700 text-white font-bold py-3 px-4 rounded-lg transition-all duration-300 hover:shadow-lg hover:scale-105 text-sm text-center"
+                >
+                  Book Now
+                </a>
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div class="text-center py-12">
+          <div class="inline-flex items-center justify-center w-16 h-16 bg-gray-100 rounded-full mb-4">
+            <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4" />
+            </svg>
+          </div>
+          <h3 class="text-lg font-medium text-gray-900 mb-2">No tickets available</h3>
+          <p class="text-gray-600">Please check back later or select a different company.</p>
+        </div>
+      )}
+    </div>
+  </div>
+</BaseLayout>

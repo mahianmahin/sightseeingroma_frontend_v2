@@ -1,0 +1,304 @@
+---
+/**
+ * /featured-offers — Limited-Time Rome Sightseeing Offers
+ *
+ * Strategy: SSR — offers change frequently, need fresh data on every request.
+ * Countdown timers use a tiny inline <script>; rest is server-rendered HTML.
+ */
+export const prerender = false;
+
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { API_URL } from '@/lib/constants';
+
+const mediaBase = API_URL;
+
+// ── Fetch offers + static content in parallel ──
+let offers: any[] = [];
+let pageData: any = null;
+
+try {
+  const [offersRes, contentRes] = await Promise.all([
+    fetch(`${API_URL}/featured-offers/`),
+    fetch(`${API_URL}/static-content/featured-offers/`).catch(() => null),
+  ]);
+
+  if (offersRes.ok) {
+    const data = await offersRes.json();
+    if (data.status === 200) offers = data.data || [];
+  }
+
+  if (contentRes?.ok) {
+    const data = await contentRes.json();
+    if (data.status === 200) pageData = data.page ?? null;
+  }
+} catch (e) {
+  console.error('[FeaturedOffers] fetch error:', e);
+}
+
+// ── Helpers ──
+function getDiscountPct(original: number, discounted: number): number {
+  if (!original || !discounted) return 0;
+  return Math.round(((original - discounted) / original) * 100);
+}
+
+function formatTimeRemaining(seconds: number): string {
+  if (!seconds || seconds <= 0) return '';
+  const d = Math.floor(seconds / 86400);
+  const h = Math.floor((seconds % 86400) / 3600);
+  const m = Math.floor((seconds % 3600) / 60);
+  if (d > 0) return `${d}d ${h}h`;
+  if (h > 0) return `${h}h ${m}m`;
+  return `${m}m`;
+}
+
+// ── SEO ──
+const title = pageData?.meta_title || 'Limited-Time Rome Sightseeing Offers | Exclusive Deals – SightseeingRoma';
+const description = pageData?.meta_description || 'Discover exclusive discounts on hop-on hop-off buses, city passes, and top Rome attractions. Limited-time deals with verified operators.';
+
+// Schema.org
+const schemaData = {
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  name: "Limited-Time Rome Sightseeing Offers",
+  description: "Discover exclusive discounts on hop-on hop-off buses, city passes, and top Rome attractions.",
+  itemListElement: offers.map((offer: any, i: number) => ({
+    "@type": "ListItem",
+    position: i + 1,
+    item: {
+      "@type": "Offer",
+      name: offer.offer_title || offer.package_title,
+      description: offer.offer_description,
+      price: offer.offer_adult_price,
+      priceCurrency: "EUR",
+      availability: "https://schema.org/InStock",
+      validThrough: offer.offer_end,
+      seller: { "@type": "Organization", name: "SightseeingRoma" },
+    },
+  })),
+};
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  headExtra={`<script type="application/ld+json">${JSON.stringify(schemaData)}</script>`}
+>
+  <!-- HERO -->
+  <section class="relative bg-gradient-to-br from-[#930B31] via-[#7a0926] to-[#5a071c] overflow-hidden">
+    <div class="absolute inset-0 opacity-10">
+      <div class="absolute top-0 left-0 w-96 h-96 bg-white rounded-full -translate-x-1/2 -translate-y-1/2"></div>
+      <div class="absolute bottom-0 right-0 w-64 h-64 bg-[#FAD502] rounded-full translate-x-1/4 translate-y-1/4"></div>
+    </div>
+    <div class="container mx-auto px-4 pt-24 pb-8 md:pt-32 md:pb-16 relative z-10">
+      <div class="max-w-4xl mx-auto text-center">
+        <h1 class="text-3xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
+          Limited-Time Rome Sightseeing Offers
+        </h1>
+        <p class="text-lg md:text-xl text-white/90 mb-8 max-w-3xl mx-auto leading-relaxed">
+          Discover exclusive discounts on hop-on hop-off buses, city passes, and top Rome attractions. These offers change frequently — don't miss out.
+        </p>
+        <div class="flex flex-row flex-wrap items-center justify-center gap-4 sm:gap-8 text-white/90">
+          <div class="flex items-center gap-2">
+            <div class="flex text-[#FAD502]">★★★★★</div>
+            <span class="text-sm">Trusted Rome Tickets</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-green-400">✓</span>
+            <span class="text-sm">Verified Operators</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-green-400">🛡</span>
+            <span class="text-sm">Secure Booking</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- OFFERS GRID -->
+  <section class="py-12 md:py-20 bg-gray-50">
+    <div class="container mx-auto px-4">
+      <div class="text-center mb-12">
+        <h2 class="text-2xl md:text-3xl font-bold text-gray-800 mb-4">Current Rome Sightseeing Deals</h2>
+        <p class="text-gray-600 max-w-2xl mx-auto">Grab these exclusive offers before they expire. New deals added regularly.</p>
+      </div>
+
+      {offers.length === 0 ? (
+        <div class="text-center py-12">
+          <p class="text-gray-600 text-lg">No active offers at the moment. Check back soon!</p>
+        </div>
+      ) : (
+        <div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 max-w-6xl mx-auto">
+          {offers.map((offer: any) => {
+            const status = offer.package_type === 'bus' ? 'E9' : 'E8';
+            const bookUrl = `/manageBookings/${status}/${offer.package_tag}?offer_id=${offer.id}`;
+            const imgUrl = offer.offer_image_webp_url
+              ? `${mediaBase}${offer.offer_image_webp_url}`
+              : offer.offer_image_url
+                ? `${mediaBase}${offer.offer_image_url}`
+                : offer.package_thumbnail_webp
+                  ? `${mediaBase}${offer.package_thumbnail_webp}`
+                  : offer.package_thumbnail
+                    ? `${mediaBase}${offer.package_thumbnail}`
+                    : '/images/hero.webp';
+            const discount = offer.original_adult_price && offer.offer_adult_price && parseFloat(offer.original_adult_price) > parseFloat(offer.offer_adult_price)
+              ? getDiscountPct(parseFloat(offer.original_adult_price), parseFloat(offer.offer_adult_price))
+              : 0;
+
+            return (
+              <a
+                href={bookUrl}
+                class="bg-white rounded-xl md:rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 group block"
+              >
+                {/* Image */}
+                <div class="relative h-28 sm:h-36 md:h-48 overflow-hidden">
+                  <img
+                    src={imgUrl}
+                    alt={offer.offer_title || offer.package_title}
+                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    loading="lazy"
+                    width="400"
+                    height="192"
+                  />
+                  <div class="absolute top-2 md:top-4 left-2 md:left-4">
+                    <span class="bg-[#FAD502] text-[#930B31] font-bold text-[10px] md:text-xs px-2 md:px-3 py-1 md:py-1.5 rounded-full shadow-md">
+                      {offer.badge_text || 'Limited-Time Offer'}
+                    </span>
+                  </div>
+                  {discount > 0 && (
+                    <div class="absolute top-2 md:top-4 right-2 md:right-4">
+                      <span class="bg-[#930B31] text-white font-bold text-[10px] md:text-sm px-2 md:px-3 py-1 md:py-1.5 rounded-full shadow-md">
+                        {discount}% OFF
+                      </span>
+                    </div>
+                  )}
+                </div>
+
+                {/* Content */}
+                <div class="p-3 md:p-5">
+                  {offer.time_remaining > 0 && (
+                    <div class="flex items-center gap-1.5 mb-2 text-xs md:text-sm">
+                      <span class="text-[#930B31]">⏱</span>
+                      <span class="text-gray-600">Ends in:</span>
+                      <span class="font-bold text-[#930B31]" data-countdown={offer.time_remaining}>
+                        {formatTimeRemaining(offer.time_remaining)}
+                      </span>
+                    </div>
+                  )}
+
+                  {offer.company_name && (
+                    <p class="text-[10px] md:text-xs text-gray-500 mb-1">{offer.company_name}</p>
+                  )}
+
+                  <h3 class="text-sm md:text-lg font-bold text-gray-800 mb-1 md:mb-2 group-hover:text-[#930B31] transition-colors line-clamp-2">
+                    {offer.offer_title || offer.package_title}
+                  </h3>
+
+                  <p class="hidden md:block text-gray-600 text-sm mb-3 line-clamp-2">
+                    {offer.offer_description}
+                  </p>
+
+                  <div class="flex items-center justify-between mb-2 md:mb-4">
+                    <div class="flex items-baseline gap-1 md:gap-2">
+                      <span class="text-lg md:text-2xl font-bold text-[#930B31]">€{offer.offer_adult_price}</span>
+                      {parseFloat(offer.original_adult_price) > parseFloat(offer.offer_adult_price) && (
+                        <span class="text-xs md:text-sm text-gray-400 line-through">€{offer.original_adult_price}</span>
+                      )}
+                    </div>
+                    <span class="text-[10px] md:text-xs text-gray-500">per person</span>
+                  </div>
+
+                  <div class="hidden md:flex items-center gap-4 text-xs text-gray-500 mb-4">
+                    <div class="flex items-center gap-1">
+                      <span class="text-green-500">✓</span>
+                      <span>Valid for limited time</span>
+                    </div>
+                  </div>
+
+                  <span class="block w-full bg-[#930B31] hover:bg-[#7a0926] text-white font-bold py-2 md:py-3 px-3 md:px-6 rounded-full transition-colors duration-300 text-center text-xs md:text-base">
+                    Book Now &amp; Save
+                  </span>
+                </div>
+              </a>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  </section>
+
+  <!-- WHY BOOK WITH US -->
+  <section class="py-12 md:py-16 bg-white">
+    <div class="container mx-auto px-4">
+      <div class="text-center mb-10">
+        <h2 class="text-2xl md:text-3xl font-bold text-gray-800 mb-4">Why Book With Us?</h2>
+      </div>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
+        <div class="flex flex-col items-center text-center p-4">
+          <div class="w-14 h-14 bg-[#930B31]/10 rounded-full flex items-center justify-center mb-3 text-2xl">🚌</div>
+          <h3 class="font-semibold text-gray-800 mb-1 text-sm md:text-base">Official Operators</h3>
+          <p class="text-xs text-gray-600">Direct partnerships with Rome's top sightseeing companies</p>
+        </div>
+        <div class="flex flex-col items-center text-center p-4">
+          <div class="w-14 h-14 bg-[#930B31]/10 rounded-full flex items-center justify-center mb-3 text-2xl">🏷</div>
+          <h3 class="font-semibold text-gray-800 mb-1 text-sm md:text-base">Transparent Pricing</h3>
+          <p class="text-xs text-gray-600">What you see is what you pay</p>
+        </div>
+        <div class="flex flex-col items-center text-center p-4">
+          <div class="w-14 h-14 bg-[#930B31]/10 rounded-full flex items-center justify-center mb-3 text-2xl">✅</div>
+          <h3 class="font-semibold text-gray-800 mb-1 text-sm md:text-base">No Hidden Fees</h3>
+          <p class="text-xs text-gray-600">Zero surprise charges at checkout</p>
+        </div>
+        <div class="flex flex-col items-center text-center p-4">
+          <div class="w-14 h-14 bg-[#930B31]/10 rounded-full flex items-center justify-center mb-3 text-2xl">💳</div>
+          <h3 class="font-semibold text-gray-800 mb-1 text-sm md:text-base">Secure Payments</h3>
+          <p class="text-xs text-gray-600">SSL encrypted transactions</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- URGENCY -->
+  <section class="py-12 md:py-16 bg-gray-50">
+    <div class="container mx-auto px-4">
+      <div class="max-w-3xl mx-auto text-center">
+        <div class="text-4xl text-[#930B31] mb-4">⏱</div>
+        <h2 class="text-2xl md:text-3xl font-bold text-gray-800 mb-4">Offers Change Frequently</h2>
+        <p class="text-gray-600 leading-relaxed">
+          Our featured sightseeing offers change every few days based on availability and seasonal demand.
+          We recommend booking early to secure discounted prices. Once an offer expires, it may not return at the same price.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FINAL CTA -->
+  <section class="py-16 md:py-20 bg-gradient-to-r from-[#930B31] to-[#7a0926]">
+    <div class="container mx-auto px-4">
+      <div class="max-w-3xl mx-auto text-center">
+        <h2 class="text-2xl md:text-4xl font-bold text-white mb-4">Explore Rome for Less — While Offers Last</h2>
+        <p class="text-white/90 mb-8 text-lg">Don't miss out on exclusive Rome sightseeing deals. Book now and save!</p>
+        <a
+          href="/"
+          class="inline-flex items-center gap-2 bg-[#FAD502] hover:bg-white text-[#930B31] font-bold py-4 px-8 rounded-full transition-colors duration-300 text-lg shadow-lg"
+        >
+          🎟 View All Rome Tickets
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Countdown timer script (tiny, inline) -->
+  <script is:inline>
+    // Update countdown timers every 60 seconds
+    setInterval(() => {
+      document.querySelectorAll('[data-countdown]').forEach(el => {
+        let s = parseInt(el.getAttribute('data-countdown')) - 60;
+        if (s <= 0) { el.textContent = 'Expired'; return; }
+        el.setAttribute('data-countdown', s);
+        const d = Math.floor(s / 86400), h = Math.floor((s % 86400) / 3600), m = Math.floor((s % 3600) / 60);
+        el.textContent = d > 0 ? `${d}d ${h}h` : h > 0 ? `${h}h ${m}m` : `${m}m`;
+      });
+    }, 60000);
+  </script>
+</BaseLayout>
