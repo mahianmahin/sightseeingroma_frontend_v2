@@ -1,4 +1,4 @@
-# Headers for Netlify deployment
+# Headers for Cloudflare Pages deployment
 # Ensure sitemap is served with correct content type
 
 /sitemap.xml
@@ -31,7 +31,7 @@
 /*.json
   Cache-Control: public, max-age=3600, stale-while-revalidate=86400
 
-# HTML — always revalidate to get latest SPA shell
+# HTML — always revalidate to get latest content
 /*.html
   Cache-Control: public, max-age=0, must-revalidate
 

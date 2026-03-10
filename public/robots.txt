@@ -6,6 +6,7 @@ Allow: /
 
 # Disallow private/user-specific pages
 Disallow: /analytics
+Disallow: /blog-analytics
 Disallow: /yourticket
 Disallow: /profile
 Disallow: /success
@@ -14,9 +15,13 @@ Disallow: /checkout
 Disallow: /payment-return
 Disallow: /reset-password
 Disallow: /reset-success
+Disallow: /forgot-password
+Disallow: /login
+Disallow: /registation
 Disallow: /test
 Disallow: /verify/
 Disallow: /success/
+Disallow: /manageBookings/
 
 # Sitemap location
 Sitemap: https://www.sightseeingroma.com/sitemap.xml
