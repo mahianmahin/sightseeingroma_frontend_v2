@@ -1,0 +1,111 @@
+---
+/**
+ * CustomerReviews.astro — Reviews section.
+ * Reviews fetched at build time from /reviews/.
+ * Horizontal scroll carousel uses only CSS — zero JS for static cards.
+ * Arrow buttons use a tiny inline script (no React needed).
+ */
+import { getReviews } from '../../lib/api';
+import { API_URL } from '../../lib/constants';
+
+let reviews: any[] = [];
+try {
+  const data = await getReviews().catch(() => []);
+  reviews = Array.isArray(data) ? data : [];
+} catch {}
+---
+
+{reviews.length > 0 && (
+  <section class="py-16 md:py-24 bg-[#F9FAFB]">
+    <div class="container mx-auto px-4 relative">
+      <div class="text-center mb-12 md:mb-16">
+        <h2 class="text-2xl md:text-3xl lg:text-4xl font-semibold text-gray-800 mb-4 max-w-3xl mx-auto leading-tight">
+          Don't take our word for it — listen to what our customers have to say about us
+        </h2>
+        <p class="text-gray-500 font-medium tracking-wide text-sm md:text-base">
+          Real travelers. Real experiences. Trusted worldwide.
+        </p>
+      </div>
+
+      <!-- Left Arrow -->
+      <button
+        data-scroll-dir="left"
+        class="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white p-3 rounded-full shadow-lg text-gray-600 hover:text-[#930B31] hover:bg-gray-50 transition-all hidden md:block -ml-4 lg:-ml-12"
+        aria-label="Previous review"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+
+      <!-- Reviews Container -->
+      <div
+        id="reviews-scroll"
+        class="flex overflow-x-auto gap-6 md:gap-8 pb-8 md:pb-0 px-2 md:px-0 snap-x snap-mandatory"
+        style="scrollbar-width: none; -ms-overflow-style: none;"
+      >
+        {reviews.map((review: any) => {
+          const imgSrc = review.image?.startsWith('http') ? review.image : `${API_URL}${review.image}`;
+          const imgWebp = review.image_webp
+            ? (review.image_webp.startsWith('http') ? review.image_webp : `${API_URL}${review.image_webp}`)
+            : undefined;
+
+          return (
+            <div class="min-w-[85vw] md:min-w-[calc(33.333%-1.33rem)] snap-start flex flex-col bg-white rounded-xl shadow-lg shadow-gray-100 hover:shadow-xl transition-shadow duration-300 h-auto border border-gray-100 overflow-hidden">
+              <div class="w-full aspect-[3/4] bg-gray-100 relative group flex-shrink-0">
+                <picture>
+                  {imgWebp && <source srcset={imgWebp} type="image/webp" />}
+                  <img
+                    src={imgSrc}
+                    alt={`${review.name} - ${review.country}`}
+                    class="w-full h-full object-cover"
+                    loading="lazy"
+                    width="400"
+                    height="533"
+                  />
+                </picture>
+              </div>
+              <div class="flex-grow flex flex-col p-6 md:p-8">
+                <div class="flex-grow flex flex-col">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" class="text-gray-300 mb-4 flex-shrink-0"><path d="M10 11H6.101l.001-.009a4.44 4.44 0 0 1 .605-2.141A4.893 4.893 0 0 1 8.63 6.977a7.38 7.38 0 0 1 1.37-.813V3.2c-.86.27-1.68.66-2.44 1.14a9.2 9.2 0 0 0-2.06 1.86 9.04 9.04 0 0 0-1.4 2.42A8.18 8.18 0 0 0 3.6 11.4v8.6h6.4V11zm10 0h-3.899l.001-.009a4.44 4.44 0 0 1 .605-2.141A4.893 4.893 0 0 1 18.63 6.977a7.38 7.38 0 0 1 1.37-.813V3.2c-.86.27-1.68.66-2.44 1.14a9.2 9.2 0 0 0-2.06 1.86 9.04 9.04 0 0 0-1.4 2.42 8.18 8.18 0 0 0-.5 2.78v8.6h6.4V11z"/></svg>
+                  <blockquote class="text-gray-600 italic font-light leading-relaxed mb-6 text-base md:text-lg flex-grow">
+                    "{review.review_text}"
+                  </blockquote>
+                </div>
+                <div class="mt-auto border-t border-gray-50 pt-4 flex-shrink-0">
+                  <p class="font-bold text-gray-800 text-lg">
+                    {review.name} <span class="text-gray-500 font-medium">— {review.country}</span>
+                  </p>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      <!-- Right Arrow -->
+      <button
+        data-scroll-dir="right"
+        class="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white p-3 rounded-full shadow-lg text-gray-600 hover:text-[#930B31] hover:bg-gray-50 transition-all hidden md:block -mr-4 lg:-mr-12"
+        aria-label="Next review"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+    </div>
+  </section>
+)}
+
+<!-- Tiny scroll script — no React needed -->
+<script is:inline>
+  document.querySelectorAll('[data-scroll-dir]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const container = document.getElementById('reviews-scroll');
+      if (!container || !container.firstElementChild) return;
+      const cardWidth = container.firstElementChild.offsetWidth + 24;
+      const dir = btn.getAttribute('data-scroll-dir') === 'left' ? -1 : 1;
+      container.scrollBy({ left: dir * cardWidth, behavior: 'smooth' });
+    });
+  });
+</script>
+
+<style>
+  #reviews-scroll::-webkit-scrollbar { display: none; }
+</style>

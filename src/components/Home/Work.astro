@@ -1,0 +1,67 @@
+---
+/**
+ * Work.astro — "The Process" section (Book → QR → Hop On). Zero JavaScript.
+ * Background image served from public/images/process.webp.
+ */
+---
+
+<div class="relative w-full overflow-hidden">
+  <!-- Background for Desktop -->
+  <div class="absolute inset-0 hidden lg:block">
+    <div class="w-full h-full bg-cover bg-center" style="background-image: url('/images/process.webp')">
+      <div class="absolute inset-0 bg-gradient-to-r from-[#930B31]/95 to-[#930B31]/80"></div>
+    </div>
+  </div>
+
+  <!-- Background for Mobile -->
+  <div class="absolute inset-0 lg:hidden bg-[#930B31]"></div>
+
+  <div class="relative z-10 container mx-auto px-4 py-6 lg:py-16">
+    <div class="flex flex-col lg:flex-row items-center gap-6 lg:gap-12">
+
+      <!-- Header Section -->
+      <div class="w-full lg:w-1/4 text-center lg:text-left">
+        <h2 class="text-2xl lg:text-4xl font-bold text-white mb-2">The Process</h2>
+        <div class="w-16 h-1 bg-[#FAD502] mx-auto lg:mx-0 rounded-full mb-2 lg:mb-4"></div>
+      </div>
+
+      <!-- Steps Section -->
+      <div class="w-full lg:w-3/4">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-6">
+          <!-- Step 1: Book Tickets -->
+          <div class="bg-white/10 backdrop-blur-sm border border-white/10 rounded-lg p-3 md:p-6 flex items-center md:flex-col md:items-start gap-3 md:gap-4 hover:bg-white/20 transition-all duration-300">
+            <div class="bg-[#FAD502] p-2 md:p-3 rounded-full shadow-lg shrink-0 text-[#930B31]">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+            </div>
+            <div class="flex-1 min-w-0">
+              <h3 class="text-base md:text-xl font-bold text-white mb-0.5 md:mb-2">Book Tickets</h3>
+              <p class="text-white/90 text-xs md:text-sm leading-tight md:leading-relaxed">Select your preferred package and book tickets online securely.</p>
+            </div>
+          </div>
+
+          <!-- Step 2: Get QR Code -->
+          <div class="bg-white/10 backdrop-blur-sm border border-white/10 rounded-lg p-3 md:p-6 flex items-center md:flex-col md:items-start gap-3 md:gap-4 hover:bg-white/20 transition-all duration-300">
+            <div class="bg-[#FAD502] p-2 md:p-3 rounded-full shadow-lg shrink-0 text-[#930B31]">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="8" height="8"/><rect x="14" y="2" width="8" height="8"/><rect x="2" y="14" width="8" height="8"/><path d="M14 14h3v3h-3z"/><path d="M20 14h1v1h-1z"/><path d="M14 20h1v1h-1z"/><path d="M20 20h1v1h-1z"/></svg>
+            </div>
+            <div class="flex-1 min-w-0">
+              <h3 class="text-base md:text-xl font-bold text-white mb-0.5 md:mb-2">Get QR Code</h3>
+              <p class="text-white/90 text-xs md:text-sm leading-tight md:leading-relaxed">Receive your digital ticket with a QR code instantly via email.</p>
+            </div>
+          </div>
+
+          <!-- Step 3: Hop On -->
+          <div class="bg-white/10 backdrop-blur-sm border border-white/10 rounded-lg p-3 md:p-6 flex items-center md:flex-col md:items-start gap-3 md:gap-4 hover:bg-white/20 transition-all duration-300">
+            <div class="bg-[#FAD502] p-2 md:p-3 rounded-full shadow-lg shrink-0 text-[#930B31]">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            </div>
+            <div class="flex-1 min-w-0">
+              <h3 class="text-base md:text-xl font-bold text-white mb-0.5 md:mb-2">Hop On</h3>
+              <p class="text-white/90 text-xs md:text-sm leading-tight md:leading-relaxed">Show your QR code to our staff at any stop and start exploring.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

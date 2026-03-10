@@ -1,0 +1,32 @@
+---
+/**
+ * FinalCTA.astro — "Explore Rome the Smart Way" CTA banner. Zero JavaScript.
+ * Replaces FinalCTA.jsx which used useNavigate — now a simple <a> link.
+ */
+---
+
+<section class="relative py-8 md:py-12">
+  <!-- Background -->
+  <div class="absolute inset-0 -z-0">
+    <div class="w-full h-full bg-[#930B31]"></div>
+  </div>
+
+  <div class="relative z-10 container mx-auto px-4">
+    <div class="max-w-5xl mx-auto bg-transparent">
+      <div class="rounded-2xl p-6 md:p-8 flex flex-col md:flex-row items-center gap-4 md:gap-6">
+        <div class="flex-1 text-center md:text-left">
+          <h2 class="text-xl md:text-3xl lg:text-4xl font-extrabold text-white">Explore Rome the Smart Way</h2>
+          <p class="mt-2 text-sm md:text-base text-white/90">Save time, skip lines, and pick the perfect experience — all in one place.</p>
+        </div>
+        <div class="w-full md:w-auto">
+          <a
+            href="/company-packages/big-bus"
+            class="block w-full md:w-auto text-center bg-white text-[#930B31] font-bold py-3 px-6 rounded-md shadow-lg hover:shadow-xl transition-transform hover:-translate-y-0.5"
+          >
+            View All Tickets
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

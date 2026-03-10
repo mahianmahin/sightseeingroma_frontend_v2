@@ -1,29 +1,61 @@
 ---
 /**
- * Homepage — Phase 1 placeholder
- * Will be fully built in Phase 3 with server-side data fetching.
+ * Homepage — SSG (pre-rendered at build time)
+ *
+ * All API data is fetched at build time and baked into static HTML.
+ * Interactive sections (Services tabs, SectionNav scroll spy) are React islands.
+ * Everything else is pure Astro — zero JS shipped for static sections.
+ *
+ * Performance target: FCP < 0.5s, LCP < 1s (hero image)
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
+
+// Astro components — zero JS
+import Hero from '../components/Home/Hero.astro';
+import WhyBook from '../components/Home/WhyBook.astro';
+import FinalCTA from '../components/Home/FinalCTA.astro';
+import Work from '../components/Home/Work.astro';
+import Contact from '../components/Home/Contact.astro';
+import CustomerReviews from '../components/Home/CustomerReviews.astro';
+
+// React islands — interactive
+import SectionNav from '../Components/SectionNav/SectionNav';
+import Services from '../Components/Services/Services';
 ---
 
 <BaseLayout
   title="Sightseeing Roma – Rome Hop-On Hop-Off Bus Tours & Tickets"
   description="Compare top hop-on hop-off bus tours in Rome. Book Big Bus, City Sightseeing, Green Line & more. Best prices guaranteed. Explore the Eternal City your way!"
 >
-  <section class="min-h-screen flex items-center justify-center bg-gray-50">
-    <div class="text-center px-4">
-      <h1 class="text-4xl md:text-6xl font-bold text-gray-900 mb-4">
-        🏛️ Sightseeing Roma
-      </h1>
-      <p class="text-lg md:text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-        Astro migration in progress — Phase 1 scaffold complete.
-        <br />
-        The full homepage with SSG data will be built in Phase 3.
-      </p>
-      <div class="inline-flex items-center gap-2 bg-green-100 text-green-800 px-4 py-2 rounded-full text-sm font-medium">
-        <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-        Astro dev server running
-      </div>
-    </div>
-  </section>
+  <!-- Hero — static HTML + background image (LCP element) -->
+  <Hero />
+
+  <!-- Section Navigation — React island for scroll spy + sticky behavior -->
+  <SectionNav client:visible />
+
+  <!-- Tickets Section — React island for tabs, filters, card interactions -->
+  <div id="tickets">
+    <Services client:visible />
+  </div>
+
+  <!-- Why Book With Us — pure Astro, zero JS -->
+  <div id="why-us">
+    <WhyBook />
+  </div>
+
+  <!-- CTA Banner — pure Astro, zero JS -->
+  <FinalCTA />
+
+  <!-- Customer Reviews — server-fetched, CSS-only carousel -->
+  <CustomerReviews />
+
+  <!-- The Process — pure Astro, zero JS -->
+  <div id="features">
+    <Work />
+  </div>
+
+  <!-- Contact — server-fetched contact data, zero JS -->
+  <div id="routes">
+    <Contact />
+  </div>
 </BaseLayout>
