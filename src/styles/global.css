@@ -1,0 +1,104 @@
+/* Global styles — migrated from src/index.css */
+
+/*
+ * Explicit font-display: swap override ensures text remains visible
+ * during font loading even if the Google Fonts CSS is delayed.
+ */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 300 900;
+  font-display: swap;
+  src: local('Inter');
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 222.2 47.4% 11.2%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 84% 4.9%;
+    --radius: 0.5rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+body {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* Brand utility classes */
+.bg-1 {
+  background-color: #FAD502E0;
+}
+.bg-2 {
+  background-color: #930B31;
+}
+.color-1 {
+  color: #930B31;
+}
+.bg-3 {
+  background-color: #fef7ff;
+}
+.font-color-1 {
+  color: #DDDDDD;
+}
+
+/* Partner Logo Animations */
+@keyframes scroll-right {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(0%); }
+}
+@keyframes scroll-left {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(-100%); }
+}
+.animate-scroll-right {
+  animation: scroll-right 30s linear infinite;
+}
+.animate-scroll-left {
+  animation: scroll-left 30s linear infinite;
+}
+
+/* FeaturedOffer card highlight glow */
+@keyframes highlight-glow {
+  0% { box-shadow: 0 0 0px rgba(250,213,2,0.0); }
+  50% { box-shadow: 0 0 30px rgba(250,213,2,0.55); }
+  100% { box-shadow: 0 0 0px rgba(250,213,2,0.0); }
+}
+.animate-highlight-glow {
+  animation: highlight-glow 1.2s ease-in-out infinite;
+}
+
+/* Accessible focus rings */
+*:focus-visible {
+  outline: 2px solid #930B31;
+  outline-offset: 2px;
+}

@@ -4,14 +4,15 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "build:sitemap": "node scripts/generate-sitemap.js && vite build",
-    "generate-sitemap": "node scripts/generate-sitemap.js",
-    "lint": "eslint . --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "generate-sitemap": "node scripts/generate-sitemap.js"
   },
   "dependencies": {
+    "@astrojs/cloudflare": "^13.0.0",
+    "@astrojs/react": "^5.0.0",
     "@headlessui/react": "^2.0.3",
     "@monaco-editor/react": "^4.7.0",
     "@radix-ui/react-dialog": "^1.1.15",
@@ -19,6 +20,7 @@
     "@stripe/react-stripe-js": "^2.7.1",
     "@stripe/stripe-js": "^3.5.0",
     "@tanstack/react-query": "^5.37.1",
+    "astro": "^6.0.0",
     "axios": "^1.6.8",
     "body-parser": "^1.20.3",
     "chart.js": "^4.5.0",
@@ -48,16 +50,10 @@
   "devDependencies": {
     "@types/react": "^18.2.66",
     "@types/react-dom": "^18.2.22",
-    "@vitejs/plugin-react": "^4.2.1",
     "autoprefixer": "^10.4.19",
     "daisyui": "^4.12.14",
-    "eslint": "^8.57.0",
-    "eslint-plugin-react": "^7.34.1",
-    "eslint-plugin-react-hooks": "^4.6.0",
-    "eslint-plugin-react-refresh": "^0.4.6",
     "postcss": "^8.4.38",
     "tailwindcss": "^3.4.3",
-    "vite": "^7.3.0",
     "vite-plugin-sitemap": "^0.8.2"
   }
 }

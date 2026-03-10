@@ -1,0 +1,168 @@
+---
+/**
+ * BaseLayout.astro — replaces index.html + Main.jsx
+ *
+ * Renders the full HTML shell with:
+ *   • SEO meta tags (title, description, og, canonical)
+ *   • Global CSS
+ *   • Google Fonts (non-render-blocking)
+ *   • GTM (deferred)
+ *   • Dynamic head code from API (global_head_code)
+ *   • Navbar + Footer (will become Astro components)
+ *   • Toast container for React islands
+ */
+import '../styles/global.css';
+import { getGlobalHeadCode, getWebsiteSettings } from '../lib/api';
+
+export interface Props {
+  title?: string;
+  description?: string;
+  canonicalUrl?: string;
+  ogImage?: string;
+  /** Extra head content (structured data, etc.) */
+  headExtra?: string;
+}
+
+const {
+  title = 'Sightseeing Roma – Rome Hop-On Hop-Off Bus Tours & Tickets',
+  description = 'Discover Rome with Sightseeing Roma - Your trusted partner for Rome tours and tickets. Compare top hop-on hop-off buses, book online, and explore the Eternal City.',
+  canonicalUrl,
+  ogImage = '/Banner/hero-banner.webp',
+  headExtra = '',
+} = Astro.props;
+
+// Fetch server-side data in parallel
+let globalHeadCode = '';
+let websiteSettings: any = {};
+try {
+  const [headCodeRes, settingsRes] = await Promise.all([
+    getGlobalHeadCode().catch(() => null),
+    getWebsiteSettings().catch(() => null),
+  ]);
+  if (headCodeRes?.status === 200 && headCodeRes?.global_head_code) {
+    globalHeadCode = headCodeRes.global_head_code;
+  }
+  if (settingsRes?.status === 200 && settingsRes?.data) {
+    websiteSettings = settingsRes.data;
+  }
+} catch {
+  // Fail silently — layout still renders with defaults
+}
+
+const siteUrl = 'https://www.sightseeingroma.com';
+const canonical = canonicalUrl || Astro.url.href;
+---
+
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+
+  <!-- SEO -->
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  <link rel="canonical" href={canonical} />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:image" content={ogImage.startsWith('http') ? ogImage : `${siteUrl}${ogImage}`} />
+  <meta property="og:url" content={canonical} />
+  <meta property="og:site_name" content="Sightseeing Roma" />
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content={title} />
+  <meta name="twitter:description" content={description} />
+  <meta name="twitter:image" content={ogImage.startsWith('http') ? ogImage : `${siteUrl}${ogImage}`} />
+
+  <!-- Preconnect to API -->
+  <link rel="preconnect" href="https://api.sightseeingroma.com" crossorigin />
+  <link rel="dns-prefetch" href="https://api.sightseeingroma.com" />
+
+  <!-- DNS prefetch for third-party services -->
+  <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+  <link rel="dns-prefetch" href="https://www.google-analytics.com" />
+  <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+  <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
+
+  <!-- Google Fonts: Inter (non-render-blocking) -->
+  <link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap"
+    media="print"
+    onload="this.media='all'"
+  />
+  <noscript>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap" />
+  </noscript>
+
+  <meta name="google-site-verification" content="TRkJt8R3GlrYMY7woPFKA0FNS7EXoPee3ZvfiJAH1rQ" />
+
+  <!-- Global head code from server (analytics, structured data, etc.) -->
+  <Fragment set:html={globalHeadCode} />
+
+  <!-- Per-page extra head content -->
+  <Fragment set:html={headExtra} />
+
+  <!-- GTM (deferred until after load) -->
+  <script is:inline>
+    window.addEventListener('load', function() {
+      setTimeout(function() {
+        (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+        })(window,document,'script','dataLayer','GTM-TR9XMH8W');
+      }, 100);
+    });
+  </script>
+</head>
+
+<body>
+  <!-- GTM (noscript) -->
+  <noscript>
+    <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TR9XMH8W"
+      height="0" width="0" style="display:none;visibility:hidden"></iframe>
+  </noscript>
+
+  <!-- TODO Phase 2: Replace with Astro Navbar component -->
+  <nav class="navbar bg-2 text-white z-50 shadow-lg border-b border-white/10 sticky top-0">
+    <div class="container mx-auto px-4 flex items-center justify-between h-16">
+      <a href="/" class="flex items-center">
+        <img src="/Logo.webp" alt="Sightseeing Roma" width="120" height="64" class="h-10 w-auto" />
+      </a>
+      <div class="hidden lg:flex items-center space-x-6 text-base font-medium">
+        <a href="/" class="hover:text-gray-200 transition-colors">Home</a>
+        <a href="/about-us" class="hover:text-gray-200 transition-colors">About Us</a>
+        <a href="/blogs" class="hover:text-gray-200 transition-colors">Blog</a>
+        <a href="/company-packages/big-bus" class="bg-1 text-black font-bold px-4 py-2 rounded-lg hover:bg-yellow-600 transition-colors">
+          Buy Tickets
+        </a>
+        <a href="/login" class="hover:text-gray-200 transition-colors">Login</a>
+      </div>
+      <!-- Mobile: minimal for now -->
+      <div class="lg:hidden flex items-center gap-3">
+        <a href="/compare-tickets" class="bg-1 text-black font-bold p-2.5 rounded-lg">
+          🎫
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Page content -->
+  <main>
+    <slot />
+  </main>
+
+  <!-- TODO Phase 2: Replace with Astro Footer component -->
+  <footer class="bg-black font-color-1 py-10 px-4">
+    <div class="container mx-auto text-center text-sm">
+      <p>© All Rights Reserved to Sightseeing Roma</p>
+    </div>
+  </footer>
+</body>
+</html>
