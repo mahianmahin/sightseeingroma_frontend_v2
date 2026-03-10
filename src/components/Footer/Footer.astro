@@ -1,0 +1,131 @@
+---
+/**
+ * Footer.astro — Server-rendered footer
+ *
+ * Fetches at build time:
+ *   - Bus service folders (for links)
+ *   - Website settings (social links, credit visibility)
+ *
+ * Newsletter form is a React island (client:visible).
+ * Everything else is pure HTML — zero JS.
+ */
+import NewsletterForm from './NewsletterForm';
+import { getPackages, getWebsiteSettings } from '../../lib/api';
+
+// Fetch data server-side
+let folders: any[] = [];
+let socialLinks = {
+  facebook: 'https://www.facebook.com/sightseeingroma',
+  instagram: 'https://www.instagram.com/sightseeingroma',
+};
+let showCredit = true;
+
+try {
+  const [packagesRes, settingsRes] = await Promise.all([
+    getPackages().catch(() => null),
+    getWebsiteSettings().catch(() => null),
+  ]);
+
+  if (packagesRes?.folders) {
+    folders = packagesRes.folders.filter((f: any) => f.active);
+  }
+
+  if (settingsRes?.status === 200 && settingsRes?.data) {
+    socialLinks = {
+      facebook: settingsRes.data.website_facebook || socialLinks.facebook,
+      instagram: settingsRes.data.website_instagram || socialLinks.instagram,
+    };
+    showCredit = settingsRes.data.credit !== undefined ? settingsRes.data.credit : true;
+  }
+} catch {
+  // Fail silently — render with fallback data
+}
+---
+
+<footer class="bg-black font-color-1 py-10 px-2 md:px-4">
+  <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+    <!-- Logo and Description -->
+    <div class="space-y-4 md:text-left">
+      <a href="/">
+        <img src="/Logo.webp" width="320" height="170" class="w-1/2 mx-auto md:mx-0" alt="Sightseeing Roma Logo" />
+      </a>
+      <p class="text-sm">
+        At Sightseeing Roma, we believe that every traveler deserves to explore the majestic beauty and rich history of
+        Rome with ease and comfort. Established with a passion for delivering unforgettable experiences, we are your
+        gateway to the heart of this ancient city.
+      </p>
+    </div>
+
+    <!-- Bus Services and About -->
+    <div class="grid grid-cols-2 gap-8">
+      <!-- Bus Services -->
+      <div class="md:text-left">
+        <h3 class="font-semibold pb-4 text-lg">Bus Services</h3>
+        <ul class="flex flex-col space-y-2 text-sm">
+          {folders.length > 0 ? (
+            folders.map((folder: any) => (
+              <li>
+                <a href={`/bus/${folder.company_slug}/${folder.name.toLowerCase()}`}>
+                  {folder.name}
+                </a>
+              </li>
+            ))
+          ) : (
+            <li>Loading services...</li>
+          )}
+        </ul>
+      </div>
+
+      <!-- About -->
+      <div class="md:text-left">
+        <h3 class="font-semibold pb-4 text-lg">About</h3>
+        <ul class="flex flex-col space-y-2 text-sm">
+          <li><a href="/about-us">About Us</a></li>
+          <li><a href="/blogs">Blog</a></li>
+          <li><a href="/terms">Terms & Conditions</a></li>
+          <li><a href="/returnPolicy">Return Policy</a></li>
+          <li><a href="/refund">Refund Policy</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Newsletter + Payment -->
+    <div class="md:text-left">
+      <h3 class="font-semibold pb-4 text-lg">Stay Updated</h3>
+      <p class="text-sm mb-4">
+        Sign up to receive exclusive offers, travel tips, and the latest bus routes directly to your inbox.
+      </p>
+
+      <!-- Newsletter React island — only hydrates when visible -->
+      <NewsletterForm client:visible />
+
+      <!-- Payment Methods -->
+      <h4 class="font-bold mt-10 mb-5">Payment Methods</h4>
+      <div class="flex space-x-4">
+        <img src="/payment_banners.png" alt="Available Payment Methods" width="331" height="33" class="h-6" />
+      </div>
+    </div>
+  </div>
+
+  <!-- Credits section -->
+  <div class="container mx-auto px-4 mt-8 border-t border-gray-700 pt-4 flex flex-col-reverse md:flex-row items-start md:items-center justify-between text-sm space-y-4 md:space-y-0">
+    <p>© All Rights Reserved to Sightseeing Roma</p>
+
+    <!-- Social Media Icons -->
+    <div class="flex space-x-4 text-lg pb-3 md:pb-0">
+      <a href={socialLinks.facebook} target="_blank" rel="noopener noreferrer" class="hover:text-gray-400" aria-label="Facebook">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M9.101 23.691v-7.98H6.627v-3.667h2.474v-1.58c0-4.085 1.848-5.978 5.858-5.978.401 0 1.09.044 1.613.115v3.146c-.427-.044-.742-.044-1.27-.044-1.613 0-2.238.611-2.238 2.196v2.145h3.329l-.571 3.667h-2.758v7.98"/></svg>
+      </a>
+      <a href={socialLinks.instagram} target="_blank" rel="noopener noreferrer" class="hover:text-gray-400" aria-label="Instagram">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+      </a>
+    </div>
+  </div>
+
+  {showCredit && (
+    <div class="container mx-auto px-4 border-gray-700 flex flex-col-reverse md:flex-row items-start md:items-center justify-between text-sm space-y-4 md:space-y-0">
+      <p>Designed & Developed by <a href="https://wa.me/8801762142364" target="_blank" rel="noopener noreferrer" class="text-yellow-500">Mahian Mahin</a>.</p>
+    </div>
+  )}
+</footer>
