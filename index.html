@@ -14,6 +14,11 @@
   <!-- Preload the home-page API response so it starts immediately during HTML parse -->
   <link rel="preload" href="https://api.sightseeingroma.com/static-content/home-page/" as="fetch" crossorigin />
 
+  <!-- DNS prefetch for Google services (GTM/GA4 — saves ~300ms on LCP) -->
+  <link rel="dns-prefetch" href="https://www.google.com" />
+  <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+  <link rel="dns-prefetch" href="https://www.google-analytics.com" />
+
   <!-- DNS prefetch for Google Fonts (lightweight, no unused-preconnect warning) -->
   <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
   <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
@@ -25,34 +30,6 @@
   </noscript>
 
   <meta name="google-site-verification" content="TRkJt8R3GlrYMY7woPFKA0FNS7EXoPee3ZvfiJAH1rQ" />
-
-  <!-- Early hero image preload: uses the <link rel="preload"> response to start image download before React boots -->
-  <script>
-    (function() {
-      var API = 'https://api.sightseeingroma.com';
-      var url = API + '/static-content/home-page/';
-      // The browser is already fetching this URL via <link rel="preload" as="fetch">.
-      // This fetch() reuses that in-flight/cached response (same URL = de-duped).
-      fetch(url)
-        .then(function(r) { return r.json(); })
-        .then(function(data) {
-          if (data.status !== 200 || !data.page_images) return;
-          var hero = data.page_images.find(function(img) { return img.unique_tag === 'hero-image'; });
-          if (!hero || !hero.image) return;
-          var src = hero.image.file_webp || hero.image.file;
-          if (!src) return;
-          if (src.charAt(0) === '/') src = API + src;
-          var link = document.createElement('link');
-          link.rel = 'preload';
-          link.as = 'image';
-          link.type = hero.image.file_webp ? 'image/webp' : '';
-          link.href = src;
-          document.head.appendChild(link);
-          window.__HERO_PRELOAD = data;
-        })
-        .catch(function() {});
-    })();
-  </script>
 
   <!-- Google Tag Manager (deferred until after page load) -->
   <script>

@@ -1,5 +1,6 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { baseUrl } from '../../utilities/Utilities';
 
 const IMAGES = [
     "/CitySightseeeing/sh-1.webp",
@@ -7,8 +8,20 @@ const IMAGES = [
     "/CitySightseeeing/sh-3.webp"
 ];
 
-const PromoBanner = ({ offersData }) => {
+const PromoBanner = ({ offersData: externalData }) => {
     const navigate = useNavigate();
+
+    // If offersData is passed via props, use it. Otherwise, fetch independently.
+    const [internalData, setInternalData] = useState(null);
+    useEffect(() => {
+        if (externalData !== undefined) return;
+        fetch(`${baseUrl}featured-offers/`)
+            .then(r => r.ok ? r.json() : null)
+            .then(d => setInternalData(d?.status === 200 && d.data?.length ? d.data : []))
+            .catch(() => setInternalData([]));
+    }, [externalData]);
+
+    const offersData = externalData !== undefined ? externalData : internalData;
 
     const bestOffer = useMemo(() => {
         if (!offersData || !offersData.length) return null;

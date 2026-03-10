@@ -120,8 +120,8 @@ const OptimizedImage = ({
 
   return (
     <div className={`relative overflow-hidden ${wrapperClassName}`}>
-      {/* Blur placeholder background — visible until image loads */}
-      {!isLoaded && !hasError && (
+      {/* Blur placeholder background — visible until image loads (skip for eager/hero) */}
+      {!eager && !isLoaded && !hasError && (
         <div
           className="absolute inset-0 bg-gray-200 animate-pulse"
           aria-hidden="true"
@@ -140,8 +140,10 @@ const OptimizedImage = ({
         onLoad={handleLoad}
         onError={handleError}
         onClick={onClick}
-        className={`transition-opacity duration-500 ease-in-out ${
-          isLoaded ? "opacity-100" : "opacity-0"
+        className={`${
+          eager
+            ? "" /* Hero/above-fold: render immediately, no fade-in delay for LCP */
+            : `transition-opacity duration-500 ease-in-out ${isLoaded ? "opacity-100" : "opacity-0"}`
         } ${className}`}
       />
     </div>

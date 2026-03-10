@@ -1,14 +1,15 @@
 import Banner2 from './../Components/Banner2/Banner2';
 import RefundImage from "../assets/new/Refund-Policy.jpg";
-import { useState, useEffect } from "react";
+import { useState, useEffect, lazy, Suspense } from "react";
 import { baseUrl, baseUrlHashless } from "../utilities/Utilities";
 import useEditorCheck from '../hooks/useEditorCheck';
 import useStaticContent from '../hooks/useStaticContent';
 import EditWrapper from '../Components/Edit_Wrapper/EditWrapper';
 import EditImageWrapper from '../Components/Edit_Wrapper/EditImageWrapper';
-import EditPanelSheet from '../Components/EditPanel/EditPanelSheet';
 import renderContent from '../utilities/renderContent';
 import SEO from '../Components/SEO/SEO';
+
+const EditPanelSheet = lazy(() => import('../Components/EditPanel/EditPanelSheet'));
 
 const Refund = () => {
     const [contactData, setContactData] = useState({
@@ -69,7 +70,7 @@ const Refund = () => {
     return (
         <>
             <SEO staticContentData={staticContentData} />
-            <EditPanelSheet isEditor={isEditor} error={error} page="refund-policy" refreshContent={refreshContent} metaInfo={staticContentData?.pageData} />
+            {isEditor && <Suspense fallback={null}><EditPanelSheet isEditor={isEditor} error={error} page="refund-policy" refreshContent={refreshContent} metaInfo={staticContentData?.pageData} /></Suspense>}
             <div className="container mx-auto ">
                 {/* Banner Section */}
                 <EditImageWrapper

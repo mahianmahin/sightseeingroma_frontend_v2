@@ -1,11 +1,23 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaTag, FaArrowRight, FaClock } from 'react-icons/fa';
-import { baseUrlHashless } from '../../utilities/Utilities';
+import { baseUrl, baseUrlHashless } from '../../utilities/Utilities';
 import OptimizedImage from '../OptimizedImage/OptimizedImage';
 
-const FeaturedToday = ({ offersData }) => {
+const FeaturedToday = ({ offersData: externalData, isEditor }) => {
     const navigate = useNavigate();
+
+    // If offersData is passed via props, use it. Otherwise, fetch independently.
+    const [internalData, setInternalData] = useState(null);
+    useEffect(() => {
+        if (externalData !== undefined) return; // parent provided data
+        fetch(`${baseUrl}featured-offers/`)
+            .then(r => r.ok ? r.json() : null)
+            .then(d => setInternalData(d?.status === 200 && d.data?.length ? d.data : []))
+            .catch(() => setInternalData([]));
+    }, [externalData]);
+
+    const offersData = externalData !== undefined ? externalData : internalData;
 
     const bestOffer = useMemo(() => {
         if (!offersData || !offersData.length) return null;

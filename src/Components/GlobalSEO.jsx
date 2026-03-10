@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { baseUrlHashless } from "../utilities/Utilities";
+import { deferredFetch } from "../utilities/deferredFetch";
 
 const API_URL = `${baseUrlHashless}/website-settings/global-head-code/`;
 
@@ -7,18 +8,14 @@ const GlobalSEO = () => {
   const [headCode, setHeadCode] = useState("");
 
   useEffect(() => {
-    const fetchHeadCode = async () => {
-      try {
-        const res = await fetch(API_URL, { method: "GET" });
-        const data = await res.json();
-        if (res.ok && data.status === 200 && data.global_head_code) {
+    // Deferred — waits for page load event, won't compete with hero/LCP
+    deferredFetch(API_URL)
+      .then((data) => {
+        if (data.status === 200 && data.global_head_code) {
           setHeadCode(data.global_head_code);
         }
-      } catch (err) {
-        // Fail silently
-      }
-    };
-    fetchHeadCode();
+      })
+      .catch(() => { /* Fail silently */ });
   }, []);
 
   useEffect(() => {

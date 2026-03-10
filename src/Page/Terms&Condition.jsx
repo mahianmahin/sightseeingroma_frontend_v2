@@ -1,15 +1,16 @@
 import Banner2 from './../Components/Banner2/Banner2';
 import TermsConditionImage from "../assets/new/Terms-&-Conditions.jpg";
-import { useState, useEffect } from "react";
+import { useState, useEffect, lazy, Suspense } from "react";
 import { baseUrl, baseUrlHashless } from "../utilities/Utilities";
 import useEditorCheck from '../hooks/useEditorCheck';
 import useStaticContent from '../hooks/useStaticContent';
 import renderContent from '../utilities/renderContent.jsx';
 import EditWrapper from '../Components/Edit_Wrapper/EditWrapper';
 import EditImageWrapper from '../Components/Edit_Wrapper/EditImageWrapper';
-import EditPanelSheet from '../Components/EditPanel/EditPanelSheet';
 import { render } from 'react-dom';
 import SEO from '../Components/SEO/SEO';
+
+const EditPanelSheet = lazy(() => import('../Components/EditPanel/EditPanelSheet'));
 
 const TermsCondition = () => {
     const [contactData, setContactData] = useState({
@@ -70,7 +71,7 @@ const TermsCondition = () => {
     return (
         <>
             <SEO staticContentData={staticContentData} />
-            <EditPanelSheet isEditor={isEditor} error={error} page="terms-conditions" refreshContent={refreshContent} metaInfo={staticContentData?.pageData} />
+            {isEditor && <Suspense fallback={null}><EditPanelSheet isEditor={isEditor} error={error} page="terms-conditions" refreshContent={refreshContent} metaInfo={staticContentData?.pageData} /></Suspense>}
             <div className="container mx-auto">
                 {/* Banner Section */}
                 <EditImageWrapper

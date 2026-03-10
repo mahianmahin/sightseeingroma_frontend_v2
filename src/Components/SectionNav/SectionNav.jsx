@@ -1,15 +1,14 @@
-import { FaHeart, FaCompass } from 'react-icons/fa';
+import { FaHeart, FaCompass, FaTicketAlt } from 'react-icons/fa';
 import { useState, useEffect, useRef } from 'react';
-import { FaTicketAlt } from 'react-icons/fa';
 
 const SectionNav = () => {
-    const [activeSection, setActiveSection] = useState('why-us');
+    const [activeSection, setActiveSection] = useState('tickets');
     const [isSticky, setIsSticky] = useState(false);
     const sectionNavRef = useRef(null);
 
     const sections = [
-        { id: 'why-us', label: 'WHY US', icon: FaHeart },
         { id: 'tickets', label: 'TICKETS', icon: FaTicketAlt },
+        { id: 'why-us', label: 'WHY US', icon: FaHeart },
         { id: 'explore', label: 'EXPLORE', icon: FaCompass }
     ];
 

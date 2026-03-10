@@ -29,9 +29,7 @@ const Services = (props) => {
     const fetchData = async () => {
       try {
         const response = await fetch(`${baseUrl}packages/`);
-        if (!response.ok) {
-          throw new Error("Failed to fetch data");
-        }
+        if (!response.ok) throw new Error("Failed to fetch data");
         const data = await response.json();
         setBusData(data.bus_data || []);
         setFolders(data.folders || []);
@@ -210,26 +208,26 @@ const Services = (props) => {
     <div className="bg-[#F2F2F7] py-8 md:py-16">
       <div className="container mx-auto px-4 md:px-8">
         {/* Service Selection */}
-        <div className="bg-white rounded-2xl shadow-lg p-6 md:p-8 mb-8">
-          <div className="text-center mb-8">
+        <div className="bg-white rounded-2xl shadow-lg p-4 md:p-8 mb-8">
+          <div className="text-center mb-4 md:mb-8">
             {/* Title */}
-            <h2 class="text-xl md:text-2xl font-bold text-gray-800 mb-2">Hop on Your Perfect Rome Bus Tour</h2>
+            <h2 class="text-base md:text-2xl font-bold text-gray-800 mb-1 md:mb-2">Hop on Your Perfect Rome Bus Tour</h2>
 
             {/* Subtitle */}
-            <p class="text-gray-600">Choose from our premium bus service providers</p>
+            {/* <p class="text-gray-600">Choose from our premium bus service providers</p> */}
 
           </div>
 
-          {/* Enhanced Tabs */}
-          <div className={`flex flex-wrap justify-center gap-3 md:gap-4 mb-8 transition-opacity duration-300 ${
+          {/* Enhanced Tabs — 2×2 grid on mobile, flex-wrap on desktop */}
+          <div className={`grid grid-cols-2 md:flex md:flex-wrap md:justify-center gap-2 md:gap-4 mb-4 md:mb-8 transition-opacity duration-300 ${
             hasActiveFilters ? 'opacity-50' : 'opacity-100'
-          }`}>
+          }`}>  
             {folders.map((folder, index) => (
               <button
                 key={folder.id}
                 onClick={() => setActiveTab(index)}
                 disabled={hasActiveFilters}
-                className={`group relative px-6 py-3 md:px-8 md:py-4 rounded-xl font-semibold text-sm md:text-base transition-all duration-300 transform ${
+                className={`group relative px-3 py-2 md:px-8 md:py-4 rounded-lg md:rounded-xl font-semibold text-xs md:text-base transition-all duration-300 transform ${
                   !hasActiveFilters ? 'hover:scale-105' : 'cursor-not-allowed'
                 } ${
                   activeTab === index && !hasActiveFilters
@@ -241,7 +239,7 @@ const Services = (props) => {
               >
                 <span className="relative z-10">{folder.display_name}</span>
                 {activeTab === index && !hasActiveFilters && (
-                  <div className="absolute inset-0 bg-gradient-to-r from-[#930B31] to-red-700 rounded-xl opacity-90"></div>
+                  <div className="absolute inset-0 bg-gradient-to-r from-[#930B31] to-red-700 rounded-lg md:rounded-xl opacity-90"></div>
                 )}
               </button>
             ))}

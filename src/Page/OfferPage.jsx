@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, lazy, Suspense } from "react";
 import axios from "axios";
 import OfferCard from "../Components/OfferCard/OfferCard";
 import OfferBanner from './../Components/OfferBanner/OfferBanner';
@@ -7,8 +7,9 @@ import OfferBannerMd from "../Components/OfferBanner/OfferBannerMd";
 import { useNavigate } from "react-router-dom";  // Import useNavigate
 import useStaticContent from '../hooks/useStaticContent';
 import useEditorCheck from '../hooks/useEditorCheck';
-import EditPanelSheet from '../Components/EditPanel/EditPanelSheet';
 import HelmetWrapper from '../utilities/HelmetWrapper';
+
+const EditPanelSheet = lazy(() => import('../Components/EditPanel/EditPanelSheet'));
 
 const OfferPage = () => {
     const [tickets, setTickets] = useState([]);
@@ -48,12 +49,12 @@ const OfferPage = () => {
                 schema={pageMeta?.schema_json}
             />
 
-            <EditPanelSheet
+            {isEditor && <Suspense fallback={null}><EditPanelSheet
                 isEditor={isEditor}
                 page={'offer'}
                 refreshContent={refreshContent}
                 metaInfo={pageMeta}
-            />
+            /></Suspense>}
             <div className="block md:hidden">
                 <OfferBanner />
             </div>

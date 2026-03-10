@@ -1,15 +1,16 @@
 import Banner2 from "../Components/Banner2/Banner2";
 import EditWrapper from "../Components/Edit_Wrapper/EditWrapper";
 import EditImageWrapper from "../Components/Edit_Wrapper/EditImageWrapper";
-import EditPanelSheet from "../Components/EditPanel/EditPanelSheet";
 import AboutUsImage from "../assets/new/About-Us.jpg";
 import useEditorCheck from "../hooks/useEditorCheck";
 import useStaticContent from "../hooks/useStaticContent";
 import renderContent from "../utilities/renderContent";
-import { useState, useEffect } from "react";
+import { useState, useEffect, lazy, Suspense } from "react";
 import { baseUrl, baseUrlHashless } from "../utilities/Utilities";
 import SEO from '../Components/SEO/SEO';
 import { Link } from "react-router-dom";
+
+const EditPanelSheet = lazy(() => import("../Components/EditPanel/EditPanelSheet"));
 
 const AboutUs = () => {
     const [contactData, setContactData] = useState({
@@ -140,7 +141,7 @@ const AboutUs = () => {
         <>
             <SEO staticContentData={staticContentData} />
             <div className="bg-white">
-                <EditPanelSheet isEditor={isEditor} error={error} page="about-us" refreshContent={refreshContent} metaInfo={staticContentData?.pageData} />
+                {isEditor && <Suspense fallback={null}><EditPanelSheet isEditor={isEditor} error={error} page="about-us" refreshContent={refreshContent} metaInfo={staticContentData?.pageData} /></Suspense>}
                 
                 {/* Hero Section */}
                 <EditImageWrapper

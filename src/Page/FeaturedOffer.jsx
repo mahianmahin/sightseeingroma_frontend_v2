@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, lazy, Suspense } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { FaStar, FaCheckCircle, FaShieldAlt, FaCreditCard, FaTag, FaClock, FaBus, FaTicketAlt } from 'react-icons/fa';
@@ -7,9 +7,10 @@ import FeaturedOffersManager from '../Components/EditPanel/FeaturedOffersManager
 import useEditorCheck from '../hooks/useEditorCheck';
 import useStaticContent from '../hooks/useStaticContent';
 import SEO from '../Components/SEO/SEO';
-import EditPanelSheet from '../Components/EditPanel/EditPanelSheet';
 import { baseUrl, baseUrlHashless } from '../utilities/Utilities';
 import OptimizedImage from '../Components/OptimizedImage/OptimizedImage';
+
+const EditPanelSheet = lazy(() => import('../Components/EditPanel/EditPanelSheet'));
 
 const FeaturedOffer = () => {
   const navigate = useNavigate();
@@ -145,12 +146,12 @@ const FeaturedOffer = () => {
       </Helmet>
       
       {/* Editor Panel */}
-      <EditPanelSheet 
+      {isEditor && <Suspense fallback={null}><EditPanelSheet 
         isEditor={isEditor} 
         page="featured-offers" 
         refreshContent={refreshContent} 
         metaInfo={staticContentData?.pageData} 
-      />
+      /></Suspense>}
 
       {/* HERO SECTION */}
       <section className="relative bg-gradient-to-br from-[#930B31] via-[#7a0926] to-[#5a071c] overflow-hidden">

@@ -6,6 +6,7 @@ import scrollToTop, { baseUrl, baseUrlHashless } from '../../utilities/Utilities
 import paymentMethods from '../../assets/payment_banners.png';
 import useStaticContent from '../../hooks/useStaticContent';
 import useEditorCheck from '../../hooks/useEditorCheck';
+import { deferredFetch } from '../../utilities/deferredFetch';
 
 
 const Footer = () => {
@@ -22,11 +23,7 @@ const Footer = () => {
     useEffect(() => {
         const fetchFolders = async () => {
             try {
-                const response = await fetch(`${baseUrl}packages/`);
-                if (!response.ok) {
-                    throw new Error("Failed to fetch data");
-                }
-                const data = await response.json();
+                const data = await deferredFetch(`${baseUrl}packages/`);
                 // Filter only active folders
                 const activeFolders = data.folders.filter(folder => folder.active);
                 setFolders(activeFolders);
@@ -40,17 +37,14 @@ const Footer = () => {
 
         const fetchSocialLinks = async () => {
             try {
-                const response = await fetch(`${baseUrl}website-settings/`);
-                if (response.ok) {
-                    const result = await response.json();
-                    if (result.status === 200 && result.data) {
-                        setSocialLinks({
-                            facebook: result.data.website_facebook || socialLinks.facebook,
-                            instagram: result.data.website_instagram || socialLinks.instagram
-                        });
-                        // Set credit visibility - default to true if not set
-                        setShowCredit(result.data.credit !== undefined ? result.data.credit : true);
-                    }
+                const data = await deferredFetch(`${baseUrl}website-settings/`);
+                if (data.status === 200 && data.data) {
+                    setSocialLinks({
+                        facebook: data.data.website_facebook || socialLinks.facebook,
+                        instagram: data.data.website_instagram || socialLinks.instagram
+                    });
+                    // Set credit visibility - default to true if not set
+                    setShowCredit(data.data.credit !== undefined ? data.data.credit : true);
                 }
             } catch (error) {
                 console.error("Error fetching social links:", error);

@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useRef } from 'react';
-import axios from 'axios';
 import { baseUrlHashless } from '../../utilities/Utilities';
 import { FaQuoteLeft, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import OptimizedImage from '../OptimizedImage/OptimizedImage';
@@ -12,8 +11,9 @@ const CustomerReviews = () => {
     useEffect(() => {
         const fetchReviews = async () => {
             try {
-                const response = await axios.get(`${baseUrlHashless}/reviews/`);
-                setReviews(response.data);
+                const res = await fetch(`${baseUrlHashless}/reviews/`);
+                const data = await res.json();
+                setReviews(Array.isArray(data) ? data : []);
             } catch (error) {
                 console.error("Error fetching reviews", error);
             } finally {

@@ -1,5 +1,6 @@
 import { useState, useEffect, createContext, useContext } from 'react';
 import { baseUrl } from '../utilities/Utilities';
+import { deferredFetch } from '../utilities/deferredFetch';
 
 // Create context for active offers
 const ActiveOffersContext = createContext(null);
@@ -12,8 +13,7 @@ export const ActiveOffersProvider = ({ children }) => {
     useEffect(() => {
         const fetchActiveOffers = async () => {
             try {
-                const response = await fetch(`${baseUrl}featured-offers/by-package/`);
-                const data = await response.json();
+                const data = await deferredFetch(`${baseUrl}featured-offers/by-package/`);
                 if (data.status === 200) {
                     setActiveOffers(data.data || {});
                 }
@@ -26,8 +26,19 @@ export const ActiveOffersProvider = ({ children }) => {
 
         fetchActiveOffers();
 
-        // Refresh every 5 minutes
-        const interval = setInterval(fetchActiveOffers, 5 * 60 * 1000);
+        // Refresh every 5 minutes (uses normal fetch — page is already loaded)
+        const interval = setInterval(async () => {
+            try {
+                const res = await fetch(`${baseUrl}featured-offers/by-package/`);
+                const data = await res.json();
+                if (data.status === 200) {
+                    setActiveOffers(data.data || {});
+                }
+            } catch (error) {
+                console.error('Failed to refresh active offers:', error);
+            }
+        }, 5 * 60 * 1000);
+
         return () => clearInterval(interval);
     }, []);
 

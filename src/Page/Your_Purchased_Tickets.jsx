@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, lazy, Suspense } from 'react';
 import { FaTicketAlt, FaCalendarAlt, FaEuroSign, FaQrcode, FaCheckCircle, FaTimesCircle, FaDownload, FaClipboardList } from 'react-icons/fa';
 import { HiOutlineTicket } from 'react-icons/hi';
 import Banner2 from '../Components/Banner2/Banner2';
@@ -7,8 +7,9 @@ import { baseMediaUrl, baseUrl, baseUrlHashless } from '../utilities/Utilities';
 import PurchasedTicketImage from "../assets/new/Purchased-Tickets-Section.jpg";
 import EditWrapper from '../Components/Edit_Wrapper/EditWrapper';
 import EditImageWrapper from '../Components/Edit_Wrapper/EditImageWrapper';
-import EditPanelSheet from '../Components/EditPanel/EditPanelSheet';
 import useEditorCheck from '../hooks/useEditorCheck';
+
+const EditPanelSheet = lazy(() => import('../Components/EditPanel/EditPanelSheet'));
 import useStaticContent from '../hooks/useStaticContent';
 import renderContent from '../utilities/renderContent.jsx';
 import SEO from '../Components/SEO/SEO';
@@ -65,7 +66,7 @@ const Your_Purchased_Tickets = () => {
     return (
         <>
             <SEO staticContentData={staticContentData} />
-            <EditPanelSheet isEditor={isEditor} error={error} page="purchase-history" refreshContent={refreshContent} metaInfo={staticContentData?.pageData} />
+            {isEditor && <Suspense fallback={null}><EditPanelSheet isEditor={isEditor} error={error} page="purchase-history" refreshContent={refreshContent} metaInfo={staticContentData?.pageData} /></Suspense>}
             <EditImageWrapper
                 isEditor={isEditor}
                 uniqueTag="purchased-tickets-banner-image"

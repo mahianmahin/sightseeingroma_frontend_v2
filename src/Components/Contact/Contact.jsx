@@ -33,7 +33,6 @@ const Contact = (props) => {
                 }
             } catch (error) {
                 console.error("Error fetching contact data:", error);
-                // Keep fallback values if API fails
             } finally {
                 setLoading(false);
             }

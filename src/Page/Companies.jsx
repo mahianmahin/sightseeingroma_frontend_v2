@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, lazy, Suspense } from "react";
 import { FaArrowLeftLong } from "react-icons/fa6";
 import TicketCard from "../Components/TicketCard/TicketCard";
 import HelmetWrapper from "../utilities/HelmetWrapper";
@@ -12,8 +12,9 @@ import { useParams } from "react-router-dom";
 import useStaticContent from "../hooks/useStaticContent";
 import EditWrapper from "../Components/Edit_Wrapper/EditWrapper";
 import EditImageWrapper from "../Components/Edit_Wrapper/EditImageWrapper";
-import EditPanelSheet from "../Components/EditPanel/EditPanelSheet";
 import useEditorCheck from "../hooks/useEditorCheck";
+
+const EditPanelSheet = lazy(() => import("../Components/EditPanel/EditPanelSheet"));
 import renderContent from "../utilities/renderContent";
 import SEO from '../Components/SEO/SEO';
 
@@ -118,7 +119,7 @@ const Companies = () => {
         <>
             <HelmetWrapper title="Explore Rome with Big Bus | Book Tickets at Sightseeing Roma" description="Explore Rome with Big Bus hop-on hop-off tours. Choose from 24h, 48h, or 72h tickets, Travel in style, enjoy panoramic views, and discover top landmarks." />
             <SEO staticContentData={staticContentData} />
-            <EditPanelSheet isEditor={isEditor} error={error} page={companySlug} refreshContent={refreshContent} metaInfo={staticContentData?.pageData} />
+            {isEditor && <Suspense fallback={null}><EditPanelSheet isEditor={isEditor} error={error} page={companySlug} refreshContent={refreshContent} metaInfo={staticContentData?.pageData} /></Suspense>}
             <div className="container mx-auto">
                 {/* Full-width responsive image */}
                 <EditImageWrapper isEditor={isEditor} uniqueTag={currentImageConfig.uniqueTag} refreshContent={handleImageRefresh}>

@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, lazy, Suspense } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import scrollToTop, { baseUrl, baseUrlHashless } from '../utilities/Utilities.jsx';
 import useStaticContent from '../hooks/useStaticContent';
 import useEditorCheck from '../hooks/useEditorCheck';
-import EditPanelSheet from '../Components/EditPanel/EditPanelSheet';
 import HelmetWrapper from '../utilities/HelmetWrapper';
+
+const EditPanelSheet = lazy(() => import('../Components/EditPanel/EditPanelSheet'));
 
 const CompanyThroughCard = () => {
   const { companySlug } = useParams();
@@ -110,12 +111,12 @@ const CompanyThroughCard = () => {
       />
 
       {/* Editor Panel for Meta (only visible to editors) */}
-      <EditPanelSheet
+      {isEditor && <Suspense fallback={null}><EditPanelSheet
         isEditor={isEditor}
         page={pageSlug}
         refreshContent={refreshContent}
         metaInfo={pageMeta}
-      />
+      /></Suspense>}
       {/* Current Company Header */}
       {companyInfo && (
         <div className="pt-20 bg-gradient-to-r from-[#930B31] to-red-700 text-white">

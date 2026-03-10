@@ -3,17 +3,18 @@ import { useNavigate } from "react-router-dom";
 import { FaStar, FaCheckCircle, FaShieldAlt, FaBolt, FaLandmark, FaBus, FaTicketAlt } from "react-icons/fa";
 import { baseUrlHashless } from "../../utilities/Utilities";
 import OptimizedImage from "../OptimizedImage/OptimizedImage";
+import HeroImage from "../../assets/HeroImageWebP.webp";
+import HeroFeaturedOffer from "./HeroFeaturedOffer";
 
 const Hero = (props) => {
   const navigate = useNavigate();
   const [overlayOpacity, setOverlayOpacity] = useState(0.70);
+  const [hasOffer, setHasOffer] = useState(false);
   
   // Get hero image from static content
-  const heroImageData = props.getImageByTag ? props.getImageByTag('hero-image') : null;
-  const heroImageUrl = heroImageData?.image?.file ? `${baseUrlHashless}${heroImageData.image.file}` : null;
-  const heroImageWebpUrl = heroImageData?.image?.file_webp ? `${baseUrlHashless}${heroImageData.image.file_webp}` : null;
-
-  console.log("Hero image URL:", heroImageUrl);
+//   const heroImageData = props.getImageByTag ? props.getImageByTag('hero-image') : null;
+//   const heroImageUrl = heroImageData?.image?.file ? `${baseUrlHashless}${heroImageData.image.file}` : null;
+//   const heroImageWebpUrl = heroImageData?.image?.file_webp ? `${baseUrlHashless}${heroImageData.image.file_webp}` : null;
 
   const handleBuyTickets = () => {
     const ticketsSection = document.getElementById('tickets');
@@ -32,19 +33,15 @@ const Hero = (props) => {
     <div className="w-full relative min-h-[85vh] md:min-h-[90vh] flex items-center overflow-hidden">
       {/* Background Image with Overlay */}
       <div className="absolute inset-0 z-0">
-        {heroImageUrl ? (
-            <OptimizedImage
-              src={heroImageUrl}
-              srcWebp={heroImageWebpUrl}
-              alt="Rome Sightseeing"
-              className="w-full h-full object-cover"
-              wrapperClassName="w-full h-full"
-              eager={true}
-              sizes="100vw"
-            />
-        ) : (
-             <div className="w-full h-full bg-gray-900"></div>
-        )}
+        <OptimizedImage
+            src={HeroImage}
+            srcWebp={HeroImage}
+            alt="Rome Sightseeing"
+            className="w-full h-full object-cover"
+            wrapperClassName="w-full h-full"
+            eager={true}
+            sizes="100vw"
+        />
         {/* Dark gradient overlay */}
         <div 
             className="absolute inset-0 bg-black"
@@ -114,9 +111,17 @@ const Hero = (props) => {
 
             </div>
 
-            {/* Right Column (40%) - Visual Trust Card */}
+            {/* Right Column (40%) - Visual Trust Card / Featured Offer */}
             <div className="w-full lg:w-[40%] flex justify-center lg:justify-end">
-                <div className="bg-white text-gray-800 rounded-xl shadow-2xl p-5 md:p-6 max-w-md w-full transform hover:scale-[1.02] transition-transform duration-300">
+
+                {/* Mobile: Show compact featured offer when available */}
+                <div className={`lg:hidden w-full flex justify-center ${hasOffer ? '' : 'hidden'}`}>
+                    <HeroFeaturedOffer onHasOffer={setHasOffer} />
+                </div>
+
+                {/* Mobile: Show Trust Card when no offer; Desktop: Always show Trust Card */}
+                <div className={`${hasOffer ? 'hidden lg:block' : ''} w-full flex justify-center lg:justify-end`}>
+                    <div className="bg-white text-gray-800 rounded-xl shadow-2xl p-5 md:p-6 max-w-md w-full transform hover:scale-[1.02] transition-transform duration-300">
                     <div className="flex items-center gap-3 mb-4 border-b border-gray-100 pb-4">
                         <div className="bg-[#FAD502]/20 p-2.5 rounded-full text-[#FAD502] shadow-sm">
                             <FaStar className="text-xl" />
@@ -156,6 +161,7 @@ const Hero = (props) => {
                             <span className="font-bold text-gray-700 text-xs cursor-default">I Love Rome</span>
                         </div>
                     </div>
+                </div>
                 </div>
             </div>
 

@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, lazy, Suspense } from "react";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import {
@@ -21,8 +21,9 @@ import useEditorCheck from "../hooks/useEditorCheck";
 import useStaticContent from "../hooks/useStaticContent";
 import EditWrapper from "../Components/Edit_Wrapper/EditWrapper";
 import EditImageWrapper from "../Components/Edit_Wrapper/EditImageWrapper";
-import EditPanelSheet from "../Components/EditPanel/EditPanelSheet";
 import renderContent from "../utilities/renderContent.jsx";
+
+const EditPanelSheet = lazy(() => import("../Components/EditPanel/EditPanelSheet"));
 import { baseUrlHashless } from "../utilities/Utilities";
 import SEO from "../Components/SEO/SEO";
 import AgentPointHeroImage from "../assets/new/Agent-Point-Hero-Section.webp";
@@ -233,13 +234,13 @@ const AgentPoint = () => {
         defaultTitle="Sightseeing Roma Agent Points – Official Ticket & Assistance Locations in Rome"
         defaultDescription="Find your nearest Sightseeing Roma agent point in Rome for hop-on hop-off bus tickets, tour support, and sightseeing guidance. 5 convenient locations."
       />
-      <EditPanelSheet
+      {isEditor && <Suspense fallback={null}><EditPanelSheet
         isEditor={isEditor}
         error={error}
         page="agent-point"
         refreshContent={refreshContent}
         metaInfo={staticContentData?.pageData}
-      />
+      /></Suspense>}
 
       {/* Schema Markup */}
       <Helmet>
