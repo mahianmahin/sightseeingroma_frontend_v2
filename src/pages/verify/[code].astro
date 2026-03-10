@@ -1,0 +1,14 @@
+---
+export const prerender = false;
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import ProcessTicketsIsland from '@/components/islands/ProcessTicketsIsland.jsx';
+
+const { code } = Astro.params;
+---
+<BaseLayout
+  title="Verify Ticket | Sightseeing Roma"
+  description="Ticket verification and agent claim system."
+  headExtra='<meta name="robots" content="noindex, nofollow" />'
+>
+  <ProcessTicketsIsland client:load code={code} />
+</BaseLayout>

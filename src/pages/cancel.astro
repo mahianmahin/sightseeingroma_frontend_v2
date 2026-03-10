@@ -1,0 +1,12 @@
+---
+export const prerender = false;
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PaymentCancelIsland from '@/components/islands/PaymentCancelIsland.jsx';
+---
+<BaseLayout
+  title="Payment Cancelled | Sightseeing Roma"
+  description="Your payment was cancelled."
+  headExtra='<meta name="robots" content="noindex, nofollow" />'
+>
+  <PaymentCancelIsland client:load />
+</BaseLayout>

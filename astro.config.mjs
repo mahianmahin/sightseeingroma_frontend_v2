@@ -25,6 +25,10 @@ export default defineConfig({
     resolve: {
       alias: {
         '@': path.resolve(__dirname, './src'),
+        // Replace react-router-dom with our lightweight shim for Astro islands
+        'react-router-dom': path.resolve(__dirname, './src/lib/router-shim.jsx'),
+        // Replace react-helmet-async with no-op (SEO handled by Astro layouts)
+        'react-helmet-async': path.resolve(__dirname, './src/lib/helmet-shim.jsx'),
       },
     },
     ssr: {

@@ -1,0 +1,14 @@
+---
+export const prerender = false;
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import SuccessIsland from '@/components/islands/SuccessIsland.jsx';
+
+const { unique_id } = Astro.params;
+---
+<BaseLayout
+  title="Booking Confirmed | Sightseeing Roma"
+  description="Your booking is confirmed. Download your QR code."
+  headExtra='<meta name="robots" content="noindex, nofollow" />'
+>
+  <SuccessIsland client:load uniqueId={unique_id} />
+</BaseLayout>

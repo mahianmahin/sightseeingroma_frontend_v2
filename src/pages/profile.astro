@@ -1,0 +1,12 @@
+---
+export const prerender = false;
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import ProfileIsland from '@/components/islands/ProfileIsland.jsx';
+---
+<BaseLayout
+  title="Profile | Sightseeing Roma"
+  description="Manage your Sightseeing Roma profile, account settings, and travel history."
+  headExtra='<meta name="robots" content="noindex, nofollow" />'
+>
+  <ProfileIsland client:load />
+</BaseLayout>

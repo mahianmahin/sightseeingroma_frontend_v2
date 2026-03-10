@@ -1,0 +1,12 @@
+---
+export const prerender = false;
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import YourTicketsIsland from '@/components/islands/YourTicketsIsland.jsx';
+---
+<BaseLayout
+  title="Your Tickets | Sightseeing Roma"
+  description="View and manage your purchased sightseeing tour tickets."
+  headExtra='<meta name="robots" content="noindex, nofollow" />'
+>
+  <YourTicketsIsland client:load />
+</BaseLayout>

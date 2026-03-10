@@ -1,0 +1,12 @@
+---
+export const prerender = false;
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PaymentSuccessIsland from '@/components/islands/PaymentSuccessIsland.jsx';
+---
+<BaseLayout
+  title="Payment Successful | Sightseeing Roma"
+  description="Your payment was successful."
+  headExtra='<meta name="robots" content="noindex, nofollow" />'
+>
+  <PaymentSuccessIsland client:load />
+</BaseLayout>

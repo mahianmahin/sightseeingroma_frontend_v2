@@ -1,0 +1,12 @@
+---
+export const prerender = false;
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PaymentReturnIsland from '@/components/islands/PaymentReturnIsland.jsx';
+---
+<BaseLayout
+  title="Processing Payment | Sightseeing Roma"
+  description="Processing your payment..."
+  headExtra='<meta name="robots" content="noindex, nofollow" />'
+>
+  <PaymentReturnIsland client:load />
+</BaseLayout>

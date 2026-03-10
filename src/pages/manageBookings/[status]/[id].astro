@@ -1,0 +1,14 @@
+---
+export const prerender = false;
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import ManageBookingIsland from '@/components/islands/ManageBookingIsland.jsx';
+
+const { status, id } = Astro.params;
+---
+<BaseLayout
+  title="Manage Booking | Sightseeing Roma"
+  description="Manage your Rome sightseeing tour booking."
+  headExtra='<meta name="robots" content="noindex, nofollow" />'
+>
+  <ManageBookingIsland client:load status={status} id={id} />
+</BaseLayout>

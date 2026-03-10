@@ -1,0 +1,18 @@
+---
+export const prerender = false;
+import LoginIsland from '@/components/islands/LoginIsland.jsx';
+---
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign In | Sightseeing Roma</title>
+  <meta name="description" content="Sign in to your Sightseeing Roma account to manage bookings and access your tickets." />
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap" media="print" onload="this.media='all'" />
+</head>
+<body>
+  <LoginIsland client:load />
+</body>
+</html>

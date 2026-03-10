@@ -1,0 +1,12 @@
+---
+export const prerender = false;
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import CheckoutIsland from '@/components/islands/CheckoutIsland.jsx';
+---
+<BaseLayout
+  title="Checkout | Sightseeing Roma"
+  description="Complete your booking for Rome sightseeing tours."
+  headExtra='<meta name="robots" content="noindex, nofollow" />'
+>
+  <CheckoutIsland client:load />
+</BaseLayout>
