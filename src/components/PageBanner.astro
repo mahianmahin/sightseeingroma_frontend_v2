@@ -1,0 +1,39 @@
+---
+/**
+ * PageBanner — Zero-JS replacement for the React Banner2 component.
+ * Renders a full-width hero banner with a background image + overlay + centred content.
+ */
+interface Props {
+  /** Desktop background image URL */
+  imageMd: string;
+  /** Mobile background image URL (falls back to imageMd) */
+  imageSm?: string;
+  /** Overlay opacity (0–1). Default 0.2 */
+  opacity?: number;
+}
+
+const { imageMd, imageSm, opacity = 0.2 } = Astro.props;
+const mobileImage = imageSm ?? imageMd;
+---
+
+<div class="relative h-[350px] md:h-[400px] w-full overflow-hidden">
+  <!-- Background Image – mobile -->
+  <div
+    class="absolute inset-0 bg-cover bg-center md:hidden"
+    style={`background-image:url(${mobileImage})`}
+  ></div>
+  <!-- Background Image – desktop -->
+  <div
+    class="absolute inset-0 bg-cover bg-center hidden md:block"
+    style={`background-image:url(${imageMd})`}
+  ></div>
+  <!-- Dark overlay -->
+  <div
+    class="absolute inset-0 bg-black"
+    style={`opacity:${opacity};z-index:1`}
+  ></div>
+  <!-- Content slot -->
+  <div class="absolute inset-0 flex flex-col items-center justify-center text-white text-center pt-7 px-6" style="z-index:2">
+    <slot />
+  </div>
+</div>

@@ -1,0 +1,145 @@
+---
+/**
+ * ContentPage layout – for CMS-driven static-content pages.
+ *
+ * Handles:
+ *  • SEO meta from the API page object
+ *  • Schema.org JSON-LD injection
+ *  • Banner image (from CMS or fallback)
+ *  • Title / subtitle content blocks
+ *  • Main body content block with template variable replacement
+ *
+ * Used by: about-us, terms, returnPolicy, refund, etc.
+ */
+import BaseLayout from './BaseLayout.astro';
+import PageBanner from '@/components/PageBanner.astro';
+import { API_URL } from '@/lib/constants';
+
+interface Props {
+  /** The CMS page slug, e.g. 'about-us' */
+  slug: string;
+  /** Fallback page title if API has none */
+  fallbackTitle: string;
+  /** Fallback meta description */
+  fallbackDescription?: string;
+  /** Local fallback banner image path (in /public) */
+  fallbackBannerImage: string;
+  /** Banner overlay opacity (0–1) */
+  bannerOpacity?: number;
+}
+
+const {
+  slug,
+  fallbackTitle,
+  fallbackDescription = '',
+  fallbackBannerImage,
+  bannerOpacity = 0.5,
+} = Astro.props;
+
+// ── Fetch CMS data & website settings in parallel ──
+let pageData: any = null;
+let contentBlocks: any[] = [];
+let pageImages: any[] = [];
+let contactData = {
+  phone: '+39 327 3633 993',
+  email: 'hello@sightseeingroma.com',
+  address: 'Via Antonio Fogazzaro, 5, cap–00137, Roma, Italy',
+};
+
+try {
+  const [contentRes, settingsRes] = await Promise.all([
+    fetch(`${API_URL}/static-content/${slug}/`),
+    fetch(`${API_URL}/website-settings/`),
+  ]);
+
+  if (contentRes.ok) {
+    const data = await contentRes.json();
+    if (data.status === 200) {
+      pageData = data.page ?? null;
+      contentBlocks = data.content_blocks ?? [];
+      pageImages = data.page_images ?? [];
+    }
+  }
+
+  if (settingsRes.ok) {
+    const settings = await settingsRes.json();
+    if (settings.status === 200 && settings.data) {
+      contactData = {
+        phone: settings.data.website_phone_number || contactData.phone,
+        email: settings.data.website_email || contactData.email,
+        address: settings.data.website_address || contactData.address,
+      };
+    }
+  }
+} catch (e) {
+  console.error(`[ContentPage] fetch error for ${slug}:`, e);
+}
+
+// ── Helper: find content block by unique_tag ──
+function getContent(tag: string, fallback = ''): string {
+  const block = contentBlocks.find((b: any) => b.unique_tag === tag && b.is_active);
+  if (block?.block_content) {
+    // Fix React-isms that may exist in CMS HTML
+    return block.block_content
+      .replace(/className=/g, 'class=')
+      .replace(/htmlFor=/g, 'for=');
+  }
+  return fallback;
+}
+
+// ── Helper: replace {email}, {phone}, {address} placeholders ──
+function replaceVars(html: string): string {
+  return html
+    .replace(/\{email\}/g, contactData.email)
+    .replace(/\{phone\}/g, contactData.phone)
+    .replace(/\{address\}/g, contactData.address);
+}
+
+// ── Helper: get CMS image by unique_tag ──
+function getImageUrl(tag: string): string | null {
+  const img = pageImages.find((i: any) => i.unique_tag === tag);
+  if (img?.image?.file) {
+    const file = img.image.file;
+    return file.startsWith('http') ? file : `${API_URL}${file}`;
+  }
+  return null;
+}
+
+// ── SEO ──
+const title = pageData?.meta_title || pageData?.title || fallbackTitle;
+const description = pageData?.meta_description || fallbackDescription;
+const schemaJson = pageData?.schema_json ?? null;
+
+// ── Banner image ──
+const cmsBannerTag = `${slug}-banner-image`;
+const bannerImage = getImageUrl(cmsBannerTag) || fallbackBannerImage;
+
+// ── Title / subtitle content blocks ──
+const titleHtml = getContent(`${slug}-title`, `<h1 class="text-4xl font-bold">${fallbackTitle}</h1>`);
+const subtitleHtml = getContent(`${slug}-subtitle`, '');
+
+// ── Main page-content block ──
+const bodyHtml = replaceVars(getContent(`${slug}-page-content`, ''));
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  headExtra={schemaJson ? `<script type="application/ld+json">${JSON.stringify(schemaJson)}</script>` : undefined}
+>
+  <div class="container mx-auto">
+    <!-- Banner -->
+    <PageBanner imageMd={bannerImage} opacity={bannerOpacity}>
+      <Fragment set:html={titleHtml} />
+      {subtitleHtml && <Fragment set:html={subtitleHtml} />}
+    </PageBanner>
+
+    <!-- CMS body content -->
+    {bodyHtml && (
+      <div set:html={bodyHtml} />
+    )}
+
+    <!-- Additional page-specific content via slot -->
+    <slot />
+  </div>
+</BaseLayout>

@@ -1,5 +1,7 @@
 # Redirect sitemap to backend
 /sitemap.xml https://api.sightseeingroma.com/sitemap.xml 200
 
-# SPA fallback - must be last
-/* /index.html 200
+# URL aliases (301 permanent redirects)
+/aboutus /about-us 301
+/featured-today /featured-offers 301
+/rome-sightseeing-deals /featured-offers 301

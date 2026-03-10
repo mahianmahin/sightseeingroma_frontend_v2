@@ -1,0 +1,342 @@
+---
+/**
+ * /about-us — About Us
+ * SSG: CMS data for SEO meta + banner image, rest is hardcoded rich content.
+ * Zero client JS — FAQ accordion uses <details>/<summary> (native HTML).
+ */
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageBanner from '@/components/PageBanner.astro';
+import { API_URL } from '@/lib/constants';
+
+// ── Fetch CMS data + settings in parallel ──
+let pageData: any = null;
+let contentBlocks: any[] = [];
+let pageImages: any[] = [];
+let contactData = {
+  phone: '+39 327 3633 993',
+  email: 'hello@sightseeingroma.com',
+  address: 'Via Antonio Fogazzaro, 5, cap–00137, Roma, Italy',
+};
+
+try {
+  const [contentRes, settingsRes] = await Promise.all([
+    fetch(`${API_URL}/static-content/about-us/`),
+    fetch(`${API_URL}/website-settings/`),
+  ]);
+  if (contentRes.ok) {
+    const data = await contentRes.json();
+    if (data.status === 200) {
+      pageData = data.page ?? null;
+      contentBlocks = data.content_blocks ?? [];
+      pageImages = data.page_images ?? [];
+    }
+  }
+  if (settingsRes.ok) {
+    const settings = await settingsRes.json();
+    if (settings.status === 200 && settings.data) {
+      contactData = {
+        phone: settings.data.website_phone_number || contactData.phone,
+        email: settings.data.website_email || contactData.email,
+        address: settings.data.website_address || contactData.address,
+      };
+    }
+  }
+} catch (e) {
+  console.error('[About Us] fetch error:', e);
+}
+
+// ── Helpers ──
+function getContent(tag: string, fallback = ''): string {
+  const block = contentBlocks.find((b: any) => b.unique_tag === tag && b.is_active);
+  return block?.block_content?.replace(/className=/g, 'class=').replace(/htmlFor=/g, 'for=') ?? fallback;
+}
+function getImageUrl(tag: string): string | null {
+  const img = pageImages.find((i: any) => i.unique_tag === tag);
+  if (img?.image?.file) return img.image.file.startsWith('http') ? img.image.file : `${API_URL}${img.image.file}`;
+  return null;
+}
+
+const title = pageData?.meta_title || 'About Us – Sightseeing Roma';
+const description = pageData?.meta_description || 'Learn about Sightseeing Roma — Rome-based tour company offering skip-the-line guided tours and authentic sightseeing experiences.';
+const schemaJson = pageData?.schema_json ?? null;
+const bannerImage = getImageUrl('about-us-banner-image') || '/images/about-us-banner.jpg';
+const titleHtml = getContent('about-us-title', '<h1 class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white leading-tight mb-4">Experience Rome the Right Way — With Local Experts Who Know the City Beyond the Crowds</h1>');
+const subtitleHtml = getContent('about-us-subtitle', '');
+
+// ── Static data arrays ──
+const trustSignals = [
+  { icon: '⭐', text: 'Licensed Local Guides' },
+  { icon: '⏱️', text: 'Skip-the-Line Access' },
+  { icon: '👥', text: 'Small Groups & Private Tours' },
+  { icon: '🔒', text: 'Secure Payments' },
+  { icon: '🇮🇹', text: 'Rome-Based Tour Operator' },
+];
+
+const services = [
+  'Skip-the-line Vatican Museums & Sistine Chapel tours',
+  'Colosseum, Roman Forum & Palatine Hill guided tours',
+  'Small-group and private Rome walking tours',
+  'Cultural, historical & hidden-gem experiences',
+  'Limited-time and seasonal Rome offers',
+];
+
+const whyChooseUs = [
+  { title: 'Local Expertise, Not Generic Scripts', description: 'Our guides are historians, art specialists, and Rome locals who adapt tours to your curiosity — not rigid scripts.' },
+  { title: 'Skip the Lines, Respect Your Time', description: 'We optimize routes and entry times to minimize waiting and maximize experience.' },
+  { title: 'Small Groups = Better Experience', description: 'Smaller groups allow questions, interaction, and flexibility — something large tours simply can\'t offer.' },
+  { title: 'Transparent Pricing', description: 'No hidden charges. No last-minute surprises. What you book is what you receive.' },
+  { title: 'Quality Over Quantity', description: 'We don\'t sell everything. We sell only what meets our standards of value and authenticity.' },
+];
+
+const targetAudience = [
+  { icon: '🇺🇸', text: 'USA travelers visiting Rome for the first time' },
+  { icon: '🇬🇧', text: 'UK travelers seeking well-structured cultural experiences' },
+  { icon: '🇪🇺', text: 'European visitors looking for expert-led historical tours' },
+  { icon: '👨‍👩‍👧‍👦', text: 'Couples, families, solo travelers & seniors' },
+  { icon: '🏛️', text: 'History lovers and culture-focused travelers' },
+];
+
+const commitments = [
+  'Licensed and knowledgeable guides',
+  'Carefully planned itineraries',
+  'Responsive customer support',
+  'Ethical, responsible tourism practices',
+  'Continuous improvement based on real traveler feedback',
+];
+
+const faqs = [
+  { question: 'Are your tours suitable for first-time visitors to Rome?', answer: 'Yes. Our tours are designed to give first-time visitors a clear, structured, and stress-free introduction to Rome.' },
+  { question: 'Do your tours include skip-the-line access?', answer: 'Yes, most of our major attractions include priority or skip-the-line entry where available.' },
+  { question: 'Are your tours conducted in English?', answer: 'Yes. All our tours are led by fluent English-speaking guides experienced with international travelers.' },
+  { question: 'Do you offer private tours?', answer: 'Yes. We offer private and small-group tours for a more personalized experience.' },
+  { question: 'Is Sightseeing Roma a local company?', answer: 'Yes. We are a Rome-based tour operator working directly with licensed local guides.' },
+];
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  headExtra={schemaJson ? `<script type="application/ld+json">${JSON.stringify(schemaJson)}</script>` : undefined}
+>
+  <div class="bg-white">
+    <!-- Hero Banner -->
+    <div class="relative">
+      <PageBanner imageMd={bannerImage} opacity={0.6}>
+        <div class="text-center px-4 max-w-4xl mx-auto pt-8">
+          <Fragment set:html={titleHtml} />
+          <p class="text-base sm:text-lg md:text-xl text-white/90 mb-6">
+            Premium guided tours, skip-the-line access, and authentic Rome experiences curated by passionate locals.
+          </p>
+        </div>
+      </PageBanner>
+
+      <!-- Bottom fade -->
+      <div class="absolute bottom-0 left-0 right-0 h-32 sm:h-40 bg-gradient-to-t from-white via-white/80 to-transparent pointer-events-none"></div>
+
+      <!-- Trust signals -->
+      <div class="mx-4 sm:mx-6 lg:mx-auto lg:max-w-4xl -mt-6 sm:-mt-8 relative z-10">
+        <div class="flex flex-wrap justify-center gap-2 sm:gap-3">
+          {trustSignals.map((signal) => (
+            <div class="flex items-center gap-2 bg-white border border-gray-200 rounded-full px-3 py-2 sm:px-4 sm:py-2 shadow-sm">
+              <span class="text-sm sm:text-base">{signal.icon}</span>
+              <span class="text-gray-700 text-xs sm:text-sm font-medium">{signal.text}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+
+      <!-- Intro -->
+      <section class="py-10 sm:py-14 lg:py-16">
+        <div class="max-w-4xl mx-auto text-center">
+          <h2 class="text-xl sm:text-2xl md:text-3xl font-bold text-[#930B31] mb-4">
+            Your Local Experts for Authentic Rome Experiences
+          </h2>
+          <p class="text-gray-700 text-base sm:text-lg leading-relaxed mb-4">
+            Welcome to Sightseeing Roma, where history isn't rushed, stories aren't scripted, and every journey through Rome is designed to feel personal, immersive, and unforgettable.
+          </p>
+          <p class="text-gray-600 text-base sm:text-lg leading-relaxed">
+            Rome is not just a destination — it's a living museum layered with 2,000+ years of history, culture, art, faith, and human stories. Our mission is simple: to help you experience Rome the way it deserves to be experienced — deeply, comfortably, and meaningfully.
+          </p>
+        </div>
+      </section>
+
+      <!-- Who We Are -->
+      <section class="py-10 sm:py-14 bg-gray-50 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-4xl mx-auto">
+          <h2 class="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800 mb-6 text-center">Who We Are</h2>
+          <p class="text-gray-700 text-base sm:text-lg leading-relaxed mb-4">
+            Sightseeing Roma is a Rome-based sightseeing and tour company created by local experts and experienced travel professionals who believe that Rome should be explored with context, comfort, and care — not rushed schedules and crowded paths.
+          </p>
+          <p class="text-gray-600 text-base sm:text-lg leading-relaxed">
+            Rome is not just monuments and ruins. It is stories layered across centuries — from the Roman Empire to the Renaissance, from sacred Vatican halls to hidden neighborhood streets. Our role is to help you understand what you're seeing, not just walk past it.
+          </p>
+        </div>
+      </section>
+
+      <!-- What We Do -->
+      <section class="py-10 sm:py-14 lg:py-16">
+        <div class="max-w-4xl mx-auto">
+          <h2 class="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800 mb-6 text-center">What We Do</h2>
+          <p class="text-gray-700 text-base sm:text-lg leading-relaxed mb-6 text-center">
+            We specialize in carefully curated sightseeing experiences designed for travelers who want more than surface-level tours.
+          </p>
+          <div class="bg-white border border-gray-200 rounded-xl p-6 sm:p-8 shadow-sm">
+            <h3 class="text-lg sm:text-xl font-semibold text-[#930B31] mb-4">Our services include:</h3>
+            <ul class="space-y-3">
+              {services.map((service) => (
+                <li class="flex items-start gap-3">
+                  <span class="text-[#FAD502] mt-1">✓</span>
+                  <span class="text-gray-700 text-base sm:text-lg">{service}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <p class="text-gray-600 text-base sm:text-lg leading-relaxed mt-6 text-center">
+            Each tour is designed to balance depth, efficiency, and enjoyment — especially for international travelers visiting Rome for a limited time.
+          </p>
+        </div>
+      </section>
+
+      <!-- Why Choose Us -->
+      <section class="py-10 sm:py-14 bg-[#930B31] -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-5xl mx-auto">
+          <h2 class="text-xl sm:text-2xl md:text-3xl font-bold text-white mb-8 text-center">
+            Why Travelers Choose Sightseeing Roma
+          </h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+            {whyChooseUs.map((item) => (
+              <div class="bg-white/10 backdrop-blur-sm rounded-xl p-5 sm:p-6 border border-white/20">
+                <h3 class="text-base sm:text-lg font-bold text-[#FAD502] mb-2">{item.title}</h3>
+                <p class="text-white/90 text-sm sm:text-base leading-relaxed">{item.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <!-- Our Vision -->
+      <section class="py-10 sm:py-14 lg:py-16">
+        <div class="max-w-4xl mx-auto text-center">
+          <h2 class="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800 mb-6">Our Vision</h2>
+          <p class="text-gray-700 text-base sm:text-lg leading-relaxed mb-6">
+            Our vision is to become one of the most trusted Rome sightseeing brands for travelers from the United States, United Kingdom, and Europe who value knowledge, comfort, and authenticity.
+          </p>
+          <div class="bg-gray-50 rounded-xl p-6 sm:p-8">
+            <p class="text-gray-600 text-base sm:text-lg mb-5 font-medium">We want to replace:</p>
+            <div class="space-y-4">
+              <div class="flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-3 text-base sm:text-lg">
+                <span class="text-gray-400 line-through">Confusion</span>
+                <span class="text-[#930B31] hidden sm:inline">→</span>
+                <span class="text-[#930B31] font-semibold">with clarity</span>
+              </div>
+              <div class="flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-3 text-base sm:text-lg">
+                <span class="text-gray-400 line-through">Crowds</span>
+                <span class="text-[#930B31] hidden sm:inline">→</span>
+                <span class="text-[#930B31] font-semibold">with context</span>
+              </div>
+              <div class="flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-3 text-base sm:text-lg">
+                <span class="text-gray-400 line-through">Rushed itineraries</span>
+                <span class="text-[#930B31] hidden sm:inline">→</span>
+                <span class="text-[#930B31] font-semibold">with meaningful moments</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Who We Serve -->
+      <section class="py-10 sm:py-14 bg-gray-50 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-4xl mx-auto">
+          <h2 class="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800 mb-6 text-center">
+            Designed for International And Local Travelers
+          </h2>
+          <p class="text-gray-600 text-base sm:text-lg leading-relaxed mb-6 text-center">
+            Sightseeing Roma is especially suited for:
+          </p>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {targetAudience.map((item) => (
+              <div class="flex items-center gap-3 bg-white rounded-lg p-4 shadow-sm">
+                <span class="text-2xl">{item.icon}</span>
+                <span class="text-gray-700 text-sm sm:text-base">{item.text}</span>
+              </div>
+            ))}
+          </div>
+          <p class="text-gray-600 text-base sm:text-lg leading-relaxed mt-6 text-center">
+            Our tours are conducted in clear, fluent English, paced thoughtfully, and designed with international travel expectations in mind.
+          </p>
+        </div>
+      </section>
+
+      <!-- Our Commitment -->
+      <section class="py-10 sm:py-14 lg:py-16">
+        <div class="max-w-4xl mx-auto">
+          <h2 class="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800 mb-6 text-center">Our Commitment to You</h2>
+          <p class="text-gray-700 text-base sm:text-lg leading-relaxed mb-6 text-center">
+            When you book with Sightseeing Roma, you're trusting us with your time in one of the world's most important cities.
+          </p>
+          <div class="bg-white border-2 border-[#930B31] rounded-xl p-6 sm:p-8">
+            <p class="text-[#930B31] font-semibold text-lg mb-4">We promise:</p>
+            <ul class="space-y-3">
+              {commitments.map((commitment) => (
+                <li class="flex items-start gap-3">
+                  <span class="text-[#930B31] mt-1">✓</span>
+                  <span class="text-gray-700 text-base sm:text-lg">{commitment}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- CTA -->
+      <section class="py-10 sm:py-14 bg-gradient-to-br from-[#930B31] to-[#7a0928] -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-3xl mx-auto text-center">
+          <h2 class="text-xl sm:text-2xl md:text-3xl font-bold text-white mb-4">Explore Rome With Confidence</h2>
+          <p class="text-white/90 text-base sm:text-lg leading-relaxed mb-6">
+            Rome can feel overwhelming. We make it simple, enriching, and unforgettable. Explore our tours, discover limited-time offers, and experience the Eternal City the way it deserves to be experienced.
+          </p>
+          <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <a
+              href="/"
+              class="inline-block bg-[#FAD502] text-[#930B31] font-bold py-3 px-8 rounded-full hover:bg-white transition-colors duration-300 text-base sm:text-lg shadow-lg"
+            >
+              View Our Tours →
+            </a>
+            <a
+              href="/featured-offers"
+              class="inline-block bg-white/10 border-2 border-white text-white font-bold py-3 px-8 rounded-full hover:bg-white hover:text-[#930B31] transition-colors duration-300 text-base sm:text-lg"
+            >
+              See Today's Featured Experiences →
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- FAQ – Native <details> accordion, zero JS -->
+      <section class="py-10 sm:py-14 lg:py-16">
+        <div class="max-w-3xl mx-auto">
+          <h2 class="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800 mb-8 text-center">
+            Frequently Asked Questions
+          </h2>
+          <div class="space-y-3">
+            {faqs.map((faq) => (
+              <details class="border border-gray-200 rounded-lg overflow-hidden group">
+                <summary class="flex items-center justify-between p-4 sm:p-5 cursor-pointer bg-white hover:bg-gray-50 transition-colors list-none">
+                  <span class="text-gray-800 font-medium text-sm sm:text-base pr-4">{faq.question}</span>
+                  <span class="text-[#930B31] text-xl transform transition-transform group-open:rotate-180">▼</span>
+                </summary>
+                <div class="px-4 sm:px-5 pb-4 sm:pb-5 bg-gray-50">
+                  <p class="text-gray-600 text-sm sm:text-base leading-relaxed">{faq.answer}</p>
+                </div>
+              </details>
+            ))}
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+</BaseLayout>
