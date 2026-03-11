@@ -1,6 +1,9 @@
 // Import Stripe.js library
 import { baseUrl } from './Utilities';
-import { trackUserActivity, ACTIVITY_TYPES } from './activityTracker';
+
+// No-op tracker (legacy activityTracker removed during cleanup)
+const trackUserActivity = () => {};
+const ACTIVITY_TYPES = { PAYMENT_INITIATED: 'payment_initiated' };
 
 // Function to initiate Stripe Checkout with embedded mode
 const handleStripeCheckout = async (title, description, image, date, adult_count, youth_count, infant_count, navigate, packageId, status, loaderTrigger, offerId = null) => {

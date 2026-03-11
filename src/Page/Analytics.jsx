@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import useSuperUser from '../hooks/useSuperUser';
+import { useNavigate } from 'react-router-dom';
 import { baseUrl } from '../utilities/Utilities';
 import { FaUsers, FaTicketAlt, FaMoneyBillWave } from 'react-icons/fa';
 import { MdPayment } from 'react-icons/md';
@@ -7,7 +7,27 @@ import { BiTime } from 'react-icons/bi';
 import DetailedMetrics from '../Components/Analytics/DetailedMetrics';
 
 const Analytics = () => {
-    const { isSuperUser, isLoading, error } = useSuperUser();
+    const navigate = useNavigate();
+    const [isSuperUser, setIsSuperUser] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        const checkSuperUser = async () => {
+            try {
+                const token = localStorage.getItem('access');
+                if (!token) { navigate('/login'); return; }
+                const response = await fetch(`${baseUrl}check-superuser/`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await response.json();
+                if (response.ok) { setIsSuperUser(data.is_superuser); }
+                else { throw new Error(data.message || 'Failed to verify superuser status'); }
+            } catch (err) { setError(err.message); }
+            finally { setIsLoading(false); }
+        };
+        checkSuperUser();
+    }, [navigate]);
     const [selectedMetric, setSelectedMetric] = useState(null);
     const [analyticsData, setAnalyticsData] = useState({
         userActivities: [],
