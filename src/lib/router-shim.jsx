@@ -52,12 +52,15 @@ export function useParams() {
 }
 
 export function useSearchParams() {
+  const isServer = typeof window === 'undefined';
+
   const searchParams = useMemo(
-    () => new URLSearchParams(window.location.search),
-    []
+    () => isServer ? new URLSearchParams() : new URLSearchParams(window.location.search),
+    [isServer]
   );
 
   const setSearchParams = useCallback((updater) => {
+    if (isServer) return;
     let newParams;
     if (typeof updater === 'function') {
       newParams = updater(new URLSearchParams(window.location.search));
@@ -65,7 +68,7 @@ export function useSearchParams() {
       newParams = new URLSearchParams(updater);
     }
     window.history.pushState({}, '', `${window.location.pathname}?${newParams.toString()}`);
-  }, []);
+  }, [isServer]);
 
   return [searchParams, setSearchParams];
 }

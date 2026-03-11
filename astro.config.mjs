@@ -1,19 +1,21 @@
 import { defineConfig } from 'astro/config';
 import react from '@astrojs/react';
-import cloudflare from '@astrojs/cloudflare';
+import node from '@astrojs/node';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-// Cloudflare adapter crashes in dev (Workerd CJS compat issue).
-// Only attach it for build/preview.
+// Adapter selection:
+//   - @astrojs/node: universal, works on any Node.js host (Netlify, Render, Railway, Docker)
+//   - @astrojs/cloudflare: for Cloudflare Pages (currently blocked by picomatch CJS bug in Workerd)
+//   - No adapter needed for `astro dev`
 const isProd = process.argv.includes('build') || process.argv.includes('preview');
 
 export default defineConfig({
   // Astro 6: 'static' is the default. Per-page SSR opt-in with `export const prerender = false`.
   output: 'static',
-  ...(isProd && { adapter: cloudflare() }),
+  ...(isProd && { adapter: node({ mode: 'standalone' }) }),
 
   integrations: [
     react(),

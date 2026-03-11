@@ -6,11 +6,16 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# Astro generated files
+.astro/
+
 # Production builds
 build/
 dist/
 out/
-dist
+
+# Wrangler (Cloudflare local dev)
+.wrangler/
 
 #local files
 blogs/

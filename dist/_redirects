@@ -1,5 +1,0 @@
-# Redirect sitemap to backend
-/sitemap.xml https://api.sightseeingroma.com/sitemap.xml 200
-
-# SPA fallback - must be last
-/* /index.html 200

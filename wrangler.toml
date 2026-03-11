@@ -1,0 +1,10 @@
+# Cloudflare Pages configuration for SSR functions
+# This file configures the Cloudflare Workers runtime used by SSR pages
+
+name = "sightseeingroma"
+compatibility_date = "2025-01-01"
+compatibility_flags = ["nodejs_compat_v2"]
+
+[vars]
+PUBLIC_API_URL = "https://api.sightseeingroma.com"
+PUBLIC_SITE_URL = "https://www.sightseeingroma.com"
