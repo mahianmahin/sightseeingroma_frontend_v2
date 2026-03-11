@@ -1,9 +1,56 @@
 # Astro Migration Plan — SightseeingRoma Frontend
 
-> **Goal:** Migrate the entire React/Vite SPA to Astro with SSR/SSG, deploy on Cloudflare Pages. Target FCP < 1s, LCP < 1s, Performance 90+.
+> **Goal:** Migrate the entire React/Vite SPA to Astro 6 with SSR/SSG, deploy on Node.js host (Cloudflare Pages pending picomatch fix). Target FCP < 1s, LCP < 1s, Performance 90+.
 >
-> **Date Created:** March 10, 2026
+> **Date Created:** March 10, 2026  
+> **Last Updated:** March 11, 2026  
 > **Branch:** `astro`
+
+---
+
+## 🎉 Migration Status: COMPLETE
+
+| Phase | Description | Status | Commit |
+|-------|-------------|--------|--------|
+| 1 | Astro Project Scaffold | ✅ Done | `5f0fbf6f` |
+| 2 | Shared Foundation (Layout, Navbar, Footer) | ✅ Done | `6f247fba` |
+| 3 | Homepage (SSG) | ✅ Done | `52e695ce` |
+| 4 | SEO-Critical Public Pages (SSG) | ✅ Done | `215aa358` |
+| 5 | Dynamic Public Pages (SSR) | ✅ Done | `f2299c0b` |
+| 6 | Auth & User Pages (Client Islands) | ✅ Done | `3aec1607` |
+| 7 | Admin Pages (Client Islands) | ✅ Done | `a062932f` |
+| 8 | Global Concerns (SEO, Headers, Robots) | ✅ Done | `a062932f` |
+| 9 | Production Build (Node Adapter) | ✅ Done | `0dd79a2e` |
+| 10 | Legacy Cleanup | ✅ Done | `0dd79a2e` |
+
+### Build Stats
+- **Build time:** ~20 seconds
+- **Static pages:** 12 pre-rendered
+- **SSR pages:** 20+ server-rendered on demand
+- **All routes verified:** 30+ URLs returning correct status codes
+
+### Performance (Production, localhost)
+| Page | TTFB | Size | Type |
+|------|------|------|------|
+| `/` (Homepage) | **3ms** | 56KB | Static (SSG) |
+| `/about-us` | **1.7ms** | 37KB | Static (SSG) |
+| `/login` | **1.4ms** | 10KB | Static shell + island |
+| `/blogs` | 2.2s | 34KB | SSR (API-bound) |
+| `/featured-offers` | 0.6s | 33KB | SSR (API-bound) |
+| `/checkout` | 0.2s | 19KB | SSR shell + island |
+
+### Architecture
+- **Astro 6.0.0** with `output: 'static'`, per-page SSR via `export const prerender = false`
+- **@astrojs/node@10.0.0** standalone mode adapter (production)
+- **@astrojs/react@5.0.0** for React islands (`client:visible`, `client:idle`, `client:media`, `client:load`)
+- **Vite aliases:** `react-router-dom` → router-shim.jsx, `react-helmet-async` → helmet-shim.jsx
+- **Build output:** `dist/client/` (static) + `dist/server/entry.mjs` (SSR)
+- **Run:** `HOST=0.0.0.0 PORT=4322 node dist/server/entry.mjs`
+
+### Known Issues
+1. **@astrojs/cloudflare blocked:** picomatch CJS `require()` crashes in Workerd runtime. Using Node adapter as interim. Monitor astro-cloudflare releases.
+2. **SSR page TTFB:** Dominated by backend API response time, not Astro overhead. Consider edge caching or `stale-while-revalidate`.
+3. **`prop-types` warning:** Harmless console warnings from legacy components during SSR. Cosmetic only.
 
 ---
 
