@@ -1,21 +1,36 @@
 import { defineConfig } from 'astro/config';
 import react from '@astrojs/react';
-import node from '@astrojs/node';
+import cloudflare from '@astrojs/cloudflare';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-// Adapter selection:
-//   - @astrojs/node: universal, works on any Node.js host (Netlify, Render, Railway, Docker)
-//   - @astrojs/cloudflare: for Cloudflare Pages (currently blocked by picomatch CJS bug in Workerd)
-//   - No adapter needed for `astro dev`
-const isProd = process.argv.includes('build') || process.argv.includes('preview');
+// Vite plugin to pre-compile CJS deps that break in workerd (Cloudflare runtime)
+function precompileCJSPlugin() {
+  return {
+    name: 'precompile-cjs-for-workerd',
+    configEnvironment(environment) {
+      if (environment !== 'client') {
+        return {
+          optimizeDeps: {
+            include: [
+              'picomatch',
+              '@astrojs/internal-helpers > picomatch',
+            ],
+          },
+        };
+      }
+    },
+  };
+}
 
 export default defineConfig({
   // Astro 6: 'static' is the default. Per-page SSR opt-in with `export const prerender = false`.
   output: 'static',
-  ...(isProd && { adapter: node({ mode: 'standalone' }) }),
+  adapter: cloudflare({
+    imageService: 'passthrough', // Cloudflare Images binding requires a paid plan
+  }),
 
   integrations: [
     react(),
@@ -24,6 +39,7 @@ export default defineConfig({
   site: 'https://www.sightseeingroma.com',
 
   vite: {
+    plugins: [precompileCJSPlugin()],
     resolve: {
       alias: {
         '@': path.resolve(__dirname, './src'),
@@ -32,9 +48,6 @@ export default defineConfig({
         // Replace react-helmet-async with no-op (SEO handled by Astro layouts)
         'react-helmet-async': path.resolve(__dirname, './src/lib/helmet-shim.jsx'),
       },
-    },
-    ssr: {
-      external: ['node:buffer', 'node:crypto'],
     },
   },
 });

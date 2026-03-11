@@ -133,4 +133,4 @@ temp/
 # yarn.lock
 
 # Local configuration files
-.local 
+.local .dev.vars
