@@ -26,7 +26,7 @@ const MobileNavSheet = () => {
     },
     {
       label: "Agent Points",
-      href: "/agentPoints",
+      href: "/agentpoints",
       icon: MapPin,
     },
     {

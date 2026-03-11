@@ -95,15 +95,32 @@ try {
 
 <!-- Tiny scroll script — no React needed -->
 <script is:inline>
-  document.querySelectorAll('[data-scroll-dir]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const container = document.getElementById('reviews-scroll');
-      if (!container || !container.firstElementChild) return;
-      const cardWidth = container.firstElementChild.offsetWidth + 24;
-      const dir = btn.getAttribute('data-scroll-dir') === 'left' ? -1 : 1;
-      container.scrollBy({ left: dir * cardWidth, behavior: 'smooth' });
+  (function() {
+    var container = document.getElementById('reviews-scroll');
+    if (!container) return;
+
+    // Arrow button scrolling
+    document.querySelectorAll('[data-scroll-dir]').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        if (!container.firstElementChild) return;
+        var cardWidth = container.firstElementChild.offsetWidth + 24;
+        var dir = btn.getAttribute('data-scroll-dir') === 'left' ? -1 : 1;
+        container.scrollBy({ left: dir * cardWidth, behavior: 'smooth' });
+      });
     });
-  });
+
+    // Touch/swipe support for mobile
+    var startX = 0;
+    var scrollStart = 0;
+    container.addEventListener('touchstart', function(e) {
+      startX = e.touches[0].clientX;
+      scrollStart = container.scrollLeft;
+    }, { passive: true });
+    container.addEventListener('touchmove', function(e) {
+      var diff = startX - e.touches[0].clientX;
+      container.scrollLeft = scrollStart + diff;
+    }, { passive: true });
+  })();
 </script>
 
 <style>

@@ -1,8 +1,10 @@
 ---
 /**
- * Hero.astro — Server-rendered hero section. Zero JavaScript.
+ * Hero.astro — Server-rendered hero section.
  * Background image via CSS, text + trust signals + CTA buttons all in static HTML.
+ * Mobile: Shows HeroFeaturedOffer React island instead of trust card.
  */
+import HeroFeaturedOffer from '../../Components/Hero/HeroFeaturedOffer';
 ---
 
 <section class="w-full relative min-h-[85vh] md:min-h-[90vh] flex items-center overflow-hidden">
@@ -22,7 +24,7 @@
     <div class="absolute inset-0 bg-black" style="opacity:0.70"></div>
   </div>
 
-  <div class="container mx-auto px-4 z-10 py-28 md:py-0">
+  <div class="container mx-auto px-4 z-10 py-12 md:py-0">
     <div class="flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
 
       <!-- Left Column (60%) -->
@@ -52,7 +54,7 @@
             <span>4.6/5 Traveler Rating</span>
           </div>
           <div class="flex items-center gap-2">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" class="text-[#FAD502]"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" class="text-[#FAD502]"><path d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm-1.177-7.86l-2.765-2.767L6.645 12.8l4.178 4.178 6.96-6.96-1.413-1.415-5.547 5.537z"/></svg>
             <span>Verified Operators</span>
           </div>
           <div class="flex items-center gap-2">
@@ -60,7 +62,7 @@
             <span>Secure Payments</span>
           </div>
           <div class="flex items-center gap-2">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-[#FAD502]"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" class="text-[#FAD502]"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
             <span>Instant Confirmation</span>
           </div>
         </div>
@@ -87,9 +89,14 @@
         </div>
       </div>
 
-      <!-- Right Column (40%) - Trust Card -->
+      <!-- Right Column (40%) - Trust Card (desktop) / Featured Offer (mobile) -->
       <div class="w-full lg:w-[40%] flex justify-center lg:justify-end">
-        <div class="bg-white text-gray-800 rounded-xl shadow-2xl p-5 md:p-6 max-w-md w-full transform hover:scale-[1.02] transition-transform duration-300">
+        <!-- Mobile: Show featured offer card -->
+        <div class="lg:hidden w-full flex justify-center">
+          <HeroFeaturedOffer client:load />
+        </div>
+        <!-- Desktop: Show trust card -->
+        <div class="hidden lg:block bg-white text-gray-800 rounded-xl shadow-2xl p-5 md:p-6 max-w-md w-full transform hover:scale-[1.02] transition-transform duration-300">
           <div class="flex items-center gap-3 mb-4 border-b border-gray-100 pb-4">
             <div class="bg-[#FAD502]/20 p-2.5 rounded-full text-[#FAD502] shadow-sm">
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
@@ -115,7 +122,7 @@
             </div>
             <div class="flex items-center gap-3 group p-1.5 rounded-lg hover:bg-gray-50 transition-colors">
               <div class="bg-gray-100 p-2 rounded-lg text-gray-600 group-hover:bg-[#930B31] group-hover:text-white transition-colors duration-300">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M2 7a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v2a3 3 0 0 0 0 6v2a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-2a3 3 0 0 0 0-6V7zm11-2v2h-2V5h2zm0 12v2h-2v-2h2zm0-6v2h-2v-2h2z"/></svg>
               </div>
               <span class="font-medium text-sm text-gray-700 group-hover:text-gray-900 transition-colors">Skip-the-Line Access</span>
             </div>
@@ -129,7 +136,7 @@
               <span class="font-bold text-gray-700 text-xs">I Love Rome</span>
             </div>
           </div>
-        </div>
+        </div> <!-- end hidden lg:block trust card wrapper -->
       </div>
 
     </div>

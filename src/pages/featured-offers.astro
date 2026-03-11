@@ -52,6 +52,9 @@ function formatTimeRemaining(seconds: number): string {
 }
 
 // ── SEO ──
+const url = new URL(Astro.request.url);
+const highlightId = url.searchParams.get('highlight') || '';
+
 const title = pageData?.meta_title || 'Limited-Time Rome Sightseeing Offers | Exclusive Deals – SightseeingRoma';
 const description = pageData?.meta_description || 'Discover exclusive discounts on hop-on hop-off buses, city passes, and top Rome attractions. Limited-time deals with verified operators.';
 
@@ -89,7 +92,7 @@ const schemaData = {
       <div class="absolute top-0 left-0 w-96 h-96 bg-white rounded-full -translate-x-1/2 -translate-y-1/2"></div>
       <div class="absolute bottom-0 right-0 w-64 h-64 bg-[#FAD502] rounded-full translate-x-1/4 translate-y-1/4"></div>
     </div>
-    <div class="container mx-auto px-4 pt-24 pb-8 md:pt-32 md:pb-16 relative z-10">
+    <div class="container mx-auto px-4 pt-12 pb-8 md:pt-16 md:pb-16 relative z-10">
       <div class="max-w-4xl mx-auto text-center">
         <h1 class="text-3xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
           Limited-Time Rome Sightseeing Offers
@@ -132,6 +135,7 @@ const schemaData = {
           {offers.map((offer: any) => {
             const status = offer.package_type === 'bus' ? 'E9' : 'E8';
             const bookUrl = `/manageBookings/${status}/${offer.package_tag}?offer_id=${offer.id}`;
+            const isHighlighted = highlightId && String(offer.id) === String(highlightId);
             const imgUrl = offer.offer_image_webp_url
               ? `${mediaBase}${offer.offer_image_webp_url}`
               : offer.offer_image_url
@@ -148,7 +152,8 @@ const schemaData = {
             return (
               <a
                 href={bookUrl}
-                class="bg-white rounded-xl md:rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 group block"
+                data-offer-id={offer.id}
+                class={`bg-white rounded-xl md:rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 group block ${isHighlighted ? 'ring-4 ring-[#FAD502] shadow-[0_0_30px_rgba(250,213,2,0.4)] highlight-glow' : ''}`}
               >
                 {/* Image */}
                 <div class="relative h-28 sm:h-36 md:h-48 overflow-hidden">
@@ -300,5 +305,29 @@ const schemaData = {
         el.textContent = d > 0 ? `${d}d ${h}h` : h > 0 ? `${h}h ${m}m` : `${m}m`;
       });
     }, 60000);
+
+    // Scroll to highlighted offer card and remove glow after 4 seconds
+    (function() {
+      var highlighted = document.querySelector('.highlight-glow');
+      if (highlighted) {
+        setTimeout(function() {
+          highlighted.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 300);
+        setTimeout(function() {
+          highlighted.classList.remove('highlight-glow', 'ring-4', 'ring-[#FAD502]');
+          highlighted.style.boxShadow = '';
+        }, 4000);
+      }
+    })();
   </script>
+
+  <style>
+    @keyframes highlight-pulse {
+      0%, 100% { box-shadow: 0 0 20px rgba(250, 213, 2, 0.4); }
+      50% { box-shadow: 0 0 40px rgba(250, 213, 2, 0.7); }
+    }
+    .highlight-glow {
+      animation: highlight-pulse 1s ease-in-out infinite;
+    }
+  </style>
 </BaseLayout>

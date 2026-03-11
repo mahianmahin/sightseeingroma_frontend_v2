@@ -1,31 +1,38 @@
 /**
  * Embedded Stripe Checkout island.
  *
- * Receives `clientSecret` via a prop passed from the Astro page.
- * In practice the user navigates here from a "Buy" flow that does a
- * server call to create a Stripe Checkout Session and passes the secret
- * through sessionStorage (since Astro pages are separate HTML loads).
+ * The booking flow calls navigate('/checkout', { state: { clientSecret } })
+ * via the router-shim, which stores state in sessionStorage._router_state.
+ * This island reads it back through useLocation() from the router-shim.
  */
 import { useEffect, useState } from 'react';
 import { loadStripe } from '@stripe/stripe-js';
 import { EmbeddedCheckoutProvider, EmbeddedCheckout } from '@stripe/react-stripe-js';
+import { useLocation } from 'react-router-dom';
 
 const STRIPE_PK = 'pk_live_51RUF9vDVqSXnpb2PoAQmiqLb01JmshH8xVAaa73g5eeBxa8wduq5pfIt0sHWWLw5MkpyfQEv78asGbqOlOmiFAXY00MH7pQVHr';
 
 export default function CheckoutIsland() {
+  const location = useLocation();
   const [stripePromise, setStripePromise] = useState(null);
   const [clientSecret, setClientSecret] = useState(null);
 
   useEffect(() => {
     setStripePromise(loadStripe(STRIPE_PK));
 
-    // Read client secret from sessionStorage (set by the booking flow)
-    const secret = sessionStorage.getItem('stripe_client_secret');
+    // Read client secret from router-shim location state (set by stripeCheckout.js navigate())
+    const secret = location.state?.clientSecret;
     if (secret) {
       setClientSecret(secret);
     } else {
-      // No secret → redirect home
-      window.location.href = '/';
+      // Fallback: also check sessionStorage directly (legacy flow)
+      const stored = sessionStorage.getItem('stripe_client_secret');
+      if (stored) {
+        setClientSecret(stored);
+      } else {
+        // No secret → redirect home
+        window.location.href = '/';
+      }
     }
   }, []);
 

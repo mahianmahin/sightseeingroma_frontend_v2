@@ -61,7 +61,7 @@ const SectionNav = () => {
     }, []);
 
     return (
-        <div ref={sectionNavRef} className="sticky top-0 z-40 bg-white shadow-md">
+        <div ref={sectionNavRef} className="sticky top-[57px] lg:top-[65px] z-40 bg-white shadow-md">
             {/* Mobile View - Full Width Buttons */}
             <div className="lg:hidden">
                 <div className="flex w-full">

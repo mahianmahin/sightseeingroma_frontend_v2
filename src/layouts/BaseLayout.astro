@@ -23,6 +23,10 @@ export interface Props {
   ogImage?: string;
   /** Extra head content (structured data, etc.) */
   headExtra?: string;
+  /** Hide navbar (for auth pages like login/register) */
+  hideNavbar?: boolean;
+  /** Hide footer (for auth pages like login/register) */
+  hideFooter?: boolean;
 }
 
 const {
@@ -31,6 +35,8 @@ const {
   canonicalUrl,
   ogImage = '/Banner/hero-banner.webp',
   headExtra = '',
+  hideNavbar = false,
+  hideFooter = false,
 } = Astro.props;
 
 // Fetch server-side data in parallel
@@ -132,7 +138,7 @@ const canonical = canonicalUrl || Astro.url.href;
   </noscript>
 
   <!-- Navbar -->
-  <Navbar />
+  {!hideNavbar && <Navbar />}
 
   <!-- Page content -->
   <main>
@@ -140,6 +146,6 @@ const canonical = canonicalUrl || Astro.url.href;
   </main>
 
   <!-- Footer -->
-  <Footer />
+  {!hideFooter && <Footer />}
 </body>
 </html>

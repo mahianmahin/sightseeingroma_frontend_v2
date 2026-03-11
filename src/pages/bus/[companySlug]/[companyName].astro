@@ -24,11 +24,13 @@ let unfilteredPackages: any[] = [];
 let pageData: any = null;
 let contentBlocks: any[] = [];
 let pageImages: any[] = [];
+let activeOffers: any[] = [];
 
 try {
-  const [packagesRes, contentRes] = await Promise.all([
+  const [packagesRes, contentRes, offersRes] = await Promise.all([
     fetch(`${API_URL}/packages/`),
     fetch(`${API_URL}/static-content/${companySlug}/`),
+    fetch(`${API_URL}/featured-offers/`),
   ]);
 
   if (packagesRes.ok) {
@@ -46,6 +48,13 @@ try {
       pageData = data.page ?? null;
       contentBlocks = data.content_blocks ?? [];
       pageImages = data.page_images ?? [];
+    }
+  }
+
+  if (offersRes.ok) {
+    const data = await offersRes.json();
+    if (data.status === 200 && data.data?.length) {
+      activeOffers = data.data;
     }
   }
 } catch (e) {
@@ -84,6 +93,18 @@ const currentDurations = [...new Set(busPackages.map((p: any) => p.duration))];
 const similarPackages = unfilteredPackages
   .filter((pkg: any) => pkg.company.toLowerCase() !== companyName?.toLowerCase() && currentDurations.includes(pkg.duration))
   .sort((a: any, b: any) => a.package_order - b.package_order);
+
+// ── Ticket image helper ──
+function ticketImgSrc(ticket: any): string {
+  const src = ticket.thumbnail_large_webp || ticket.thumbnail_large || ticket.image_big || '';
+  if (!src) return '/images/placeholder-ticket.jpg';
+  return src.startsWith('http') ? src : `${mediaBase}${src}`;
+}
+
+// ── Offer matching helper ──
+function getOfferForTicket(ticket: any): any | null {
+  return activeOffers.find((o: any) => o.package_id === ticket.id) || null;
+}
 ---
 
 <BaseLayout title={title} description={description}>
@@ -121,45 +142,69 @@ const similarPackages = unfilteredPackages
         </p>
       </div>
 
-      <!-- Ticket Cards Grid (React island for interactivity) -->
+      <!-- Ticket Cards Grid -->
       {busPackages.length > 0 && (
         <div id="ticket-grid">
-          <Fragment set:html={`
-            <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-10">
-              ${busPackages.map((ticket: any) => `
-                <a href="/manageBookings/${ticket.duration ? 'E9' : 'E8'}/${ticket.package_tag}" class="group w-full mb-4 md:mb-6 mx-auto bg-white rounded-2xl shadow-lg hover:shadow-xl overflow-hidden border border-gray-100 flex flex-col transition-all duration-300 transform hover:-translate-y-1">
-                  <div class="relative overflow-hidden">
-                    <img
-                      src="${ticket.thumbnail_large_webp ? `${mediaBase}${ticket.thumbnail_large_webp}` : ticket.thumbnail_large ? `${mediaBase}${ticket.thumbnail_large}` : `${mediaBase}${ticket.image_big}`}"
-                      alt="${ticket.title}"
-                      class="w-full h-[140px] md:h-[180px] object-cover transition-transform duration-500 group-hover:scale-110"
-                      loading="lazy"
-                      width="400"
-                      height="180"
-                    />
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                  </div>
-                  <div class="p-3 md:p-5 flex flex-col flex-grow">
-                    <span class="inline-flex items-center gap-1 text-[10px] md:text-xs font-medium text-[#930B31] bg-red-50 px-2 py-1 md:px-3 md:py-1.5 rounded-full w-fit mb-2">
-                      ${ticket.type}
-                    </span>
-                    <h2 class="text-xs md:text-lg font-bold text-gray-800 leading-tight mb-2 md:mb-3 line-clamp-2 group-hover:text-[#930B31] transition-colors duration-200">${ticket.title}</h2>
-                    <div class="flex items-center gap-1 text-[10px] md:text-sm text-gray-500 bg-gray-50 px-2 py-1 md:px-3 md:py-1.5 rounded-lg w-fit mb-3">
-                      <span class="font-medium">#${ticket.id}</span>
-                    </div>
-                    ${ticket.duration ? `<div class="flex items-center gap-1 text-[10px] md:text-sm text-gray-500 mb-3"><span>${ticket.duration}</span></div>` : ''}
-                    <div class="mt-auto">
-                      <div class="flex items-baseline gap-2">
-                        ${ticket.off_price ? `<span class="text-gray-400 line-through text-xs md:text-sm">€${ticket.off_price}</span>` : ''}
-                        <span class="text-lg md:text-2xl font-bold text-[#930B31]">€${ticket.adult_price}</span>
+          <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-10">
+            {busPackages.map((ticket: any) => {
+              const offer = getOfferForTicket(ticket);
+              const offerUrl = offer 
+                ? `/manageBookings/${ticket.duration ? 'E9' : 'E8'}/${ticket.package_tag}?offer_id=${offer.id}`
+                : `/manageBookings/${ticket.duration ? 'E9' : 'E8'}/${ticket.package_tag}`;
+              return (
+              <a href={offerUrl} class={`group w-full mb-4 md:mb-6 mx-auto bg-white rounded-2xl shadow-lg hover:shadow-xl overflow-hidden border ${offer ? 'border-red-400 ring-2 ring-red-300 ring-opacity-50' : 'border-gray-100'} flex flex-col transition-all duration-300 transform hover:-translate-y-1`}>
+                <div class="relative overflow-hidden">
+                  <img
+                    src={ticketImgSrc(ticket)}
+                    alt={ticket.title}
+                    class="w-full h-[140px] md:h-[180px] object-cover transition-transform duration-500 group-hover:scale-110"
+                    loading="lazy"
+                    width="400"
+                    height="180"
+                  />
+                  {offer && (
+                    <div class="absolute top-2 left-2 z-10">
+                      <div class="relative">
+                        <div class="absolute inset-0 bg-red-500 rounded-full blur-md opacity-75 animate-pulse"></div>
+                        <div class="relative bg-gradient-to-r from-[#930B31] to-red-600 text-white text-[9px] md:text-xs font-bold px-2 py-1 md:px-3 md:py-1.5 rounded-full shadow-lg flex items-center gap-1">
+                          <svg class="w-2 h-2 md:w-3 md:h-3 animate-bounce" fill="currentColor" viewBox="0 0 512 512"><path d="M0 252.118l40.822-44.353 187.85 178.873L467.175 0 512 41.186 228.672 512z"/></svg>
+                          <span>{offer.badge_text || 'Special Offer'}</span>
+                        </div>
                       </div>
-                      <span class="text-[10px] md:text-xs text-gray-500">per adult</span>
+                    </div>
+                  )}
+                  <div class="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                </div>
+                <div class="p-3 md:p-5 flex flex-col flex-grow">
+                  <span class="inline-flex items-center gap-1 text-[10px] md:text-xs font-medium text-[#930B31] bg-red-50 px-2 py-1 md:px-3 md:py-1.5 rounded-full w-fit mb-2">
+                    {ticket.type}
+                  </span>
+                  <h2 class="text-xs md:text-lg font-bold text-gray-800 leading-tight mb-2 md:mb-3 line-clamp-2 group-hover:text-[#930B31] transition-colors duration-200">{ticket.title}</h2>
+                  <div class="flex items-center gap-1 text-[10px] md:text-sm text-gray-500 bg-gray-50 px-2 py-1 md:px-3 md:py-1.5 rounded-lg w-fit mb-3">
+                    <span class="font-medium">#{ticket.id}</span>
+                  </div>
+                  {ticket.duration && (
+                    <div class="flex items-center gap-1 text-[10px] md:text-sm text-gray-500 mb-3">
+                      <span>{ticket.duration}</span>
+                    </div>
+                  )}
+                  <div class="mt-auto">
+                    <div class="flex items-baseline gap-2">
+                      {(ticket.off_price || offer) && <span class="text-gray-400 line-through text-xs md:text-sm">€{offer ? offer.original_adult_price : ticket.off_price}</span>}
+                      <span class="text-lg md:text-2xl font-bold text-[#930B31]">€{offer ? offer.offer_adult_price : ticket.adult_price}</span>
+                    </div>
+                    <span class="text-[10px] md:text-xs text-gray-500">per adult</span>
+                    <div class="mt-3">
+                      <span class="block w-full text-center bg-[#930B31] hover:bg-[#7a0926] text-white font-bold py-2 md:py-2.5 px-4 rounded-lg text-xs md:text-sm transition-colors duration-200">
+                        Buy Your Tickets
+                      </span>
                     </div>
                   </div>
-                </a>
-              `).join('')}
-            </div>
-          `} />
+                </div>
+              </a>
+              );
+            })}
+          </div>
         </div>
       )}
     </div>
@@ -170,37 +215,40 @@ const similarPackages = unfilteredPackages
         <div class="py-7 md:py-10">
           {similarHtml ? <Fragment set:html={similarHtml} /> : <h2 class="text-xl md:text-2xl font-bold text-gray-800">Similar Options from Other Companies</h2>}
         </div>
-        <Fragment set:html={`
-          <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-10 mb-12">
-            ${similarPackages.map((ticket: any) => `
-              <a href="/manageBookings/${ticket.duration ? 'E9' : 'E8'}/${ticket.package_tag}" class="group w-full mb-4 md:mb-6 mx-auto bg-white rounded-2xl shadow-lg hover:shadow-xl overflow-hidden border border-gray-100 flex flex-col transition-all duration-300 transform hover:-translate-y-1">
-                <div class="relative overflow-hidden">
-                  <img
-                    src="${ticket.thumbnail_large_webp ? `${mediaBase}${ticket.thumbnail_large_webp}` : ticket.thumbnail_large ? `${mediaBase}${ticket.thumbnail_large}` : `${mediaBase}${ticket.image_big}`}"
-                    alt="${ticket.title}"
-                    class="w-full h-[140px] md:h-[180px] object-cover transition-transform duration-500 group-hover:scale-110"
-                    loading="lazy"
-                    width="400"
-                    height="180"
-                  />
-                </div>
-                <div class="p-3 md:p-5 flex flex-col flex-grow">
-                  <span class="inline-flex items-center gap-1 text-[10px] md:text-xs font-medium text-[#930B31] bg-red-50 px-2 py-1 md:px-3 md:py-1.5 rounded-full w-fit mb-2">
-                    ${ticket.type}
-                  </span>
-                  <h2 class="text-xs md:text-lg font-bold text-gray-800 leading-tight mb-2 md:mb-3 line-clamp-2 group-hover:text-[#930B31] transition-colors">${ticket.title}</h2>
-                  <div class="mt-auto">
-                    <div class="flex items-baseline gap-2">
-                      ${ticket.off_price ? `<span class="text-gray-400 line-through text-xs md:text-sm">€${ticket.off_price}</span>` : ''}
-                      <span class="text-lg md:text-2xl font-bold text-[#930B31]">€${ticket.adult_price}</span>
-                    </div>
-                    <span class="text-[10px] md:text-xs text-gray-500">per adult</span>
+        <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-10 mb-12">
+          {similarPackages.map((ticket: any) => (
+            <a href={`/manageBookings/${ticket.duration ? 'E9' : 'E8'}/${ticket.package_tag}`} class="group w-full mb-4 md:mb-6 mx-auto bg-white rounded-2xl shadow-lg hover:shadow-xl overflow-hidden border border-gray-100 flex flex-col transition-all duration-300 transform hover:-translate-y-1">
+              <div class="relative overflow-hidden">
+                <img
+                  src={ticketImgSrc(ticket)}
+                  alt={ticket.title}
+                  class="w-full h-[140px] md:h-[180px] object-cover transition-transform duration-500 group-hover:scale-110"
+                  loading="lazy"
+                  width="400"
+                  height="180"
+                />
+              </div>
+              <div class="p-3 md:p-5 flex flex-col flex-grow">
+                <span class="inline-flex items-center gap-1 text-[10px] md:text-xs font-medium text-[#930B31] bg-red-50 px-2 py-1 md:px-3 md:py-1.5 rounded-full w-fit mb-2">
+                  {ticket.type}
+                </span>
+                <h2 class="text-xs md:text-lg font-bold text-gray-800 leading-tight mb-2 md:mb-3 line-clamp-2 group-hover:text-[#930B31] transition-colors">{ticket.title}</h2>
+                <div class="mt-auto">
+                  <div class="flex items-baseline gap-2">
+                    {ticket.off_price && <span class="text-gray-400 line-through text-xs md:text-sm">€{ticket.off_price}</span>}
+                    <span class="text-lg md:text-2xl font-bold text-[#930B31]">€{ticket.adult_price}</span>
+                  </div>
+                  <span class="text-[10px] md:text-xs text-gray-500">per adult</span>
+                  <div class="mt-3">
+                    <span class="block w-full text-center bg-[#930B31] hover:bg-[#7a0926] text-white font-bold py-2 md:py-2.5 px-4 rounded-lg text-xs md:text-sm transition-colors duration-200">
+                      Buy Your Tickets
+                    </span>
                   </div>
                 </div>
-              </a>
-            `).join('')}
-          </div>
-        `} />
+              </div>
+            </a>
+          ))}
+        </div>
       </div>
     )}
   </div>

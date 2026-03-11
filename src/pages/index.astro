@@ -21,6 +21,9 @@ import CustomerReviews from '../components/Home/CustomerReviews.astro';
 // React islands — interactive
 import SectionNav from '../Components/SectionNav/SectionNav';
 import Services from '../Components/Services/Services';
+import FeaturedToday from '../Components/FeaturedToday/FeaturedToday';
+import PromoBanner from '../Components/PromoBanner/PromoBanner';
+import RecommendedServices from '../Components/RecommendedServices/RecommendedServices';
 ---
 
 <BaseLayout
@@ -38,6 +41,11 @@ import Services from '../Components/Services/Services';
     <Services client:visible />
   </div>
 
+  <!-- FeaturedToday — desktop only (mobile shows it inside Hero) -->
+  <div class="hidden lg:block">
+    <FeaturedToday client:visible />
+  </div>
+
   <!-- Why Book With Us — pure Astro, zero JS -->
   <div id="why-us">
     <WhyBook />
@@ -48,6 +56,14 @@ import Services from '../Components/Services/Services';
 
   <!-- Customer Reviews — server-fetched, CSS-only carousel -->
   <CustomerReviews />
+
+  <!-- PromoBanner — React island, fetches featured-offers -->
+  <PromoBanner client:visible />
+
+  <!-- Live Rome Your Way — React island for explore cards -->
+  <div id="explore">
+    <RecommendedServices client:visible />
+  </div>
 
   <!-- The Process — pure Astro, zero JS -->
   <div id="features">

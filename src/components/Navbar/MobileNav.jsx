@@ -96,7 +96,7 @@ export default function MobileNav() {
                   <FaHistory className="text-green-600" /> Purchase History
                 </a>
               </li>
-              <li onClick={() => navTo('/agentPoints')}>
+              <li onClick={() => navTo('/agentpoints')}>
                 <a className="text-base font-semibold hover:bg-gray-50 rounded-lg px-3 py-2 transition-colors duration-200">
                   <MdOutlineLocationOn className="text-orange-600" /> Agent Points
                 </a>
@@ -114,7 +114,7 @@ export default function MobileNav() {
                   <BsInfoCircle className="text-blue-600" /> About Us
                 </a>
               </li>
-              <li onClick={() => navTo('/agentPoints')}>
+              <li onClick={() => navTo('/agentpoints')}>
                 <a className="text-base font-semibold hover:bg-gray-50 rounded-lg px-3 py-2 transition-colors duration-200">
                   <MdOutlineLocationOn className="text-orange-600" /> Agent Points
                 </a>

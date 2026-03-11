@@ -1,18 +1,14 @@
 ---
 export const prerender = false;
+import BaseLayout from '@/layouts/BaseLayout.astro';
 import RegisterIsland from '@/components/islands/RegisterIsland.jsx';
 ---
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Create Account | Sightseeing Roma</title>
-  <meta name="description" content="Create your Sightseeing Roma account to book tickets and manage your Rome travel experience." />
-  <meta name="robots" content="noindex, nofollow" />
-  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap" media="print" onload="this.media='all'" />
-</head>
-<body>
+<BaseLayout
+  title="Create Account | Sightseeing Roma"
+  description="Create your Sightseeing Roma account to book tickets and manage your Rome travel experience."
+  headExtra='<meta name="robots" content="noindex, nofollow" />'
+  hideNavbar={true}
+  hideFooter={true}
+>
   <RegisterIsland client:load />
-</body>
-</html>
+</BaseLayout>

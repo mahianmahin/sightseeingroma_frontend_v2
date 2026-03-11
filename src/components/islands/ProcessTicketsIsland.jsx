@@ -18,9 +18,20 @@ export default function ProcessTicketsIsland({ code }) {
   useEffect(() => {
     if (code) {
       fetch(`${API_URL}/authenticate/${code}/`)
-        .then((r) => r.json())
-        .then((d) => { setData(d); setAgentList(d.agent_list || []); })
-        .catch(console.error);
+        .then((r) => {
+          if (!r.ok) throw new Error(`HTTP ${r.status}`);
+          return r.json();
+        })
+        .then((d) => {
+          setData(d);
+          // agent_list may be at top level or nested
+          const agents = d.agent_list || d.data?.agent_list || [];
+          setAgentList(agents);
+        })
+        .catch((err) => {
+          console.error('Verify fetch error:', err);
+          setData({ error: true });
+        });
     }
   }, [code]);
 
@@ -64,7 +75,7 @@ export default function ProcessTicketsIsland({ code }) {
                           <option value="" disabled>Choose your agent name</option>
                           {agentList.length > 0 ? agentList.map((el, i) => (
                             <option key={i} value={el}>{el}</option>
-                          )) : <option>Loading agents...</option>}
+                          )) : <option disabled>Loading agents...</option>}
                         </select>
                       </div>
 

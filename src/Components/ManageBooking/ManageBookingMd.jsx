@@ -199,7 +199,7 @@ const ManageBookingMd = () => {
     <HelmetWrapper title={data?.meta_title} description={data?.meta_description} keywords={data?.meta_keywords} schema={data?.schema_json} />
     
     
-    <div className="container mx-auto pt-24"> {/* Changed from pt-16 to pt-24 */}
+    <div className="container mx-auto pt-4"> {/* Astro uses sticky nav, no extra offset needed */}
       {bigLoader && <Loader />}
       <div>
         <div className="">
