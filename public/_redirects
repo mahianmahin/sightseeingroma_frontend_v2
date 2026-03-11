@@ -1,5 +1,5 @@
-# Redirect sitemap to backend
-/sitemap.xml https://api.sightseeingroma.com/sitemap.xml 200
+# Redirect sitemap to backend (301 — Cloudflare Workers doesn't support 200 proxy to external URLs)
+/sitemap.xml https://api.sightseeingroma.com/sitemap.xml 301
 
 # URL aliases (301 permanent redirects)
 /aboutus /about-us 301
