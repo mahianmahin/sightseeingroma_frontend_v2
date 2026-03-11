@@ -38,12 +38,12 @@ import RecommendedServices from '../Components/RecommendedServices/RecommendedSe
 
   <!-- Tickets Section — React island for tabs, filters, card interactions -->
   <div id="tickets">
-    <Services client:visible />
+    <Services client:idle />
   </div>
 
   <!-- FeaturedToday — desktop only (mobile shows it inside Hero) -->
   <div class="hidden lg:block">
-    <FeaturedToday client:visible />
+    <FeaturedToday client:idle />
   </div>
 
   <!-- Why Book With Us — pure Astro, zero JS -->
@@ -58,11 +58,11 @@ import RecommendedServices from '../Components/RecommendedServices/RecommendedSe
   <CustomerReviews />
 
   <!-- PromoBanner — React island, fetches featured-offers -->
-  <PromoBanner client:visible />
+  <PromoBanner client:idle />
 
   <!-- Live Rome Your Way — React island for explore cards -->
   <div id="explore">
-    <RecommendedServices client:visible />
+    <RecommendedServices client:idle />
   </div>
 
   <!-- The Process — pure Astro, zero JS -->

@@ -61,10 +61,22 @@ const RecommendedServices = ({ recommendedPosition = 2 }) => {
 
   if (loading) {
     return (
-      <div className="py-12">
-        <div className="container mx-auto px-4 text-center">
-          <div className="inline-block animate-spin rounded-full h-10 w-10 border-b-2 border-[#930B31] mb-4"></div>
-          <p className="text-gray-600">Loading recommended services...</p>
+      <div className="py-12 mb-5 rounded-2xl bg-gradient-to-b from-gray-50 to-white">
+        <div className="container mx-auto px-2 sm:px-4 md:px-8">
+          <div className="text-center mb-12">
+            <div className="h-8 bg-gray-200 rounded animate-pulse w-80 mx-auto mb-4"></div>
+            <div className="h-4 bg-gray-200 rounded animate-pulse w-96 mx-auto max-w-full"></div>
+          </div>
+          <div className="grid grid-cols-4 md:grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-8">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} className="relative overflow-hidden rounded-lg lg:rounded-2xl shadow-lg aspect-[1/3.25] md:aspect-[9/16] bg-gray-200 animate-pulse">
+                <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-6">
+                  <div className="h-5 bg-gray-300 rounded w-3/4 mb-2"></div>
+                  <div className="h-3 bg-gray-300 rounded w-1/2"></div>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     );

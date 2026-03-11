@@ -94,33 +94,53 @@ try {
 )}
 
 <!-- Tiny scroll script — no React needed -->
-<script is:inline>
-  (function() {
-    var container = document.getElementById('reviews-scroll');
+<script>
+  function initReviewsCarousel() {
+    const container = document.getElementById('reviews-scroll');
     if (!container) return;
 
     // Arrow button scrolling
-    document.querySelectorAll('[data-scroll-dir]').forEach(function(btn) {
+    const buttons = document.querySelectorAll('[data-scroll-dir]');
+    buttons.forEach(function(btn) {
       btn.addEventListener('click', function() {
         if (!container.firstElementChild) return;
-        var cardWidth = container.firstElementChild.offsetWidth + 24;
-        var dir = btn.getAttribute('data-scroll-dir') === 'left' ? -1 : 1;
+        const gap = 24; // gap-6 = 24px
+        const cardWidth = container.firstElementChild.offsetWidth + gap;
+        const dir = btn.getAttribute('data-scroll-dir') === 'left' ? -1 : 1;
         container.scrollBy({ left: dir * cardWidth, behavior: 'smooth' });
       });
     });
 
     // Touch/swipe support for mobile
-    var startX = 0;
-    var scrollStart = 0;
+    let startX = 0;
+    let scrollStart = 0;
+    let isDragging = false;
+    
     container.addEventListener('touchstart', function(e) {
       startX = e.touches[0].clientX;
       scrollStart = container.scrollLeft;
+      isDragging = true;
     }, { passive: true });
+    
     container.addEventListener('touchmove', function(e) {
-      var diff = startX - e.touches[0].clientX;
+      if (!isDragging) return;
+      const diff = startX - e.touches[0].clientX;
       container.scrollLeft = scrollStart + diff;
     }, { passive: true });
-  })();
+    
+    container.addEventListener('touchend', function() {
+      isDragging = false;
+    }, { passive: true });
+  }
+
+  // Run on initial page load
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initReviewsCarousel);
+  } else {
+    initReviewsCarousel();
+  }
+  // Also run on Astro page transitions (view transitions)
+  document.addEventListener('astro:page-load', initReviewsCarousel);
 </script>
 
 <style>

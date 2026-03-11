@@ -5,7 +5,26 @@ import { deferredFetch } from '../utilities/deferredFetch';
 // Create context for active offers
 const ActiveOffersContext = createContext(null);
 
-// Provider component to wrap the app
+// Module-level cache so multiple Card components share one fetch
+let _cachedOffers = null;
+let _fetchPromise = null;
+
+function fetchOffersOnce() {
+    if (_fetchPromise) return _fetchPromise;
+    _fetchPromise = fetch(`${baseUrl}featured-offers/by-package/`)
+        .then(r => r.ok ? r.json() : null)
+        .then(d => {
+            _cachedOffers = (d && d.status === 200) ? (d.data || {}) : {};
+            return _cachedOffers;
+        })
+        .catch(() => {
+            _cachedOffers = {};
+            return _cachedOffers;
+        });
+    return _fetchPromise;
+}
+
+// Provider component to wrap the app (legacy SPA usage)
 export const ActiveOffersProvider = ({ children }) => {
     const [activeOffers, setActiveOffers] = useState({});
     const [loading, setLoading] = useState(true);
@@ -26,7 +45,7 @@ export const ActiveOffersProvider = ({ children }) => {
 
         fetchActiveOffers();
 
-        // Refresh every 5 minutes (uses normal fetch — page is already loaded)
+        // Refresh every 5 minutes
         const interval = setInterval(async () => {
             try {
                 const res = await fetch(`${baseUrl}featured-offers/by-package/`);
@@ -49,14 +68,25 @@ export const ActiveOffersProvider = ({ children }) => {
     );
 };
 
-// Hook to use active offers
+// Hook to use active offers — self-fetching when no provider is present (Astro islands)
 export const useActiveOffers = () => {
     const context = useContext(ActiveOffersContext);
-    if (!context) {
-        // Return empty object if not wrapped in provider (graceful fallback)
-        return { activeOffers: {}, loading: false };
-    }
-    return context;
+    const [standalone, setStandalone] = useState({ activeOffers: _cachedOffers || {}, loading: !_cachedOffers });
+
+    useEffect(() => {
+        // Only fetch independently if there's no provider wrapping us
+        if (context) return;
+        if (_cachedOffers) {
+            setStandalone({ activeOffers: _cachedOffers, loading: false });
+            return;
+        }
+        fetchOffersOnce().then(data => {
+            setStandalone({ activeOffers: data, loading: false });
+        });
+    }, [context]);
+
+    if (context) return context;
+    return standalone;
 };
 
 // Helper function to check if a package has an active offer

@@ -175,12 +175,34 @@ const Services = (props) => {
     ));
   };
 
-  if (props.loading) {
+  if (props.loading || loading) {
     return (
-      <div className="min-h-screen bg-[#F2F2F7] flex items-center justify-center">
-        <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-[#930B31] mb-4"></div>
-          <p className="text-lg text-gray-600 font-medium">Loading bus services...</p>
+      <div className="bg-[#F2F2F7] py-8 md:py-16">
+        <div className="container mx-auto px-4 md:px-8">
+          <div className="bg-white rounded-2xl shadow-lg p-4 md:p-8 mb-8">
+            <div className="text-center mb-4 md:mb-8">
+              <div className="h-6 md:h-8 bg-gray-200 rounded animate-pulse w-64 mx-auto mb-2"></div>
+            </div>
+            <div className="grid grid-cols-2 md:flex md:flex-wrap md:justify-center gap-2 md:gap-4 mb-4 md:mb-8">
+              {Array.from({ length: 4 }).map((_, i) => (
+                <div key={i} className="h-10 md:h-14 bg-gray-200 rounded-lg md:rounded-xl animate-pulse md:w-32"></div>
+              ))}
+            </div>
+          </div>
+          <div className="container mx-auto px-2 md:px-4">
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-6">
+              {Array.from({ length: 8 }).map((_, i) => (
+                <div key={i} className="bg-white rounded-lg shadow-md overflow-hidden">
+                  <div className="w-full h-32 md:h-44 bg-gray-200 animate-pulse"></div>
+                  <div className="p-4 space-y-3">
+                    <div className="h-4 bg-gray-200 rounded animate-pulse"></div>
+                    <div className="h-4 bg-gray-200 rounded animate-pulse w-3/4"></div>
+                    <div className="h-6 bg-gray-200 rounded animate-pulse w-1/2"></div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     );

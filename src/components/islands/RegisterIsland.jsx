@@ -87,7 +87,7 @@ export default function RegisterIsland() {
       <div className="max-w-6xl w-full flex flex-col md:flex-row bg-white rounded-2xl shadow-2xl overflow-hidden relative">
         {/* Left Side - Image */}
         <div className="md:w-1/2 relative hidden md:block">
-          <img src="/Login/registration.jpg" alt="Registration" className="w-full h-full object-cover" />
+          <img src="/Login/regi.png" alt="Registration" className="w-full h-full object-cover" />
           <div className="absolute inset-0 bg-black/30" />
           <div className="absolute top-6 left-6">
             <a href="/"><img src="/Logo.webp" alt="Logo" className="h-16" /></a>
