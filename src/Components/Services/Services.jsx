@@ -4,10 +4,15 @@ import Card from "./Card";
 
 
 const Services = (props) => {
+  // Accept server-fetched data as props to eliminate client-side fetch waterfall.
+  // If props are provided, use them immediately (no loading state, no network request).
+  // Falls back to client-side fetch if props are empty (e.g. navigated to from another page).
+  const hasInitialData = props.initialBusData?.length > 0;
+  
   const [activeTab, setActiveTab] = useState(0);
-  const [busData, setBusData] = useState([]);
-  const [folders, setFolders] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [busData, setBusData] = useState(hasInitialData ? props.initialBusData : []);
+  const [folders, setFolders] = useState(hasInitialData ? props.initialFolders : []);
+  const [loading, setLoading] = useState(!hasInitialData);
   const [tabLoading, setTabLoading] = useState(false);
   const [error, setError] = useState(null);
   
@@ -26,6 +31,9 @@ const Services = (props) => {
   const [activeFilters, setActiveFilters] = useState([]);  
 
   useEffect(() => {
+    // Skip fetch if we already have server-provided data
+    if (hasInitialData) return;
+    
     const fetchData = async () => {
       try {
         const response = await fetch(`${baseUrl}packages/`);
@@ -429,6 +437,7 @@ const Services = (props) => {
                   offPrice={ticket.off_price}
                   company={ticket.company}
                   id1={ticket.id}
+                  offersByPackage={props.initialOffersByPackage || {}}
                 />
               ))}
             </div>

@@ -1,18 +1,18 @@
 ---
 /**
  * CustomerReviews.astro — Reviews section.
- * Reviews fetched at build time from /reviews/.
+ * Reviews passed as a prop from the parent page (fetched in parallel with other data).
  * Horizontal scroll carousel uses only CSS — zero JS for static cards.
  * Arrow buttons use a tiny inline script (no React needed).
  */
-import { getReviews } from '../../lib/api';
 import { API_URL } from '../../lib/constants';
 
-let reviews: any[] = [];
-try {
-  const data = await getReviews().catch(() => []);
-  reviews = Array.isArray(data) ? data : [];
-} catch {}
+export interface Props {
+  reviews?: any[];
+}
+
+const { reviews: rawReviews = [] } = Astro.props;
+const reviews: any[] = Array.isArray(rawReviews) ? rawReviews : [];
 ---
 
 {reviews.length > 0 && (

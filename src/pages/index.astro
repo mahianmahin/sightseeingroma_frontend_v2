@@ -32,14 +32,31 @@ import SectionNav from '../Components/SectionNav/SectionNav';
 import Services from '../Components/Services/Services';
 
 // ─── Server-side data fetching (runs on every request) ───────────────
-import { getFeaturedOffers } from '../lib/api';
+// All API calls run in PARALLEL to minimize TTFB.
+// Data is passed as props to child components (they no longer fetch internally).
+import { getFeaturedOffers, getFeaturedOffersByPackage, getPackages, getCards, getReviews, getWebsiteSettings } from '../lib/api';
 
-// Fetch featured offers once — shared by Hero, FeaturedToday, and PromoBanner
+const [
+  featuredOffersResult,
+  offersByPackageResult,
+  packagesResult,
+  cardsResult,
+  reviewsResult,
+  settingsResult,
+] = await Promise.allSettled([
+  getFeaturedOffers(),
+  getFeaturedOffersByPackage(),
+  getPackages(),
+  getCards(),
+  getReviews(),
+  getWebsiteSettings(),
+]);
+
+// ─── Extract featured offers → bestOffer ─────────────────────────────
 let bestOffer: any = null;
 try {
-  const res = await getFeaturedOffers();
+  const res = featuredOffersResult.status === 'fulfilled' ? featuredOffersResult.value : null;
   const offers = res?.status === 200 && res?.data?.length ? res.data : [];
-  // Pick the offer with the highest discount percentage
   const withDiscount = offers
     .filter((o: any) => o.original_adult_price && o.offer_adult_price && parseFloat(o.original_adult_price) > parseFloat(o.offer_adult_price))
     .map((o: any) => ({
@@ -51,13 +68,29 @@ try {
     bestOffer = withDiscount[0];
   }
 } catch (err) {
-  console.error('Failed to fetch featured offers:', err);
+  console.error('Failed to process featured offers:', err);
 }
 
-// Cache the SSR response for 60s at the edge, revalidate in background.
-// This means content updates within ~60s of an editor saving, while still being
-// blazing fast for users (served from Cloudflare edge cache).
-Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=300');
+// ─── Extract packages data → for Services island ─────────────────────
+const packagesData = packagesResult.status === 'fulfilled' ? packagesResult.value : null;
+const initialBusData = packagesData?.bus_data || [];
+const initialFolders = packagesData?.folders || [];
+
+// ─── Extract offers-by-package → for Services Card badges ────────────
+const obpRes = offersByPackageResult.status === 'fulfilled' ? offersByPackageResult.value : null;
+const initialOffersByPackage = (obpRes?.status === 200) ? (obpRes.data || {}) : {};
+
+// ─── Extract cards → for RecommendedServices ─────────────────────────
+const cardsData = cardsResult.status === 'fulfilled' ? cardsResult.value : null;
+
+// ─── Extract reviews → for CustomerReviews ───────────────────────────
+const reviewsData = reviewsResult.status === 'fulfilled' ? reviewsResult.value : [];
+
+// ─── Extract settings → for Contact ──────────────────────────────────
+const settingsRes = settingsResult.status === 'fulfilled' ? settingsResult.value : null;
+
+// Cache headers are managed by ISR middleware (src/middleware.ts).
+// No need to set Cache-Control here — the middleware handles HIT/STALE/MISS logic.
 ---
 
 <BaseLayout
@@ -71,8 +104,14 @@ Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-re
   <SectionNav client:visible />
 
   <!-- Tickets Section — React island for tabs, filters, card interactions -->
+  <!-- Initial data passed as props to skip client-side /packages/ and /featured-offers/by-package/ fetches -->
   <div id="tickets">
-    <Services client:idle />
+    <Services
+      client:idle
+      initialBusData={initialBusData}
+      initialFolders={initialFolders}
+      initialOffersByPackage={initialOffersByPackage}
+    />
   </div>
 
   <!-- FeaturedToday — desktop only, server-rendered (zero JS) -->
@@ -89,14 +128,14 @@ Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-re
   <FinalCTA />
 
   <!-- Customer Reviews — server-fetched, CSS-only carousel -->
-  <CustomerReviews />
+  <CustomerReviews reviews={reviewsData} />
 
   <!-- PromoBanner — server-rendered (zero JS), uses same pre-fetched data -->
   <PromoBannerAstro bestOffer={bestOffer} />
 
-  <!-- Live Rome Your Way — server-rendered (zero JS), fetches cards server-side -->
+  <!-- Live Rome Your Way — server-rendered (zero JS), uses pre-fetched cards -->
   <div id="explore">
-    <RecommendedServicesAstro />
+    <RecommendedServicesAstro cardsData={cardsData} />
   </div>
 
   <!-- The Process — pure Astro, zero JS -->
@@ -106,6 +145,6 @@ Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-re
 
   <!-- Contact — server-fetched contact data, zero JS -->
   <div id="routes">
-    <Contact />
+    <Contact settingsData={settingsRes} />
   </div>
 </BaseLayout>

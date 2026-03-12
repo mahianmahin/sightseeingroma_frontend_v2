@@ -2,18 +2,22 @@
 /**
  * RecommendedServices.astro — Server-rendered "Live Rome Your Way" section.
  * Replaces the React island RecommendedServices.jsx.
- * Data is fetched at build time via getCards() and baked into static HTML.
+ * Data is passed as a prop from the parent page (fetched in parallel with other data).
  * Navigation uses <a href> instead of React's useNavigate() — zero JS shipped.
  */
-import { getCards } from '../../lib/api';
 
 const API_URL = 'https://api.sightseeingroma.com';
 
-// Fetch cards at build time
+export interface Props {
+  cardsData?: any;
+}
+
+const { cardsData = null } = Astro.props;
+
+// Process cards data
 let serviceCards: any[] = [];
 try {
-  const data = await getCards();
-  const parsed = (data.cards || [])
+  const parsed = ((cardsData?.cards) || [])
     .filter((c: any) => c.card_active)
     .map((c: any) => ({
       id: c.id,
@@ -37,7 +41,7 @@ try {
 
   serviceCards = parsed;
 } catch (err) {
-  console.error('Failed to fetch cards:', err);
+  console.error('Failed to process cards:', err);
 }
 ---
 

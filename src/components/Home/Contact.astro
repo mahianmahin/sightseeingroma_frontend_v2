@@ -1,9 +1,14 @@
 ---
 /**
  * Contact.astro — "Get In Touch" section. Zero JavaScript.
- * Contact data fetched at build time from /website-settings/.
+ * Contact data passed as a prop from the parent page (fetched in parallel).
  */
-import { getWebsiteSettings } from '../../lib/api';
+
+export interface Props {
+  settingsData?: any;
+}
+
+const { settingsData = null } = Astro.props;
 
 let contactData = {
   phone: '+39 327 3633 993',
@@ -13,13 +18,12 @@ let contactData = {
 };
 
 try {
-  const res = await getWebsiteSettings().catch(() => null);
-  if (res?.status === 200 && res?.data) {
+  if (settingsData?.status === 200 && settingsData?.data) {
     contactData = {
-      phone: res.data.website_phone_number || contactData.phone,
-      email: res.data.website_email || contactData.email,
-      address: res.data.website_address || contactData.address,
-      mapLink: res.data.address_map_link || contactData.mapLink,
+      phone: settingsData.data.website_phone_number || contactData.phone,
+      email: settingsData.data.website_email || contactData.email,
+      address: settingsData.data.website_address || contactData.address,
+      mapLink: settingsData.data.address_map_link || contactData.mapLink,
     };
   }
 } catch {}
