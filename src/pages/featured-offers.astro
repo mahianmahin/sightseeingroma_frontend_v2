@@ -9,6 +9,7 @@ export const prerender = false;
 
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { API_URL } from '@/lib/constants';
+import FeaturedOffersIsland from '@/Components/EditPanel/FeaturedOffersIsland';
 
 const mediaBase = API_URL;
 
@@ -330,4 +331,7 @@ const schemaData = {
       animation: highlight-pulse 1s ease-in-out infinite;
     }
   </style>
+
+  <!-- Editor: Manage Offers panel (only visible to logged-in editors) -->
+  <FeaturedOffersIsland client:idle />
 </BaseLayout>
