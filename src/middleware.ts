@@ -33,6 +33,30 @@
 import { defineMiddleware } from 'astro:middleware';
 
 // ═══════════════════════════════════════════════════════════════════════
+// MODULE PRELOAD — Eliminates critical request chain
+// ═══════════════════════════════════════════════════════════════════════
+// This placeholder is replaced AFTER build by src/integrations/modulepreload.mjs
+// with the actual transitive dependency URLs. DO NOT rename this constant.
+//
+// Without modulepreload hints, the browser discovers imports sequentially:
+//   MobileNav.js → jsx-runtime.js → react.js → react-dom.js (4 round trips!)
+// With modulepreload, the browser fetches ALL JS in parallel (1 round trip).
+// ═══════════════════════════════════════════════════════════════════════
+const __MODULEPRELOAD_URLS__: string[] = [];
+
+/**
+ * Inject <link rel="modulepreload"> tags before </head> in an HTML string.
+ * Only called for HTML responses; no-op if there are no preload URLs.
+ */
+function injectModulePreloads(html: string): string {
+  if (__MODULEPRELOAD_URLS__.length === 0) return html;
+  const links = __MODULEPRELOAD_URLS__
+    .map((url) => `<link rel="modulepreload" href="${url}">`)
+    .join('\n');
+  return html.replace('</head>', `${links}\n</head>`);
+}
+
+// ═══════════════════════════════════════════════════════════════════════
 // CONFIGURATION — Change these values to adjust cache behavior
 // ═══════════════════════════════════════════════════════════════════════
 
@@ -148,6 +172,18 @@ export const onRequest = defineMiddleware(async (context, next) => {
   // ── 1. Only cache GET/HEAD to cacheable routes ─────────────────────
   if (!CACHEABLE_METHODS.has(request.method) || isUncacheable(url.pathname)) {
     const response = await next();
+    // Still inject modulepreload hints for uncacheable HTML pages
+    if (response.ok && response.headers.get('content-type')?.includes('text/html')) {
+      const html = injectModulePreloads(await response.text());
+      return withISRHeaders(
+        new Response(html, {
+          status: response.status,
+          statusText: response.statusText,
+          headers: new Headers(response.headers),
+        }),
+        'BYPASS',
+      );
+    }
     return withISRHeaders(response, 'BYPASS');
   }
 
@@ -179,6 +215,39 @@ export const onRequest = defineMiddleware(async (context, next) => {
   const cacheKey = buildCacheKey(url);
   const cacheReq = new Request(cacheKey, { method: 'GET' });
   const execCtx = getExecCtx(locals);
+
+  // Module preload URLs injected at build time by post-build script.
+  // This placeholder will be replaced inside the compiled server bundle
+  // with an array literal (e.g. ["/_astro/foo.js", "/_astro/bar.js"]).
+  // If not replaced, defaults to an empty array.
+  const MODULE_PRELOAD_URLS: string[] = __MODULEPRELOAD_URLS__;
+
+  function buildModulePreloadTags(urls: string[]) {
+    if (!urls || urls.length === 0) return '';
+    return urls
+      .map((u) => `<link rel="modulepreload" href="${u}" crossorigin>`) // crossorigin may help with CORS
+      .join('\n');
+  }
+
+  async function injectPreloadsIntoResponse(resp: Response): Promise<Response> {
+    try {
+      const contentType = resp.headers.get('content-type') || '';
+      if (!contentType.includes('text/html')) return resp;
+
+      const text = await resp.text();
+      const tags = buildModulePreloadTags(MODULE_PRELOAD_URLS);
+      if (!tags) return new Response(text, { status: resp.status, statusText: resp.statusText, headers: resp.headers });
+
+      const replaced = text.replace(/<\/head>/i, tags + '\n</head>');
+      const headers = new Headers(resp.headers);
+      // Ensure content-length is correct for modified body
+      headers.set('content-length', String(Buffer.byteLength(replaced, 'utf8')));
+      return new Response(replaced, { status: resp.status, statusText: resp.statusText, headers });
+    } catch (err) {
+      // If anything goes wrong, return original response
+      return resp;
+    }
+  }
 
   // ── 5. Cache lookup ────────────────────────────────────────────────
   try {
@@ -215,28 +284,39 @@ export const onRequest = defineMiddleware(async (context, next) => {
 
     // Only cache successful HTML responses
     if (response.ok && response.headers.get('content-type')?.includes('text/html')) {
-      const toCache = response.clone();
-      const body = await toCache.arrayBuffer();
+      // Inject modulepreload hints BEFORE caching so cached HTML already has them
+      const originalHtml = await response.text();
+      const html = injectModulePreloads(originalHtml);
 
-      const headers = new Headers(toCache.headers);
+      const headers = new Headers(response.headers);
       headers.set('X-ISR-Cached-At', String(Date.now()));
       // Workers Cache API uses Cache-Control for its own eviction.
       // Set a long TTL so the Cache API doesn't evict before our stale window expires.
       headers.set('Cache-Control', `public, max-age=${CACHE_STALE_AGE}`);
 
-      const cacheResp = new Response(body, {
-        status: toCache.status,
-        statusText: toCache.statusText,
+      const cacheResp = new Response(html, {
+        status: response.status,
+        statusText: response.statusText,
         headers,
       });
 
       // Non-blocking cache write
-      const putOp = cache.put(cacheReq, cacheResp);
+      const putOp = cache.put(cacheReq, cacheResp.clone());
       if (execCtx) {
         execCtx.waitUntil(putOp);
       } else {
         putOp.catch(() => {});
       }
+
+      // Return the preloaded HTML to the user
+      return withISRHeaders(
+        new Response(html, {
+          status: response.status,
+          statusText: response.statusText,
+          headers: new Headers(response.headers),
+        }),
+        'MISS',
+      );
     }
 
     return withISRHeaders(response, 'MISS');
@@ -271,14 +351,17 @@ async function revalidateAndCache(
     const fresh = await next();
 
     if (fresh.ok && fresh.headers.get('content-type')?.includes('text/html')) {
-      const body = await fresh.arrayBuffer();
+      // Inject modulepreload hints into the fresh HTML before caching
+      const originalHtml = await fresh.text();
+      const html = injectModulePreloads(originalHtml);
+
       const headers = new Headers(fresh.headers);
       headers.set('X-ISR-Cached-At', String(Date.now()));
       headers.set('Cache-Control', `public, max-age=${CACHE_STALE_AGE}`);
 
       await cache.put(
         cacheReq,
-        new Response(body, { status: fresh.status, statusText: fresh.statusText, headers }),
+        new Response(html, { status: fresh.status, statusText: fresh.statusText, headers }),
       );
     }
   } catch (err) {

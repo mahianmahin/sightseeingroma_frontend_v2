@@ -3,6 +3,7 @@ import react from '@astrojs/react';
 import cloudflare from '@astrojs/cloudflare';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import modulePreload from './src/integrations/modulepreload.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -40,6 +41,7 @@ export default defineConfig({
 
   integrations: [
     react(),
+    modulePreload(),
   ],
 
   site: 'https://www.sightseeingroma.com',
