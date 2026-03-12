@@ -1,0 +1,147 @@
+---
+/**
+ * RecommendedServices.astro — Server-rendered "Live Rome Your Way" section.
+ * Replaces the React island RecommendedServices.jsx.
+ * Data is fetched at build time via getCards() and baked into static HTML.
+ * Navigation uses <a href> instead of React's useNavigate() — zero JS shipped.
+ */
+import { getCards } from '../../lib/api';
+
+const API_URL = 'https://api.sightseeingroma.com';
+
+// Fetch cards at build time
+let serviceCards: any[] = [];
+try {
+  const data = await getCards();
+  const parsed = (data.cards || [])
+    .filter((c: any) => c.card_active)
+    .map((c: any) => ({
+      id: c.id,
+      title: c.card_title,
+      subtitle: c.card_subtitle,
+      description: c.card_description,
+      image: c.image,
+      features: c.card_features ? c.card_features.split(',').map((f: string) => f.trim()) : [],
+      badge: c.card_badge,
+      isRecommended: !!c.card_recommended,
+      companySlug: c.company_slug,
+    }));
+
+  // Position recommended card at index 1 (2nd position)
+  const recIndex = parsed.findIndex((p: any) => p.isRecommended);
+  if (recIndex !== -1) {
+    const [recCard] = parsed.splice(recIndex, 1);
+    const desiredIndex = Math.min(parsed.length, 1);
+    parsed.splice(desiredIndex, 0, recCard);
+  }
+
+  serviceCards = parsed;
+} catch (err) {
+  console.error('Failed to fetch cards:', err);
+}
+---
+
+{serviceCards.length > 0 && (
+  <div class="py-12 mb-5 rounded-2xl bg-gradient-to-b from-gray-50 to-white">
+    <div class="container mx-auto px-2 sm:px-4 md:px-8">
+      {/* Section Header */}
+      <div class="text-center mb-12">
+        <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+          Live Rome Your Way -  
+          <span class="text-[#930B31]"> Since 2008</span>
+        </h2>
+        <p class="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto">
+          Discover the Eternal City with our premium bus services, each offering unique perspectives and unforgettable memories.
+        </p>
+      </div>
+
+      {/* Cards Grid */}
+      <div class="grid grid-cols-4 md:grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-8">
+        {serviceCards.map((card) => (
+          <a
+            href={`/company-packages/${card.companySlug}`}
+            class={`group relative overflow-hidden rounded-lg lg:rounded-2xl shadow-lg transition-all duration-500 transform hover:xl:scale-105 hover:shadow-2xl cursor-pointer aspect-[1/3.25] md:aspect-[9/16] block ${
+              card.isRecommended 
+                ? 'ring-4 ring-yellow-400 xl:scale-105 mb-1 ring-opacity-75 shadow-yellow-400/25' 
+                : 'hover:shadow-xl'
+            }`}
+          >
+            {/* Recommended Badge */}
+            {card.isRecommended && (
+              <div class="absolute top-1.5 left-1.5 sm:top-4 sm:left-4 z-20">
+                <div class="bg-gradient-to-r from-yellow-400 to-yellow-500 text-black font-bold px-2 sm:px-4 py-2 rounded lg:rounded-full text-xs sm:text-sm shadow-lg animate-pulse">
+                  <div class="flex items-center gap-2">
+                    <svg class="w-3 h-3 sm:w-4 sm:h-4" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>
+                    <span class="hidden lg:block">{card.badge || 'Recommended'}</span>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Background Image */}
+            <div class="absolute inset-0">
+              <img
+                src={`${API_URL}${card.image}`}
+                alt={card.title}
+                class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                width="400"
+                height="600"
+                loading="lazy"
+              />
+              {/* Dark Overlay */}
+              <div class="absolute inset-0 bg-gradient-to-b from-black/10 via-black/40 to-black/80"></div>
+            </div>
+
+            {/* Content */}
+            <div class="relative z-10 h-full flex flex-col justify-end py-6 px-3 sm:p-6 text-white">
+              {/* Features Pills */}
+              <div class="hidden xl:block mb-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <div class="flex flex-wrap gap-2">
+                  {card.features.map((feature: string) => (
+                    <span
+                      class="text-xs bg-white/20 backdrop-blur-sm px-2 py-1 rounded-full border border-white/30"
+                    >
+                      {feature}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              {/* Main Content */}
+              <div class="transform transition-transform duration-300 group-hover:-translate-y-2">
+                <h3 class="text-base sm:text-2xl font-bold mb-2 inline-block leading-tight [writing-mode:sideways-lr] [text-orientation:upright] sm:[writing-mode:horizontal-tb]" style="text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8)">
+                  {card.title}
+                </h3>
+
+                <div>
+                  <p class="text-sm hidden xl:block sm:text-lg text-yellow-300 font-semibold mb-3" style="text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7)">
+                    {card.subtitle}
+                  </p>
+                  <p class="hidden xl:block text-sm text-gray-200 leading-relaxed opacity-90" style="text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7)">
+                    {card.description}
+                  </p>
+                </div>
+              </div>
+
+              {/* CTA Button */}
+              <div class="mt-4 hidden xl:block opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-4 group-hover:translate-y-0">
+                <span class="w-full bg-[#930B31] hover:bg-red-700 text-white font-semibold py-3 px-4 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg block text-center">
+                  View All Tickets
+                </span>
+              </div>
+            </div>
+
+            {/* Glowing Border Animation for Recommended */}
+            {card.isRecommended && (
+              <div class="absolute inset-0 rounded-2xl pointer-events-none">
+                <div class="absolute inset-0 rounded-lg xl:rounded-2xl border-4 border-yellow-400 opacity-75 animate-pulse"></div>
+              </div>
+            )}
+          </a>
+        ))}
+      </div>
+    </div>
+  </div>
+)}

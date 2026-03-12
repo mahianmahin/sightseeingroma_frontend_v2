@@ -1,13 +1,19 @@
 ---
 /**
- * Homepage — SSG (pre-rendered at build time)
+ * Homepage — SSR (server-rendered on every request)
  *
- * All API data is fetched at build time and baked into static HTML.
+ * All API data is fetched server-side on each request and rendered into HTML.
+ * This ensures editors always see fresh featured offers, prices, and cards
+ * without needing a rebuild.
+ *
  * Interactive sections (Services tabs, SectionNav scroll spy) are React islands.
- * Everything else is pure Astro — zero JS shipped for static sections.
+ * Display-only sections (FeaturedToday, PromoBanner, RecommendedServices, HeroFeaturedOffer)
+ * are pure Astro components — zero JS shipped.
  *
  * Performance target: FCP < 0.5s, LCP < 1s (hero image)
  */
+export const prerender = false; // SSR — fresh data on every request
+
 import BaseLayout from '../layouts/BaseLayout.astro';
 
 // Astro components — zero JS
@@ -17,21 +23,49 @@ import FinalCTA from '../components/Home/FinalCTA.astro';
 import Work from '../components/Home/Work.astro';
 import Contact from '../components/Home/Contact.astro';
 import CustomerReviews from '../components/Home/CustomerReviews.astro';
+import FeaturedTodayAstro from '../components/Home/FeaturedToday.astro';
+import PromoBannerAstro from '../components/Home/PromoBanner.astro';
+import RecommendedServicesAstro from '../components/Home/RecommendedServices.astro';
 
-// React islands — interactive
+// React islands — only truly interactive components
 import SectionNav from '../Components/SectionNav/SectionNav';
 import Services from '../Components/Services/Services';
-import FeaturedToday from '../Components/FeaturedToday/FeaturedToday';
-import PromoBanner from '../Components/PromoBanner/PromoBanner';
-import RecommendedServices from '../Components/RecommendedServices/RecommendedServices';
+
+// ─── Server-side data fetching (runs on every request) ───────────────
+import { getFeaturedOffers } from '../lib/api';
+
+// Fetch featured offers once — shared by Hero, FeaturedToday, and PromoBanner
+let bestOffer: any = null;
+try {
+  const res = await getFeaturedOffers();
+  const offers = res?.status === 200 && res?.data?.length ? res.data : [];
+  // Pick the offer with the highest discount percentage
+  const withDiscount = offers
+    .filter((o: any) => o.original_adult_price && o.offer_adult_price && parseFloat(o.original_adult_price) > parseFloat(o.offer_adult_price))
+    .map((o: any) => ({
+      ...o,
+      discountPct: Math.round(((parseFloat(o.original_adult_price) - parseFloat(o.offer_adult_price)) / parseFloat(o.original_adult_price)) * 100)
+    }));
+  if (withDiscount.length) {
+    withDiscount.sort((a: any, b: any) => b.discountPct - a.discountPct);
+    bestOffer = withDiscount[0];
+  }
+} catch (err) {
+  console.error('Failed to fetch featured offers:', err);
+}
+
+// Cache the SSR response for 60s at the edge, revalidate in background.
+// This means content updates within ~60s of an editor saving, while still being
+// blazing fast for users (served from Cloudflare edge cache).
+Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=300');
 ---
 
 <BaseLayout
   title="Sightseeing Roma – Rome Hop-On Hop-Off Bus Tours & Tickets"
   description="Compare top hop-on hop-off bus tours in Rome. Book Big Bus, City Sightseeing, Green Line & more. Best prices guaranteed. Explore the Eternal City your way!"
 >
-  <!-- Hero — static HTML + background image (LCP element) -->
-  <Hero />
+  <!-- Hero — static HTML + background image (LCP element) + server-rendered featured offer -->
+  <Hero bestOffer={bestOffer} />
 
   <!-- Section Navigation — React island for scroll spy + sticky behavior -->
   <SectionNav client:visible />
@@ -41,9 +75,9 @@ import RecommendedServices from '../Components/RecommendedServices/RecommendedSe
     <Services client:idle />
   </div>
 
-  <!-- FeaturedToday — desktop only (mobile shows it inside Hero) -->
+  <!-- FeaturedToday — desktop only, server-rendered (zero JS) -->
   <div class="hidden lg:block">
-    <FeaturedToday client:idle />
+    <FeaturedTodayAstro bestOffer={bestOffer} />
   </div>
 
   <!-- Why Book With Us — pure Astro, zero JS -->
@@ -57,12 +91,12 @@ import RecommendedServices from '../Components/RecommendedServices/RecommendedSe
   <!-- Customer Reviews — server-fetched, CSS-only carousel -->
   <CustomerReviews />
 
-  <!-- PromoBanner — React island, fetches featured-offers -->
-  <PromoBanner client:idle />
+  <!-- PromoBanner — server-rendered (zero JS), uses same pre-fetched data -->
+  <PromoBannerAstro bestOffer={bestOffer} />
 
-  <!-- Live Rome Your Way — React island for explore cards -->
+  <!-- Live Rome Your Way — server-rendered (zero JS), fetches cards server-side -->
   <div id="explore">
-    <RecommendedServices client:idle />
+    <RecommendedServicesAstro />
   </div>
 
   <!-- The Process — pure Astro, zero JS -->

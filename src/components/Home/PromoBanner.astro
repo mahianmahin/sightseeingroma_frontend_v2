@@ -1,0 +1,119 @@
+---
+/**
+ * PromoBanner.astro — Server-rendered promo banner.
+ * Replaces the React island PromoBanner.jsx.
+ * Data is passed as props from the parent page (fetched at build time).
+ * Zero JS shipped — pure HTML + Tailwind CSS.
+ */
+
+export interface Props {
+  bestOffer: {
+    offer_adult_price: string;
+    discountPct: number;
+  } | null;
+}
+
+const { bestOffer } = Astro.props;
+
+// Don't render if no valid offer
+if (!bestOffer) return null;
+
+const IMAGES = [
+  "/CitySightseeeing/sh-1.webp",
+  "/CitySightseeeing/sh-2.webp",
+  "/CitySightseeeing/sh-3.webp"
+];
+
+const title = `Looking for a BIG deal? Save ${bestOffer.discountPct}% now!`;
+const subtitle = `Adult tickets from €${bestOffer.offer_adult_price}`;
+const link = '/featured-offers';
+const buttonText = 'BUY NOW';
+---
+
+<div class="w-full max-w-6xl mx-auto px-0 md:px-4 my-4 md:my-20">
+  <div class="relative bg-[#930B31] md:rounded-xl md:shadow-2xl">
+    <div class="flex flex-col md:flex-row items-center justify-between min-h-[100px] md:min-h-[140px] px-3 py-3 md:py-4 md:px-12 overflow-hidden md:overflow-visible md:rounded-xl">
+      
+      {/* Mobile Layout */}
+      <div class="md:hidden w-full flex items-center justify-between relative">
+        {/* Images Group - Left Side */}
+        <div class="flex -space-x-6 absolute -left-2 top-1/2 -translate-y-1/2 z-10">
+          {IMAGES.slice(0, 2).map((img, index) => (
+            <div 
+              class={`relative w-16 h-16 transform ${index === 0 ? '-rotate-12' : 'rotate-6 translate-y-1'} rounded-sm`}
+            >
+              <img src={img} alt="Rome sightseeing tour promotion" width="280" height="168" loading="lazy" class="w-full h-full object-cover" />
+            </div>
+          ))}
+        </div>
+        
+        {/* Content - Right Side */}
+        <div class="flex flex-col items-end text-right w-full pl-16">
+          <div class="mb-1">
+            <p class="text-[#FAD502] text-[10px] font-bold uppercase tracking-wider mb-0.5">Limited Offer</p>
+            <h3 class="text-white font-bold text-sm leading-tight max-w-[200px]">
+              {title}
+            </h3>
+          </div>
+          
+          <div class="flex items-center gap-2 mt-0.5">
+            <p class="text-white/90 text-[10px] font-medium">{subtitle}</p>
+            <a 
+              href={link}
+              class="bg-[#FAD502] text-[#930B31] px-3 py-1 rounded font-bold text-xs hover:bg-white transition-all shadow-lg active:scale-95 whitespace-nowrap"
+            >
+              {buttonText}
+            </a>
+          </div>
+        </div>
+      </div>
+
+      {/* Desktop Layout */}
+      <div class="hidden md:flex w-full items-center justify-between relative">
+        {/* Left: Title & Tagline */}
+        <div class="flex-1 pr-8 z-10">
+          <div class="inline-block bg-[#800020] rounded px-2 py-1 mb-2">
+            <span class="text-[#FAD502] text-xs font-bold uppercase tracking-wider">Special Promotion</span>
+          </div>
+          <h2 class="text-white font-bold text-3xl lg:text-4xl leading-tight drop-shadow-md">
+            {title}
+          </h2>
+        </div>
+
+        {/* Center: Button & Price */}
+        <div class="flex flex-col items-center justify-center px-8 z-10 border-l border-white/10 border-r mx-4">
+          <a 
+            href={link}
+            class="bg-[#FAD502] text-[#930B31] px-8 py-3 rounded-lg font-bold text-xl hover:bg-white hover:scale-105 transition-all shadow-[0_4px_14px_0_rgba(250,213,2,0.39)] uppercase"
+          >
+            {buttonText}
+          </a>
+          <p class="text-white/90 text-sm mt-3 font-medium bg-[#800020]/50 px-3 py-1 rounded-full border border-white/10">
+            {subtitle}
+          </p>
+        </div>
+
+        {/* Right: Images overlapping edge */}
+        <div class="flex-1 flex justify-end relative h-full min-h-[140px]">
+          <div class="flex -space-x-12 absolute -right-12 top-1/2 -translate-y-1/2">
+            {IMAGES.map((img, index) => (
+              <div 
+                class={`relative w-32 h-32 lg:w-40 lg:h-40 bg-white p-2 shadow-2xl 
+                  transform transition-all duration-300 hover:scale-110 hover:z-50 hover:-rotate-0
+                  ${index === 0 ? '-rotate-12 translate-y-2 z-10' : ''}
+                  ${index === 1 ? 'rotate-6 -translate-y-2 z-20' : ''}
+                  ${index === 2 ? '-rotate-3 translate-y-4 z-30' : ''}
+                  rounded-sm border border-gray-100`}
+              >
+                <img src={img} alt="Rome sightseeing tour promotion" width="280" height="168" loading="lazy" class="w-full h-full object-cover" />
+                {/* Tape effect */}
+                <div class="absolute -top-3 left-1/2 -translate-x-1/2 w-12 h-4 bg-white/30 backdrop-blur-sm rotate-2 shadow-sm"></div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

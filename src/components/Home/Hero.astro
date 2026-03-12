@@ -2,9 +2,18 @@
 /**
  * Hero.astro — Server-rendered hero section.
  * Background image via CSS, text + trust signals + CTA buttons all in static HTML.
- * Mobile: Shows HeroFeaturedOffer React island instead of trust card.
+ * Mobile: Shows server-rendered HeroFeaturedOffer (zero JS).
+ * Desktop: Shows trust card.
+ *
+ * CLS fix: content is fully server-rendered, no client-side layout shifts.
  */
-import HeroFeaturedOffer from '../../Components/Hero/HeroFeaturedOffer';
+import HeroFeaturedOffer from './HeroFeaturedOffer.astro';
+
+export interface Props {
+  bestOffer?: any;
+}
+
+const { bestOffer = null } = Astro.props;
 ---
 
 <section class="w-full relative min-h-[85vh] md:min-h-[90vh] flex items-center overflow-hidden">
@@ -91,9 +100,9 @@ import HeroFeaturedOffer from '../../Components/Hero/HeroFeaturedOffer';
 
       <!-- Right Column (40%) - Trust Card (desktop) / Featured Offer (mobile) -->
       <div class="w-full lg:w-[40%] flex justify-center lg:justify-end">
-        <!-- Mobile: Show featured offer card -->
+        <!-- Mobile: Show server-rendered featured offer card (zero JS) -->
         <div class="lg:hidden w-full flex justify-center">
-          <HeroFeaturedOffer client:load />
+          {bestOffer && <HeroFeaturedOffer bestOffer={bestOffer} />}
         </div>
         <!-- Desktop: Show trust card -->
         <div class="hidden lg:block bg-white text-gray-800 rounded-xl shadow-2xl p-5 md:p-6 max-w-md w-full transform hover:scale-[1.02] transition-transform duration-300">

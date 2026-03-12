@@ -1,5 +1,6 @@
 {
-  "name": "sightseeingroma",
+  // "name": "sightseeingroma",
+  "name": "sightseeingroma-frontend-v2-astro",
   "compatibility_date": "2026-03-10",
   "compatibility_flags": ["nodejs_compat", "assets_navigation_has_no_effect"],
   "main": "@astrojs/cloudflare/entrypoints/server",

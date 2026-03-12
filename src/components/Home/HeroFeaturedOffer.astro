@@ -1,0 +1,147 @@
+---
+/**
+ * HeroFeaturedOffer.astro — Server-rendered mobile featured-offer card.
+ * Replaces the React island HeroFeaturedOffer.jsx for the hero section.
+ * Data is fetched at build time and baked into static HTML — zero JS shipped.
+ */
+
+export interface Props {
+  bestOffer: {
+    id: number;
+    badge_text?: string;
+    offer_adult_price: string;
+    original_adult_price?: string;
+    offer_image_url?: string;
+    offer_image_webp_url?: string;
+    offer_title?: string;
+    time_remaining?: number;
+    discountPct: number;
+  } | null;
+}
+
+const { bestOffer } = Astro.props;
+
+if (!bestOffer) return null;
+
+const API_URL = 'https://api.sightseeingroma.com';
+
+const {
+  id,
+  badge_text,
+  offer_adult_price,
+  original_adult_price,
+  offer_image_url,
+  offer_image_webp_url,
+  offer_title,
+  time_remaining,
+  discountPct,
+} = bestOffer;
+
+// Format countdown timer
+function formatTime(seconds?: number): string | null {
+  if (!seconds || seconds <= 0) return null;
+  const d = Math.floor(seconds / 86400);
+  const h = Math.floor((seconds % 86400) / 3600);
+  const m = Math.floor((seconds % 3600) / 60);
+  if (d > 0) return `${d}d ${h}h`;
+  if (h > 0) return `${h}h ${m}m`;
+  return `${m}m`;
+}
+
+const timeLabel = formatTime(time_remaining);
+
+const imageUrl = offer_image_url
+  ? (offer_image_url.startsWith('http') ? offer_image_url : `${API_URL}${offer_image_url}`)
+  : null;
+const imageWebpUrl = offer_image_webp_url
+  ? (offer_image_webp_url.startsWith('http') ? offer_image_webp_url : `${API_URL}${offer_image_webp_url}`)
+  : undefined;
+
+const showStrike = original_adult_price && parseFloat(original_adult_price) > parseFloat(offer_adult_price);
+---
+
+<a
+  href={`/featured-offers?highlight=${id}`}
+  class="relative rounded-2xl overflow-hidden max-w-sm w-full block
+         shadow-2xl ring-2 ring-[#FAD502]/60 hover:ring-[#FAD502]
+         transform hover:scale-[1.02] transition-all duration-300"
+>
+  {/* Full-bleed image */}
+  <div class="w-full aspect-[4/3]">
+    {imageUrl ? (
+      imageWebpUrl ? (
+        <picture>
+          <source srcset={imageWebpUrl} type="image/webp" />
+          <img
+            src={imageUrl}
+            alt={offer_title || 'Featured offer'}
+            class="w-full h-full object-cover"
+            width="400"
+            height="300"
+            loading="eager"
+          />
+        </picture>
+      ) : (
+        <img
+          src={imageUrl}
+          alt={offer_title || 'Featured offer'}
+          class="w-full h-full object-cover"
+          width="400"
+          height="300"
+          loading="eager"
+        />
+      )
+    ) : (
+      <div class="w-full h-full bg-gradient-to-br from-gray-800 to-gray-900" />
+    )}
+  </div>
+
+  {/* Dark gradient overlay */}
+  <div class="absolute inset-0 bg-gradient-to-t from-black/100 via-black/50 to-transparent pointer-events-none" />
+
+  {/* Top badges */}
+  <div class="absolute top-0 left-0 right-0 flex items-start justify-between p-3 z-10">
+    <span class="bg-[#930B31] text-white text-[10px] font-bold py-1 px-2.5 rounded-md uppercase tracking-wider shadow-lg">
+      {badge_text || 'Featured Today'}
+    </span>
+    {discountPct > 0 && (
+      <span class="bg-[#FAD502] text-gray-900 font-black text-sm px-2.5 py-1 rounded-md shadow-lg flex flex-col items-center leading-none">
+        <span class="text-base">{discountPct}%</span>
+        <span class="text-[8px] font-bold uppercase tracking-wider">OFF</span>
+      </span>
+    )}
+  </div>
+
+  {/* Bottom content */}
+  <div class="absolute bottom-0 left-0 right-0 p-4 z-10">
+    {/* Timer */}
+    {timeLabel && (
+      <div class="flex items-center gap-1.5 mb-3">
+        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="currentColor" class="text-[#FAD502]"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm4.2 14.2L11 13V7h1.5v5.2l4.5 2.7-.8 1.3z"/></svg>
+        <span class="text-xs text-white/90 font-medium">
+          Ends in <span class="font-bold text-[#FAD502]">{timeLabel}</span>
+        </span>
+      </div>
+    )}
+
+    {/* Price row */}
+    <div class="flex items-baseline gap-2.5 mb-3">
+      <span class="text-3xl font-black text-white drop-shadow-lg">
+        €{offer_adult_price}
+      </span>
+      {showStrike && (
+        <span class="text-sm text-white/50 line-through font-medium">
+          €{original_adult_price}
+        </span>
+      )}
+      <span class="text-[10px] text-white/60 font-medium">/ person</span>
+    </div>
+
+    {/* CTA button */}
+    <span class="w-full bg-[#FAD502] hover:bg-[#e5c302] text-gray-900 font-bold text-sm py-2.5 rounded-lg
+                 flex items-center justify-center gap-2 shadow-lg transition-colors duration-200">
+      View Offer
+      <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+    </span>
+  </div>
+</a>

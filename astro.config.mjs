@@ -32,6 +32,12 @@ export default defineConfig({
     imageService: 'passthrough', // Cloudflare Images binding requires a paid plan
   }),
 
+  // Inline all CSS into <style> tags in <head> to eliminate render-blocking stylesheet requests.
+  // The full CSS is ~22 KiB gzipped — small enough to inline without hurting HTML size.
+  build: {
+    inlineStylesheets: 'always',
+  },
+
   integrations: [
     react(),
   ],
