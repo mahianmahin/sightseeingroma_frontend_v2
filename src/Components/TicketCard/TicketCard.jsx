@@ -5,15 +5,14 @@ import { FaTag } from "react-icons/fa";
 import PropTypes from "prop-types";
 import { baseUrlHashless } from "../../utilities/Utilities";
 import { useNavigate } from "react-router-dom";
-import { useActiveOffers, getOfferForPackage } from "../../hooks/useActiveOffers";
+import { getOfferForPackage } from "../../hooks/useActiveOffers";
 import OptimizedImage from "../OptimizedImage/OptimizedImage";
 
-const TicketCard = ({ title, subtitle, image, duration, offPrice, ticketCount, price, id , status, price2 , id1, thumbnail_small, thumbnail_large, thumbnail_small_alt, thumbnail_large_alt, thumbnail_small_webp, thumbnail_large_webp}) => {
+const TicketCard = ({ title, subtitle, image, duration, offPrice, ticketCount, price, id , status, price2 , id1, thumbnail_small, thumbnail_large, thumbnail_small_alt, thumbnail_large_alt, thumbnail_small_webp, thumbnail_large_webp, offersByPackage}) => {
     const navigate = useNavigate();
-    const { activeOffers } = useActiveOffers();
     
-    // Check if this package has an active offer
-    const activeOffer = getOfferForPackage(activeOffers, id);
+    // Use server-provided offers data — no client-side fetch
+    const activeOffer = getOfferForPackage(offersByPackage || {}, id);
     
     let calculatedStatus = null;
     if (duration) {
@@ -151,6 +150,7 @@ TicketCard.propTypes = {
     thumbnail_small_webp: PropTypes.string,
     thumbnail_large_webp: PropTypes.string,
     offPrice: PropTypes.number,
+    offersByPackage: PropTypes.object,
 };
 
 export default TicketCard;

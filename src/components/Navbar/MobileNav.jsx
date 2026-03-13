@@ -3,6 +3,7 @@
  * Loaded via client:media="(max-width: 1023px)" — zero JS on desktop.
  *
  * Handles: menu open/close, click-outside dismiss, auth state, logout.
+ * Auth state is derived from localStorage only — NO API fetch.
  */
 import { useState, useEffect, useRef } from 'react';
 import { FiMenu, FiX } from 'react-icons/fi';
@@ -12,25 +13,16 @@ import { BsInfoCircle } from 'react-icons/bs';
 import { HiOutlineNewspaper, HiOutlineLogout } from 'react-icons/hi';
 import { TbLogin2, TbLogout2 } from 'react-icons/tb';
 import { FaUser, FaHistory } from 'react-icons/fa';
-import { API_URL } from '../../lib/constants';
 
 export default function MobileNav() {
   const [isOpen, setIsOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const dropdownRef = useRef(null);
 
-  // Check auth on mount
+  // Check auth on mount — localStorage only, no network call
   useEffect(() => {
     const refresh = localStorage.getItem('refresh');
-    if (!refresh) return;
-
-    fetch(`${API_URL}/api/token/verify/`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ token: refresh }),
-    })
-      .then((res) => { if (res.ok) setIsLoggedIn(true); })
-      .catch(() => {});
+    if (refresh) setIsLoggedIn(true);
   }, []);
 
   // Close on outside click

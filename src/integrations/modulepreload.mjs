@@ -75,6 +75,49 @@ function findIslandEntryPoints(content) {
   return [...urls];
 }
 
+/**
+ * Scan SSR server chunks for "client:component-path" attributes.
+ * These contain the original filesystem path of island components on SSR pages.
+ * Returns the component names (e.g., "Services", "SectionNav").
+ */
+function findSSRIslandComponentNames(content) {
+  const names = new Set();
+  // Match: "client:component-path": "/path/to/ComponentName"
+  const matches = content.match(/"client:component-path":\s*"([^"]+)"/g) || [];
+  for (const match of matches) {
+    const pathMatch = match.match(/"client:component-path":\s*"([^"]+)"/);
+    if (pathMatch) {
+      // Extract the component name from the filesystem path
+      // e.g., "/path/to/src/Components/Services/Services" → "Services"
+      const componentPath = pathMatch[1];
+      const name = componentPath.split('/').pop();
+      if (name) names.add(name);
+    }
+  }
+  return [...names];
+}
+
+/**
+ * Map component names to their built client-side JS files.
+ * Looks for files matching ComponentName.*.js in the client _astro dir.
+ */
+function resolveComponentNamesToClientFiles(componentNames, clientDir) {
+  const urls = [];
+  try {
+    const clientFiles = fs.readdirSync(clientDir);
+    for (const name of componentNames) {
+      // Find files matching: ComponentName.hash.js
+      const matching = clientFiles.filter(
+        (f) => f.startsWith(name + '.') && f.endsWith('.js'),
+      );
+      for (const file of matching) {
+        urls.push(`/_astro/${file}`);
+      }
+    }
+  } catch {}
+  return urls;
+}
+
 export default function modulePreloadIntegration() {
   return {
     name: 'astro-modulepreload',
@@ -114,8 +157,17 @@ export default function modulePreloadIntegration() {
           for (const chunk of serverChunks) {
             if (!chunk.endsWith('.mjs')) continue;
             const content = fs.readFileSync(path.join(chunksDir, chunk), 'utf8');
+            // 1) Find any literal component-url / renderer-url usages inside chunks
             for (const ep of findIslandEntryPoints(content)) {
               allEntryPoints.add(ep);
+            }
+
+            // 2) New: extract SSR-only "client:component-path" entries and
+            //    resolve them to built client-side files (e.g. Services.DoQ9byrF.js)
+            const componentNames = findSSRIslandComponentNames(content);
+            if (componentNames.length > 0) {
+              const resolved = resolveComponentNamesToClientFiles(componentNames, clientDir);
+              for (const r of resolved) allEntryPoints.add(r);
             }
           }
         } catch {}

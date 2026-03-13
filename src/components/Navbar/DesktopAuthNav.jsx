@@ -2,34 +2,22 @@
  * DesktopAuthNav.jsx — React island for desktop auth buttons
  * Loaded via client:idle — renders Login/Logout button based on JWT token.
  * Minimal footprint: only auth check + one button.
+ * Auth state is derived from localStorage only — NO API fetch.
  */
 import { useState, useEffect } from 'react';
 import { HiOutlineLogout } from 'react-icons/hi';
 import { TbLogin2 } from 'react-icons/tb';
 import { FaHistory, FaUser } from 'react-icons/fa';
-import { API_URL } from '../../lib/constants';
 
 export default function DesktopAuthNav() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [checked, setChecked] = useState(false);
 
+  // Check auth on mount — localStorage only, no network call
   useEffect(() => {
     const refresh = localStorage.getItem('refresh');
-    if (!refresh) {
-      setChecked(true);
-      return;
-    }
-
-    fetch(`${API_URL}/api/token/verify/`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ token: refresh }),
-    })
-      .then((res) => {
-        if (res.ok) setIsLoggedIn(true);
-      })
-      .catch(() => {})
-      .finally(() => setChecked(true));
+    if (refresh) setIsLoggedIn(true);
+    setChecked(true);
   }, []);
 
   function logout() {

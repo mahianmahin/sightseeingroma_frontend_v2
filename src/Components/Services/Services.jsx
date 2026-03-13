@@ -1,23 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { baseUrl } from "../../utilities/Utilities";
 import Card from "./Card";
 
 
 const Services = (props) => {
-  // Accept server-fetched data as props to eliminate client-side fetch waterfall.
-  // If props are provided, use them immediately (no loading state, no network request).
-  // Falls back to client-side fetch if props are empty (e.g. navigated to from another page).
-  const hasInitialData = props.initialBusData?.length > 0;
+  // All data is fetched SERVER-SIDE in index.astro and passed as props.
+  // No client-side API fetch — only interactive filtering/sorting JS is shipped.
+  const busData = props.initialBusData || [];
+  const folders = props.initialFolders || [];
   
   const [activeTab, setActiveTab] = useState(0);
-  const [busData, setBusData] = useState(hasInitialData ? props.initialBusData : []);
-  const [folders, setFolders] = useState(hasInitialData ? props.initialFolders : []);
-  const [loading, setLoading] = useState(!hasInitialData);
   const [tabLoading, setTabLoading] = useState(false);
-  const [error, setError] = useState(null);
   
   // Filter states
-  const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
   const [showMobileFilters, setShowMobileFilters] = useState(false);
   const [filters, setFilters] = useState({
     duration: '',
@@ -29,27 +23,6 @@ const Services = (props) => {
     groupSize: []
   });
   const [activeFilters, setActiveFilters] = useState([]);  
-
-  useEffect(() => {
-    // Skip fetch if we already have server-provided data
-    if (hasInitialData) return;
-    
-    const fetchData = async () => {
-      try {
-        const response = await fetch(`${baseUrl}packages/`);
-        if (!response.ok) throw new Error("Failed to fetch data");
-        const data = await response.json();
-        setBusData(data.bus_data || []);
-        setFolders(data.folders || []);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        setError("Failed to load data. Please try again later.");
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchData();
-  }, []);
 
   useEffect(() => {
     // simulate delay when tab changes (optional)
@@ -183,55 +156,8 @@ const Services = (props) => {
     ));
   };
 
-  if (props.loading || loading) {
-    return (
-      <div className="bg-[#F2F2F7] py-8 md:py-16">
-        <div className="container mx-auto px-4 md:px-8">
-          <div className="bg-white rounded-2xl shadow-lg p-4 md:p-8 mb-8">
-            <div className="text-center mb-4 md:mb-8">
-              <div className="h-6 md:h-8 bg-gray-200 rounded animate-pulse w-64 mx-auto mb-2"></div>
-            </div>
-            <div className="grid grid-cols-2 md:flex md:flex-wrap md:justify-center gap-2 md:gap-4 mb-4 md:mb-8">
-              {Array.from({ length: 4 }).map((_, i) => (
-                <div key={i} className="h-10 md:h-14 bg-gray-200 rounded-lg md:rounded-xl animate-pulse md:w-32"></div>
-              ))}
-            </div>
-          </div>
-          <div className="container mx-auto px-2 md:px-4">
-            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-6">
-              {Array.from({ length: 8 }).map((_, i) => (
-                <div key={i} className="bg-white rounded-lg shadow-md overflow-hidden">
-                  <div className="w-full h-32 md:h-44 bg-gray-200 animate-pulse"></div>
-                  <div className="p-4 space-y-3">
-                    <div className="h-4 bg-gray-200 rounded animate-pulse"></div>
-                    <div className="h-4 bg-gray-200 rounded animate-pulse w-3/4"></div>
-                    <div className="h-6 bg-gray-200 rounded animate-pulse w-1/2"></div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="min-h-screen bg-[#F2F2F7] flex items-center justify-center">
-        <div className="text-center bg-white p-8 rounded-lg shadow-md max-w-md">
-          <div className="text-red-500 text-4xl mb-4">⚠️</div>
-          <h3 className="text-xl font-bold text-gray-800 mb-2">Oops! Something went wrong</h3>
-          <p className="text-red-500 mb-4">{error}</p>
-          <button 
-            onClick={() => window.location.reload()} 
-            className="bg-[#930B31] text-white px-6 py-2 rounded-lg hover:bg-red-800 transition-colors"
-          >
-            Try Again
-          </button>
-        </div>
-      </div>
-    );
+  if (busData.length === 0) {
+    return null; // No data from server — render nothing
   }
 
   return (

@@ -216,39 +216,6 @@ export const onRequest = defineMiddleware(async (context, next) => {
   const cacheReq = new Request(cacheKey, { method: 'GET' });
   const execCtx = getExecCtx(locals);
 
-  // Module preload URLs injected at build time by post-build script.
-  // This placeholder will be replaced inside the compiled server bundle
-  // with an array literal (e.g. ["/_astro/foo.js", "/_astro/bar.js"]).
-  // If not replaced, defaults to an empty array.
-  const MODULE_PRELOAD_URLS: string[] = __MODULEPRELOAD_URLS__;
-
-  function buildModulePreloadTags(urls: string[]) {
-    if (!urls || urls.length === 0) return '';
-    return urls
-      .map((u) => `<link rel="modulepreload" href="${u}" crossorigin>`) // crossorigin may help with CORS
-      .join('\n');
-  }
-
-  async function injectPreloadsIntoResponse(resp: Response): Promise<Response> {
-    try {
-      const contentType = resp.headers.get('content-type') || '';
-      if (!contentType.includes('text/html')) return resp;
-
-      const text = await resp.text();
-      const tags = buildModulePreloadTags(MODULE_PRELOAD_URLS);
-      if (!tags) return new Response(text, { status: resp.status, statusText: resp.statusText, headers: resp.headers });
-
-      const replaced = text.replace(/<\/head>/i, tags + '\n</head>');
-      const headers = new Headers(resp.headers);
-      // Ensure content-length is correct for modified body
-      headers.set('content-length', String(Buffer.byteLength(replaced, 'utf8')));
-      return new Response(replaced, { status: resp.status, statusText: resp.statusText, headers });
-    } catch (err) {
-      // If anything goes wrong, return original response
-      return resp;
-    }
-  }
-
   // ── 5. Cache lookup ────────────────────────────────────────────────
   try {
     const cached = await cache.match(cacheReq);
