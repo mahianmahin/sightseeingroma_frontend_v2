@@ -8,11 +8,11 @@
     "directory": "./dist"
   },
   // Bind to the existing KV namespace (auto-provisioned on first deploy attempt)
-  "kv_namespaces": [
-    {
-      "binding": "SESSION",
-      "id": "542fd9aa903b438ab880c65f93db9ffe"
-    }
-  ]
+  //"kv_namespaces": [
+  //  {
+  //    "binding": "SESSION",
+  //    "id": "542fd9aa903b438ab880c65f93db9ffe"
+  //  }
+  //]
 }
 
