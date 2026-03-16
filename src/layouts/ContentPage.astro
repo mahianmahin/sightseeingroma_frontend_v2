@@ -127,19 +127,111 @@ const bodyHtml = replaceVars(getContent(`${slug}-page-content`, ''));
   description={description}
   headExtra={schemaJson ? `<script type="application/ld+json">${JSON.stringify(schemaJson)}</script>` : undefined}
 >
-  <div class="container mx-auto">
-    <!-- Banner -->
-    <PageBanner imageMd={bannerImage} opacity={bannerOpacity}>
-      <Fragment set:html={titleHtml} />
-      {subtitleHtml && <Fragment set:html={subtitleHtml} />}
-    </PageBanner>
-
-    <!-- CMS body content -->
-    {bodyHtml && (
-      <div set:html={bodyHtml} />
-    )}
-
-    <!-- Additional page-specific content via slot -->
-    <slot />
+  <!-- Full-width Modern Banner -->
+  <div class="relative w-full h-[45vh] min-h-[350px] flex items-center justify-center overflow-hidden">
+    <div 
+      class="absolute inset-0 bg-cover bg-center transition-transform duration-1000 hover:scale-105"
+      style={`background-image:url(${bannerImage})`}
+    ></div>
+    <!-- Elegant Gradient Overlay -->
+    <div class="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/40 to-black/20" style={`opacity: ${bannerOpacity * 1.5}`}></div>
+    
+    <div class="relative z-10 text-center px-6 w-full max-w-4xl mt-10">
+      <div class="inline-block mb-4 px-4 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white/90 text-sm font-medium tracking-widest uppercase">
+        Information
+      </div>
+      <div class="cms-banner-title">
+        <Fragment set:html={titleHtml} />
+      </div>
+      {subtitleHtml && (
+        <div class="cms-banner-subtitle mt-5 text-white/80 text-lg sm:text-xl font-light max-w-2xl mx-auto">
+          <Fragment set:html={subtitleHtml} />
+        </div>
+      )}
+    </div>
   </div>
+
+  <!-- Clean, airy content section -->
+  <main class="w-full bg-slate-50 border-t border-slate-200">
+    <div class="container mx-auto px-4 sm:px-6 py-12 md:py-20 max-w-4xl">
+      <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 sm:p-10 md:p-14 cms-content relative">
+        <!-- Decorative accent -->
+        <div class="absolute top-0 left-10 w-20 h-1 bg-blue-500 rounded-b-md"></div>
+        
+        <!-- CMS body content -->
+        {bodyHtml ? (
+          <div set:html={bodyHtml} />
+        ) : (
+          <div class="flex flex-col items-center justify-center py-20 text-slate-400">
+            <svg class="w-12 h-12 mb-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10l6 6v10a2 2 0 01-2 2z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14 4v6h6"></path></svg>
+            <p class="text-lg font-medium">Content is being updated</p>
+          </div>
+        )}
+
+        <!-- Additional page-specific content via slot -->
+        <slot />
+      </div>
+    </div>
+  </main>
 </BaseLayout>
+
+<style is:global>
+  /* Modern Banner Typography */
+  .cms-banner-title h1, .cms-banner-title h2 {
+    @apply text-4xl sm:text-5xl md:text-6xl font-extrabold text-white tracking-tight leading-tight;
+  }
+  
+  /* Modern, airy Typography for CMS Content */
+  .cms-content {
+    @apply text-slate-600 leading-relaxed text-[16px] sm:text-[17px] md:text-lg;
+  }
+  .cms-content h1 {
+    @apply text-3xl sm:text-4xl font-bold text-slate-900 mb-6 mt-10 tracking-tight leading-tight;
+  }
+  .cms-content h2 {
+    @apply text-2xl sm:text-3xl font-bold text-slate-800 mb-5 mt-10 border-b border-slate-100 pb-4 flex items-center;
+  }
+  .cms-content h3 {
+    @apply text-xl sm:text-2xl font-semibold text-slate-800 mb-4 mt-8;
+  }
+  .cms-content p {
+    @apply mb-6;
+  }
+  .cms-content a {
+    @apply text-blue-600 font-medium hover:text-blue-800 underline decoration-blue-200 decoration-2 underline-offset-4 hover:decoration-blue-600 transition-all duration-300;
+  }
+  .cms-content ul {
+    @apply list-none pl-0 mb-8 space-y-4;
+  }
+  .cms-content ul li {
+    @apply relative pl-10;
+  }
+  .cms-content ul li::before {
+    content: "";
+    @apply absolute left-2 top-[10px] w-2.5 h-2.5 bg-blue-100 border-2 border-blue-500 rounded-full;
+  }
+  .cms-content ol {
+    @apply list-decimal pl-5 sm:pl-8 mb-8 space-y-3 font-medium text-slate-800 marker:text-blue-500 marker:font-bold;
+  }
+  .cms-content ol li span {
+    @apply font-normal text-slate-600;
+  }
+  .cms-content strong {
+    @apply font-semibold text-slate-900 bg-slate-100/50 px-1 rounded-sm;
+  }
+  .cms-content blockquote {
+    @apply border-l-4 border-blue-500 pl-6 py-4 my-8 text-slate-700 bg-blue-50/50 rounded-r-xl font-medium;
+  }
+  .cms-content table {
+    @apply w-full mb-8 border-collapse rounded-xl overflow-hidden shadow-sm;
+  }
+  .cms-content th, .cms-content td {
+    @apply border border-slate-200 px-4 py-3 sm:px-6 sm:py-4 text-left text-sm sm:text-base;
+  }
+  .cms-content th {
+    @apply bg-slate-50 font-semibold text-slate-800;
+  }
+  .cms-content tr:nth-child(even) {
+    @apply bg-slate-50/50;
+  }
+</style>

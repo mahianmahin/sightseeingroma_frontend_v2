@@ -193,7 +193,7 @@ export default function modulePreloadIntegration() {
           }
         }
 
-        // Remove entry points — they're already in the HTML as <script> tags
+        // Remove entry points — we let Astro fetch them lazily as needed
         for (const entryUrl of allEntryPoints) {
           allDeps.delete(entryUrl.replace(/^\/_astro\//, ''));
         }
@@ -210,6 +210,8 @@ export default function modulePreloadIntegration() {
         const manifest = {
           generated: new Date().toISOString(),
           entryPoints: [...allEntryPoints].sort(),
+          // Keep the manifest's preload list matching what we actually inject
+          // into HTML / middleware (transitive deps + entry chunks).
           preload: preloadUrls,
         };
 

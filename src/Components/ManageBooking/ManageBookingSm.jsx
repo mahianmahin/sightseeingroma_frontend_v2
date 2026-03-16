@@ -192,7 +192,7 @@ const ManageBookingSm = () => {
   };
 
   return (
-    <div className="min-h-screen pt-2"> {/* Astro uses sticky nav, no extra offset needed */}
+    <div className="min-h-screen pt-16"> {/* Astro uses sticky nav, no extra offset needed */}
       <div>
         <div className="md:hidden block">
         <div>
