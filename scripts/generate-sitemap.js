@@ -28,7 +28,7 @@ const staticRoutes = [
   { path: '/returnPolicy', priority: 0.5, changefreq: 'yearly' },
   { path: '/refund', priority: 0.5, changefreq: 'yearly' },
   { path: '/login', priority: 0.6, changefreq: 'monthly' },
-  { path: '/registation', priority: 0.6, changefreq: 'monthly' },
+  { path: '/registration', priority: 0.6, changefreq: 'monthly' },
   { path: '/forgot-password', priority: 0.4, changefreq: 'yearly' },
 ];
 

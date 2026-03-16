@@ -175,7 +175,7 @@ export default function LoginIsland() {
             <div className="text-center mt-4">
               <p className="text-sm text-gray-600">
                 Don't have an account?{' '}
-                <a href="/registation" className="font-medium text-[#7F001D] hover:text-red-900">
+                <a href="/registration" className="font-medium text-[#7F001D] hover:text-red-900">
                   Create Account
                 </a>
               </p>

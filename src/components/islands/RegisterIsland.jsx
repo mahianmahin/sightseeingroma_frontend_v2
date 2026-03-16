@@ -1,5 +1,5 @@
 /**
- * Registration island – adapted from src/Components/LoginComponent/Registation/Regi.jsx
+ * Registration island – adapted from src/Components/LoginComponent/Registration/Regi.jsx
  */
 import { useState } from 'react';
 import { FaUser, FaEnvelope, FaPhone, FaLock, FaEye, FaEyeSlash } from 'react-icons/fa';

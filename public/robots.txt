@@ -17,7 +17,7 @@ Disallow: /reset-password
 Disallow: /reset-success
 Disallow: /forgot-password
 Disallow: /login
-Disallow: /registation
+Disallow: /registration
 Disallow: /test
 Disallow: /verify/
 Disallow: /success/
