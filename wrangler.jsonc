@@ -1,6 +1,6 @@
 {
-  "name": "sightseeingroma",
-  // "name": "sightseeingroma-frontend-v2-astro",
+  //"name": "sightseeingroma",
+  "name": "sightseeingroma-frontend-v2-astro",
   "compatibility_date": "2026-03-10",
   "compatibility_flags": ["nodejs_compat", "assets_navigation_has_no_effect"],
   "main": "@astrojs/cloudflare/entrypoints/server",
@@ -8,11 +8,11 @@
     "directory": "./dist"
   },
   // Bind to the existing KV namespace (auto-provisioned on first deploy attempt)
-  //"kv_namespaces": [
-  //  {
-  //    "binding": "SESSION",
-  //    "id": "542fd9aa903b438ab880c65f93db9ffe"
-  //  }
-  //]
+  "kv_namespaces": [
+    {
+      "binding": "SESSION",
+      "id": "542fd9aa903b438ab880c65f93db9ffe"
+    }
+  ]
 }
 
