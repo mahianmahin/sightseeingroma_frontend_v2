@@ -137,15 +137,16 @@ const schemaData = {
             const status = offer.package_type === 'bus' ? 'E9' : 'E8';
             const bookUrl = `/manageBookings/${status}/${offer.package_tag}?offer_id=${offer.id}`;
             const isHighlighted = highlightId && String(offer.id) === String(highlightId);
-            const imgUrl = offer.offer_image_webp_url
-              ? `${mediaBase}${offer.offer_image_webp_url}`
-              : offer.offer_image_url
-                ? `${mediaBase}${offer.offer_image_url}`
-                : offer.package_thumbnail_webp
-                  ? `${mediaBase}${offer.package_thumbnail_webp}`
-                  : offer.package_thumbnail
-                    ? `${mediaBase}${offer.package_thumbnail}`
-                    : '/images/hero.webp';
+            const getFullUrl = (path: string | undefined | null) => {
+              if (!path) return null;
+              if (path.startsWith('http')) return path;
+              return `${mediaBase}${path.startsWith('/') ? '' : '/'}${path}`;
+            };
+            const imgUrl = getFullUrl(offer.offer_image_url)
+              || getFullUrl(offer.package_thumbnail)
+              || getFullUrl(offer.offer_image_webp_url)
+              || getFullUrl(offer.package_thumbnail_webp)
+              || '/images/hero.webp';
             const discount = offer.original_adult_price && offer.offer_adult_price && parseFloat(offer.original_adult_price) > parseFloat(offer.offer_adult_price)
               ? getDiscountPct(parseFloat(offer.original_adult_price), parseFloat(offer.offer_adult_price))
               : 0;
@@ -158,10 +159,10 @@ const schemaData = {
               >
                 {/* Image */}
                 <div class="relative h-28 sm:h-36 md:h-48 overflow-hidden">
-                  <img
-                    src={imgUrl}
-                    alt={offer.offer_title || offer.package_title}
-                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    <img
+                      src={imgUrl}
+                      alt={offer.offer_title || offer.package_title}
+                      class="block w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     loading="lazy"
                     width="400"
                     height="192"

@@ -165,18 +165,18 @@ function getOfferForTicket(ticket: any): any | null {
               return (
               <a href={offerUrl} class={`group w-full mb-4 md:mb-6 mx-auto bg-white rounded-2xl shadow-lg hover:shadow-xl overflow-hidden border ${offer ? 'border-red-400 ring-2 ring-red-300 ring-opacity-50' : 'border-gray-100'} flex flex-col transition-all duration-300 transform hover:-translate-y-1`}>
                 <div class="relative overflow-hidden">
-                  <picture>
+                  {/* <picture>
                     {ticketImgWebp(ticket) && <source srcset={ticketImgWebp(ticket)} type="image/webp" />}
-                    <img
-                      src={ticketImgSrc(ticket)}
-                      alt={ticket.title}
-                      class="w-full h-[140px] md:h-[180px] object-cover transition-transform duration-500 group-hover:scale-110"
-                      loading="lazy"
-                      width="400"
-                      height="180"
-                      onerror="this.onerror=null;this.src='/images/placeholder-ticket.jpg';"
-                    />
-                  </picture>
+                  </picture> */}
+                  <img
+                    src={ticketImgSrc(ticket)}
+                    alt={ticket.title}
+                    class="w-full h-[140px] md:h-[180px] object-cover transition-transform duration-500 group-hover:scale-110"
+                    loading="lazy"
+                    width="400"
+                    height="180"
+                    onerror="this.onerror=null;this.src='/images/placeholder-ticket.jpg';"
+                  />
                   {offer && (
                     <div class="absolute top-2 left-2 z-10">
                       <div class="relative">
@@ -234,18 +234,18 @@ function getOfferForTicket(ticket: any): any | null {
           {similarPackages.map((ticket: any) => (
             <a href={`/manageBookings/${ticket.duration ? 'E9' : 'E8'}/${ticket.package_tag}`} class="group w-full mb-4 md:mb-6 mx-auto bg-white rounded-2xl shadow-lg hover:shadow-xl overflow-hidden border border-gray-100 flex flex-col transition-all duration-300 transform hover:-translate-y-1">
               <div class="relative overflow-hidden">
-                <picture>
+                {/* <picture>
                   {ticketImgWebp(ticket) && <source srcset={ticketImgWebp(ticket)} type="image/webp" />}
-                  <img
-                    src={ticketImgSrc(ticket)}
-                    alt={ticket.title}
-                    class="w-full h-[140px] md:h-[180px] object-cover transition-transform duration-500 group-hover:scale-110"
-                    loading="lazy"
-                    width="400"
-                    height="180"
-                    onerror="this.onerror=null;this.src='/images/placeholder-ticket.jpg';"
-                  />
-                </picture>
+                </picture> */}
+                <img
+                  src={ticketImgSrc(ticket)}
+                  alt={ticket.title}
+                  class="w-full h-[140px] md:h-[180px] object-cover transition-transform duration-500 group-hover:scale-110"
+                  loading="lazy"
+                  width="400"
+                  height="180"
+                  onerror="this.onerror=null;this.src='/images/placeholder-ticket.jpg';"
+                />
               </div>
               <div class="p-3 md:p-5 flex flex-col flex-grow">
                 <span class="inline-flex items-center gap-1 text-[10px] md:text-xs font-medium text-[#930B31] bg-red-50 px-2 py-1 md:px-3 md:py-1.5 rounded-full w-fit mb-2">

@@ -91,17 +91,17 @@ const showStrike = original_adult_price && parseFloat(original_adult_price) > pa
         {/* LEFT: IMAGE */}
         <div class="w-full md:w-[45%] relative aspect-[4/3] md:aspect-auto md:min-h-[450px] overflow-hidden">
           {imageWebpUrl ? (
-            <picture>
-              <source srcset={imageWebpUrl} type="image/webp" />
-              <img
-                src={imageUrl}
-                alt={offer_title || 'Featured offer'}
-                class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                width="600"
-                height="450"
-                loading="lazy"
-              />
-            </picture>
+            // <picture>
+            //   <source srcset={imageWebpUrl} type="image/webp" />
+            // </picture>
+            <img
+              src={imageUrl}
+              alt={offer_title || 'Featured offer'}
+              class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+              width="600"
+              height="450"
+              loading="lazy"
+            />
           ) : (
             <img
               src={imageUrl}
